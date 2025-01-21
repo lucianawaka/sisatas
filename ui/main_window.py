@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from database.connection import get_connection
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class MainWindow:
     def __init__(self, root):
@@ -16,6 +19,9 @@ class MainWindow:
 
         self.entrada_secretaria = tk.Entry(frame_secretaria)
         self.entrada_secretaria.pack(side="left", padx=5, pady=5)
+        # Botão para listar atas
+        botao_listar_atas = tk.Button(self.root, text="Listar Atas", command=self.listar_atas)
+        botao_listar_atas.pack(side="top", padx=10, pady=5)
 
         botao_secretaria = tk.Button(
             frame_secretaria, text="Adicionar", command=self.adicionar_secretaria
