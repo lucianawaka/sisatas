@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from database.connection import get_connection
 from database.models import create_tables
+from tkcalendar import DateEntry
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
 from controllers.secretario import adicionar_secretario, listar_secretarios
 from controllers.ata import adicionar_ata, listar_atas
@@ -44,8 +45,8 @@ class MeetingManagerApp:
 
         self.entrada_numero_ata = tk.Entry(frame_ata)
         self.entrada_numero_ata.pack(side="left", padx=5, pady=5)
-
-        self.entrada_data_ata = tk.Entry(frame_ata)
+        
+        self.entrada_data_ata = DateEntry(frame_ata, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yyyy', locale='pt_BR')
         self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
         botao_ata = tk.Button(frame_ata, text="Adicionar", command=self.adicionar_ata)
