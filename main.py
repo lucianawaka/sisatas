@@ -1,8 +1,10 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
+import customtkinter as ctk
+from tkinter import messagebox
+from tkinter import Toplevel
+from tkhtmlview import HTMLLabel, HTMLScrolledText
+from tkcalendar import DateEntry
 from database.connection import get_connection
 from database.models import create_tables
-from tkcalendar import DateEntry
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
 from controllers.secretario import adicionar_secretario, listar_secretarios
 from controllers.ata import adicionar_ata, listar_atas
@@ -13,83 +15,124 @@ class MeetingManagerApp:
         self.conn = get_connection()
         self.root = root
         self.root.title("Gerenciador de Atas")
+        ctk.set_appearance_mode("light")  # Tema: "light", "dark", "system"
+        ctk.set_default_color_theme("green")  # Cor principal do tema
         self.setup_ui()
+
+
 
     def setup_ui(self):
         # Frame para cadastro de Secretaria
-        frame_secretaria = tk.LabelFrame(self.root, text="Adicionar Secretaria")
+        frame_secretaria = ctk.CTkFrame(self.root)
         frame_secretaria.pack(fill="x", padx=10, pady=5)
 
-        self.entrada_secretaria = tk.Entry(frame_secretaria)
+        ctk.CTkLabel(frame_secretaria, text="Adicionar Secretaria").pack(side="left", padx=5, pady=5)
+
+        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Nome da Secretaria")
         self.entrada_secretaria.pack(side="left", padx=5, pady=5)
 
-        botao_secretaria = tk.Button(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria)
+        botao_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria)
         botao_secretaria.pack(side="left", padx=5, pady=5)
 
         # Frame para cadastro de Secretário
-        frame_secretario = tk.LabelFrame(self.root, text="Adicionar Secretário")
+        frame_secretario = ctk.CTkFrame(self.root)
         frame_secretario.pack(fill="x", padx=10, pady=5)
 
-        self.entrada_secretario = tk.Entry(frame_secretario)
+        ctk.CTkLabel(frame_secretario, text="Adicionar Secretário").pack(side="left", padx=5, pady=5)
+
+        self.entrada_secretario = ctk.CTkEntry(frame_secretario, placeholder_text="Nome do Secretário")
         self.entrada_secretario.pack(side="left", padx=5, pady=5)
 
-        self.combo_secretarias = ttk.Combobox(frame_secretario)
+        self.combo_secretarias = ctk.CTkComboBox(frame_secretario, values=['Selectione uma Secretaria'])
         self.combo_secretarias.pack(side="left", padx=5, pady=5)
 
-        botao_secretario = tk.Button(frame_secretario, text="Adicionar", command=self.adicionar_secretario)
+        botao_secretario = ctk.CTkButton(frame_secretario, text="Adicionar", command=self.adicionar_secretario)
         botao_secretario.pack(side="left", padx=5, pady=5)
 
         # Frame para cadastro de Ata
-        frame_ata = tk.LabelFrame(self.root, text="Adicionar Ata")
+        frame_ata = ctk.CTkFrame(self.root)
         frame_ata.pack(fill="x", padx=10, pady=5)
 
-        self.entrada_numero_ata = tk.Entry(frame_ata)
+        ctk.CTkLabel(frame_ata, text="Adicionar Ata").pack(side="left", padx=5, pady=5)
+
+        self.entrada_numero_ata = ctk.CTkEntry(frame_ata, placeholder_text="Número da Ata")
         self.entrada_numero_ata.pack(side="left", padx=5, pady=5)
-        
-        self.entrada_data_ata = DateEntry(frame_ata, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='dd/mm/yyyy', locale='pt_BR')
+
+        self.entrada_data_ata = DateEntry(frame_ata, width=12, background="darkblue", foreground="white", borderwidth=2)
         self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
-        botao_ata = tk.Button(frame_ata, text="Adicionar", command=self.adicionar_ata)
+        botao_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata)
         botao_ata.pack(side="left", padx=5, pady=5)
 
         # Frame para registro de Falas
-        frame_fala = tk.LabelFrame(self.root, text="Adicionar Fala")
+        frame_fala = ctk.CTkFrame(self.root)
         frame_fala.pack(fill="x", padx=10, pady=5)
 
-        self.combo_atas = ttk.Combobox(frame_fala)
+        ctk.CTkLabel(frame_fala, text="Adicionar Fala", font=("Arial", 14, "bold")).pack(anchor="w", padx=5, pady=5)
+
+        # Frame interno para organizar os ComboBox lado a lado
+        frame_combos = ctk.CTkFrame(frame_fala)
+        frame_combos.pack(anchor="w", fill="x", padx=5, pady=5)
+
+        self.combo_atas = ctk.CTkComboBox(frame_combos, values=['Selecione uma Ata'], width=150)
         self.combo_atas.pack(side="left", padx=5, pady=5)
 
-        self.combo_secretarios = ttk.Combobox(frame_fala)
+        self.combo_secretarios = ctk.CTkComboBox(frame_combos, values=['Selecione um Secretário'], width=150)
         self.combo_secretarios.pack(side="left", padx=5, pady=5)
 
-        self.entrada_fala = tk.Entry(frame_fala)
-        self.entrada_fala.pack(side="left", padx=5, pady=5)
+        # Editor HTML para a fala
+        self.html_editor_fala = HTMLScrolledText(frame_fala, html="", height=30, width=50)
+        self.html_editor_fala.pack(anchor="w", padx=5, pady=5)
 
-        botao_fala = tk.Button(frame_fala, text="Adicionar", command=self.adicionar_fala)
-        botao_fala.pack(side="left", padx=5, pady=5)
+        # Botão de Adicionar Fala
+        botao_fala = ctk.CTkButton(frame_fala, text="Adicionar Fala", command=self.adicionar_fala, width=150)
+        botao_fala.pack(anchor="center", padx=5, pady=5)
 
         # Botão para listar atas
-        botao_listar_atas = tk.Button(self.root, text="Listar Atas", command=self.listar_atas)
+        botao_listar_atas = ctk.CTkButton(self.root, text="Listar Atas", command=self.listar_atas)
         botao_listar_atas.pack(side="top", padx=10, pady=5)
 
         self.atualizar_comboboxes()
 
+
+    def return_to_main_menu(self):
+        self.clear_content_frame()  # Limpa os widgets da tela de listar atas.
+        self.setup_ui()  # Recria o menu principal.
+
+
+    def clear_content_frame(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+    def atualizar_comboboxes(self):
+        secretarias = listar_secretarias(self.conn)
+        self.combo_secretarias.configure(values=[s[1] for s in secretarias])
+
+        secretarios = listar_secretarios(self.conn)
+        self.combo_secretarios.configure(values=[s[1] for s in secretarios])
+
+        atas = listar_atas(self.conn)
+        self.combo_atas.configure(values=[a[1] for a in atas])
     def adicionar_secretaria(self):
-        nome = self.entrada_secretaria.get()
-        if nome:
+        nome = self.entrada_secretaria.get().strip()
+        if not nome:
+            messagebox.showerror("Erro", "O nome da secretaria não pode estar vazio.")
+            return
+        try:
             adicionar_secretaria(self.conn, nome)
-            self.entrada_secretaria.delete(0, tk.END)
+            self.entrada_secretaria.delete(0, ctk.END)
             self.atualizar_comboboxes()
-            messagebox.showinfo("Sucesso", "Secretaria adicionada!")
-        else:
-            messagebox.showerror("Erro", "Nome não pode estar vazio.")
+            messagebox.showinfo("Sucesso", "Secretaria adicionada com sucesso!")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao adicionar secretaria: {e}")
+
 
     def adicionar_secretario(self):
         nome = self.entrada_secretario.get()
         secretaria = self.combo_secretarias.get()
         if nome and secretaria:
             adicionar_secretario(self.conn, nome, secretaria)
-            self.entrada_secretario.delete(0, tk.END)
+            self.entrada_secretario.delete(0, ctk.END)
             self.atualizar_comboboxes()
             messagebox.showinfo("Sucesso", "Secretário adicionado!")
         else:
@@ -100,8 +143,7 @@ class MeetingManagerApp:
         data = self.entrada_data_ata.get()
         if numero and data:
             adicionar_ata(self.conn, numero, data)
-            self.entrada_numero_ata.delete(0, tk.END)
-            self.entrada_data_ata.delete(0, tk.END)
+            self.entrada_numero_ata.delete(0, ctk.END)
             self.atualizar_comboboxes()
             messagebox.showinfo("Sucesso", "Ata adicionada!")
         else:
@@ -110,63 +152,41 @@ class MeetingManagerApp:
     def adicionar_fala(self):
         ata = self.combo_atas.get()
         secretario = self.combo_secretarios.get()
-        fala = self.entrada_fala.get()
+        fala = self.html_editor_fala.get("1.0", "end").strip()  # Captura o HTML do editor
         if ata and secretario and fala:
             adicionar_fala(self.conn, ata, secretario, fala)
-            self.entrada_fala.delete(0, tk.END)
+            self.html_editor_fala.set_html("<p>Escreva aqui...</p>")  # Reseta o editor
             messagebox.showinfo("Sucesso", "Fala adicionada!")
         else:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
+
     def listar_atas(self):
-        self.clear_content_frame()
+        self.clear_content_frame()  # Limpa os widgets da tela atual antes de carregar a lista de atas.
 
-        tk.Label(self.root, text="Lista de Atas").pack(pady=10)
+        # Botão de voltar ao menu principal
+        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=lambda: self.return_to_main_menu())
+        botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
-        atas = listar_atas(self.conn)  # Lista todas as atas
+        # Título da seção
+        ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
+        atas = listar_atas(self.conn)
         for ata in atas:
-            tk.Label(
-                self.root, text=f"Ata: {ata[1]} - Data: {ata[2]}", font=("Arial", 12, "bold")
-            ).pack(anchor="w", pady=5)
+            ctk.CTkLabel(self.root, text=f"Ata: {ata[1]} - Data: {ata[2]}").pack(anchor="w", pady=5)
 
-            # Busca falas relacionadas à ata
             falas = listar_falas_por_ata(self.conn, ata[0])
             if falas:
                 for fala in falas:
-                    tk.Label(
-                        self.root,
-                        text=f"  Secretário: {fala[1]} - Fala: {fala[2]}",
-                        font=("Arial", 10),
-                    ).pack(anchor="w", padx=20)
+                    HTMLLabel(self.root, html=f"<b>Secretário:</b> {fala[1]}<br><p>{fala[2]}</p>").pack(anchor="w", padx=20)
             else:
-                tk.Label(
-                    self.root, text="  Nenhuma fala registrada.", font=("Arial", 10, "italic")
-                ).pack(anchor="w", padx=20)
+                ctk.CTkLabel(self.root, text="  Nenhuma fala registrada.", font=("Arial", 10)).pack(anchor="w", padx=20)
 
-    def clear_content_frame(self):
-        for widget in self.root.winfo_children():
-            widget.destroy()
-
-    def atualizar_comboboxes(self):
-        # Atualiza as secretarias no combobox
-        secretarias = listar_secretarias(self.conn)
-        self.combo_secretarias["values"] = [s[1] for s in secretarias]
-
-        # Atualiza os secretários no combobox
-        secretarios = listar_secretarios(self.conn)
-        self.combo_secretarios["values"] = [s[1] for s in secretarios]
-
-        # Atualiza as atas no combobox
-        atas = listar_atas(self.conn)
-        self.combo_atas["values"] = [a[1] for a in atas]
 
 if __name__ == "__main__":
-    # Inicializa o banco de dados
     conn = get_connection()
     create_tables(conn)
     conn.close()
 
-    # Inicia a interface gráfica
-    root = tk.Tk()
+    root = ctk.CTk()
     app = MeetingManagerApp(root)
     root.mainloop()
