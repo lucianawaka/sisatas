@@ -9,7 +9,7 @@ from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
 from controllers.secretario import adicionar_secretario, listar_secretarios
 from controllers.ata import adicionar_ata, listar_atas
-from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_falas
+from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades
 
 class MeetingManagerApp:
     def __init__(self, root):
@@ -170,7 +170,7 @@ class MeetingManagerApp:
         botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
         # Criar o botão "Limpar Falas"
-        botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: limpar_falas(self.conn), fg_color="red", hover_color="orange")
+        botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: self.limpar_todas_as_entidades(), fg_color="red", hover_color="orange")
         # Posicionando o botão abaixo da lista de atas
         botao_limpar.pack(pady=10)
         # Título
@@ -181,12 +181,16 @@ class MeetingManagerApp:
         dados_atas = {}
         for ata in atas:
             numero_ata = ata[0]
+            descricao_ata = ata[1]
             data_ata = ata[2]
             dados_atas[numero_ata] = []
+            
             falas = listar_falas_por_ata(self.conn, numero_ata)
             for fala in falas:
                 dados_atas[numero_ata].append((fala[1], fala[2]))
 
+            print(descricao_ata)
+            print(data_ata)
         # Criar uma lista com rolagem
         lista_atas = ttk.Treeview(self.root, columns=("Secretário", "Fala"))
         lista_atas.heading("#0", text="Ata")
@@ -195,12 +199,21 @@ class MeetingManagerApp:
         lista_atas.pack(fill="both", expand=True)
 
         # Inserir dados na lista
+        print(dados_atas)
         for numero_ata, falas in dados_atas.items():
-            item_ata = lista_atas.insert("", "end", text=f"Ata {numero_ata} - {data_ata}")
+            item_ata = lista_atas.insert("", "end", text=f"Ata {numero_ata}")
             for secretario, fala in falas:
                 lista_atas.insert(item_ata, "end", values=(secretario, fala))
 
-
+    def limpar_todas_as_entidades(self):
+        resultado = messagebox.askyesno("Confirmação", "Tem certeza que deseja deletar TODAS as atas e falas?")
+        if resultado:
+            cursor = self.conn.cursor()
+            cursor.execute("DELETE FROM atas")
+            self.conn.commit()
+            messagebox.showinfo("Sucesso", "Todas as atas e falas foram deletadas.")
+            # Chamar a função para atualizar a view
+            self.listar_atas()
 if __name__ == "__main__":
     conn = get_connection()
     create_tables(conn)

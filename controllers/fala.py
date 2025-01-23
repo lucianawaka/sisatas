@@ -37,8 +37,14 @@ def listar_falas_por_ata(conn, ata_id):
         (ata_id,),
     ).fetchall()
 
-def limpar_falas(conn):
-    """Limpa todas as falas do banco de dados."""
+def limpar_todas_as_entidades(conn):
+    """Deleta todas as atas e falas do banco de dados."""
     cursor = conn.cursor()
+
+    # Deleta todas as falas
     cursor.execute("DELETE FROM falas")
+
+    # Deleta todas as atas
+    cursor.execute("DELETE FROM atas")
+
     conn.commit()
