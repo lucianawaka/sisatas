@@ -49,6 +49,6 @@ desktop.ini
 # Env files
 .env
 .env.*
-
+/venv
 # Logs
 *.log
