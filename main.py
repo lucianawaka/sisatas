@@ -9,7 +9,7 @@ from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
 from controllers.secretario import adicionar_secretario, listar_secretarios
 from controllers.ata import adicionar_ata, listar_atas
-from controllers.fala import adicionar_fala, listar_falas_por_ata
+from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_falas
 
 class MeetingManagerApp:
     def __init__(self, root):
@@ -169,6 +169,10 @@ class MeetingManagerApp:
         botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=lambda: self.return_to_main_menu())
         botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
+        # Criar o botão "Limpar Falas"
+        botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: limpar_falas(self.conn), fg_color="red", hover_color="orange")
+        # Posicionando o botão abaixo da lista de atas
+        botao_limpar.pack(pady=10)
         # Título
         ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
 
