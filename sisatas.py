@@ -57,8 +57,8 @@ class MeetingManagerApp:
 
         ctk.CTkLabel(frame_ata, text="Adicionar Ata").pack(side="left", padx=5, pady=5)
 
-        self.entrada_numero_ata = ctk.CTkEntry(frame_ata, placeholder_text="Número da Ata", width=200)
-        self.entrada_numero_ata.pack(side="left", padx=5, pady=5)
+        self.descricao_ata = ctk.CTkEntry(frame_ata, placeholder_text="Descrição da Ata", width=200)
+        self.descricao_ata.pack(side="left", padx=5, pady=5)
 
         self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
         self.entrada_data_ata.pack(side="left", padx=5, pady=5)

@@ -1,11 +1,11 @@
-def adicionar_ata(conn, numero, data):
+def adicionar_ata(conn, descricao, data):
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO atas (numero, data) VALUES (?, ?)", (numero, data))
+    cursor.execute("INSERT INTO atas (descricao, data) VALUES (?, ?)", (descricao, data))
     conn.commit()
 
 def listar_atas(conn):
     cursor = conn.cursor()
-    return cursor.execute("SELECT id, numero, data FROM atas").fetchall()
+    return cursor.execute("SELECT id, descricao, data FROM atas").fetchall()
 def listar_falas_por_ata(conn, ata_id):
     cursor = conn.cursor()
     return cursor.execute(
