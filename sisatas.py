@@ -141,11 +141,11 @@ class MeetingManagerApp:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
     def adicionar_ata(self):
-        numero = self.entrada_numero_ata.get()
+        numero = self.descricao_ata.get()
         data = self.entrada_data_ata.get()
         if numero and data:
             adicionar_ata(self.conn, numero, data)
-            self.entrada_numero_ata.delete(0, ctk.END)
+            self.descricao_ata.delete(0, ctk.END)
             self.atualizar_comboboxes()
             messagebox.showinfo("Sucesso", "Ata adicionada!")
         else:

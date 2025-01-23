@@ -1,7 +1,8 @@
-def adicionar_fala(conn, ata_numero, secretario_nome, fala):
+def adicionar_fala(conn, ata_descricao, secretario_nome, fala):
+    
     cursor = conn.cursor()
     # Busca o ID da ata pelo número
-    cursor.execute("SELECT id FROM atas WHERE numero = ?", (ata_numero,))
+    cursor.execute("SELECT id FROM atas WHERE descricao = ?", (ata_descricao,))
     ata_id = cursor.fetchone()
 
     # Busca o ID do secretário pelo nome
