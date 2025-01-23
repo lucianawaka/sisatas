@@ -52,3 +52,6 @@ desktop.ini
 /venv
 # Logs
 *.log
+
+# Build
+main.spec

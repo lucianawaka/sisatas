@@ -24,7 +24,8 @@ python main.py
 **Gerar .exe da aplicação no terminal**
 
 ```
-pyinstaller --onefile -w
+pyinstaller --onefile -w main.py
+
 ```
 
 Na pasta dist cole a base de dados atas.db para a pasta caso já exista dados
