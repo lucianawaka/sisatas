@@ -28,8 +28,8 @@ class MeetingManagerApp:
 
         ctk.CTkLabel(frame_secretaria, text="Adicionar Secretaria").pack(side="left", padx=5, pady=5)
 
-        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Nome da Secretaria")
-        self.entrada_secretaria.pack(side="left", padx=5, pady=5)
+        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Nome da Secretaria", width=200)
+        self.entrada_secretaria.pack(side="left", padx=6, pady=5)
 
         botao_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria)
         botao_secretaria.pack(side="left", padx=5, pady=5)
@@ -40,10 +40,10 @@ class MeetingManagerApp:
 
         ctk.CTkLabel(frame_secretario, text="Adicionar Secretário").pack(side="left", padx=5, pady=5)
 
-        self.entrada_secretario = ctk.CTkEntry(frame_secretario, placeholder_text="Nome do Secretário")
+        self.entrada_secretario = ctk.CTkEntry(frame_secretario, placeholder_text="Nome do Secretário", width=200)
         self.entrada_secretario.pack(side="left", padx=5, pady=5)
 
-        self.combo_secretarias = ctk.CTkComboBox(frame_secretario, values=['Selectione uma Secretaria'])
+        self.combo_secretarias = ctk.CTkComboBox(frame_secretario, values=['Selectione uma Secretaria'], width=200)
         self.combo_secretarias.pack(side="left", padx=5, pady=5)
 
         botao_secretario = ctk.CTkButton(frame_secretario, text="Adicionar", command=self.adicionar_secretario)
@@ -55,10 +55,10 @@ class MeetingManagerApp:
 
         ctk.CTkLabel(frame_ata, text="Adicionar Ata").pack(side="left", padx=5, pady=5)
 
-        self.entrada_numero_ata = ctk.CTkEntry(frame_ata, placeholder_text="Número da Ata")
+        self.entrada_numero_ata = ctk.CTkEntry(frame_ata, placeholder_text="Número da Ata", width=200)
         self.entrada_numero_ata.pack(side="left", padx=5, pady=5)
 
-        self.entrada_data_ata = DateEntry(frame_ata, width=12, background="darkblue", foreground="white", borderwidth=2)
+        self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
         self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
         botao_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata)
@@ -74,14 +74,14 @@ class MeetingManagerApp:
         frame_combos = ctk.CTkFrame(frame_fala)
         frame_combos.pack(anchor="w", fill="x", padx=5, pady=5)
 
-        self.combo_atas = ctk.CTkComboBox(frame_combos, values=['Selecione uma Ata'], width=150)
+        self.combo_atas = ctk.CTkComboBox(frame_combos, values=['Selecione uma Ata'], width=250)
         self.combo_atas.pack(side="left", padx=5, pady=5)
 
-        self.combo_secretarios = ctk.CTkComboBox(frame_combos, values=['Selecione um Secretário'], width=150)
+        self.combo_secretarios = ctk.CTkComboBox(frame_combos, values=['Selecione um Secretário'], width=250)
         self.combo_secretarios.pack(side="left", padx=5, pady=5)
 
         # Editor HTML para a fala
-        self.html_editor_fala = HTMLScrolledText(frame_fala, html="", height=30, width=50)
+        self.html_editor_fala = HTMLScrolledText(frame_fala, html="", height=16, width=80)
         self.html_editor_fala.pack(anchor="w", padx=5, pady=5)
 
         # Botão de Adicionar Fala
@@ -112,7 +112,7 @@ class MeetingManagerApp:
         self.combo_secretarios.configure(values=[s[1] for s in secretarios])
 
         atas = listar_atas(self.conn)
-        self.combo_atas.configure(values=[a[1] for a in atas])
+        self.combo_atas.configure(values=[a[1] + "- " + a[2] for a in atas])
     def adicionar_secretaria(self):
         nome = self.entrada_secretaria.get().strip()
         if not nome:
