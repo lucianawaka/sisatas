@@ -29,3 +29,4 @@ pyinstaller --onefile -w main.py
 ```
 
 Na pasta dist cole a base de dados atas.db para a pasta caso já exista dados
+Pode excluir o arquivo main.spec e a pasta build
