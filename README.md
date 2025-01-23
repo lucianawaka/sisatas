@@ -15,8 +15,16 @@ pip install -r requirements.txt
 
 ```
 
-**Run**
+**Run terminal**
 
 ```
 python main.py
 ```
+
+**Gerar .exe da aplicação no terminal**
+
+```
+pyinstaller --onefile -w
+```
+
+Na pasta dist cole a base de dados atas.db para a pasta caso já exista dados
