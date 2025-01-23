@@ -7,7 +7,7 @@ from tkcalendar import DateEntry
 from database.connection import get_connection
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
-from controllers.secretario import adicionar_secretario, listar_secretarios
+from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario
 from controllers.ata import adicionar_ata, listar_atas
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades
 
@@ -107,12 +107,15 @@ class MeetingManagerApp:
             widget.destroy()
 
     def atualizar_comboboxes(self):
+        # Atualizar as secretarias
         secretarias = listar_secretarias(self.conn)
         self.combo_secretarias.configure(values=[s[1] for s in secretarias])
 
+        # Atualizar os secretarios
         secretarios = listar_secretarios(self.conn)
         self.combo_secretarios.configure(values=[s[1] for s in secretarios])
 
+        # Atualizar as atas
         atas = listar_atas(self.conn)
         self.combo_atas.configure(values=[a[1] + "- " + a[2] for a in atas])
     def adicionar_secretaria(self):
@@ -141,10 +144,10 @@ class MeetingManagerApp:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
     def adicionar_ata(self):
-        numero = self.descricao_ata.get()
+        descricao = self.descricao_ata.get()
         data = self.entrada_data_ata.get()
-        if numero and data:
-            adicionar_ata(self.conn, numero, data)
+        if descricao and data:
+            adicionar_ata(self.conn, descricao, data)
             self.descricao_ata.delete(0, ctk.END)
             self.atualizar_comboboxes()
             messagebox.showinfo("Sucesso", "Ata adicionada!")
@@ -172,10 +175,31 @@ class MeetingManagerApp:
 
         # Criar o botão "Limpar Falas"
         botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: self.limpar_todas_as_entidades(), fg_color="red", hover_color="orange")
-        # Posicionando o botão abaixo da lista de atas
         botao_limpar.pack(pady=10)
+
         # Título
         ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
+
+        # Frame para encapsular o Treeview e a Scrollbar
+        frame_lista_atas = ctk.CTkFrame(self.root)
+        frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Criar o Treeview
+        lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
+        lista_atas.heading("#0", text="Ata (Descrição - Data)")
+        lista_atas.heading("Secretário", text="Secretário / Secretaria")
+        lista_atas.heading("Fala", text="Fala")
+        lista_atas.column("#0", width=250)
+        lista_atas.column("Secretário", width=200)
+        lista_atas.column("Fala", width=400)
+
+        # Adicionar Scrollbar vertical
+        scrollbar_vertical = ttk.Scrollbar(frame_lista_atas, orient="vertical", command=lista_atas.yview)
+        lista_atas.configure(yscrollcommand=scrollbar_vertical.set)
+
+        # Posicionar o Treeview e a Scrollbar
+        lista_atas.pack(side="left", fill="both", expand=True)
+        scrollbar_vertical.pack(side="right", fill="y")
 
         # Obter dados das atas e falas
         atas = listar_atas(self.conn)
@@ -184,28 +208,25 @@ class MeetingManagerApp:
             numero_ata = ata[0]
             descricao_ata = ata[1]
             data_ata = ata[2]
-            dados_atas[numero_ata] = []
-            
+            descricao_completa = f"{descricao_ata} - {data_ata}"
+            dados_atas[descricao_completa] = []
+
+            # Obter falas vinculadas à ata
             falas = listar_falas_por_ata(self.conn, numero_ata)
             for fala in falas:
-                dados_atas[numero_ata].append((fala[1], fala[2]))
+                secretario_nome = fala[1]  # Nome do secretário
+                secretaria_nome = get_secretaria_by_secretario(self.conn, secretario_nome)
+                secretario_completo = f"{secretario_nome} ({secretaria_nome})"
+                dados_atas[descricao_completa].append((secretario_completo, fala[2]))
 
-            print(descricao_ata)
-            print(data_ata)
-        # Criar uma lista com rolagem
-        lista_atas = ttk.Treeview(self.root, columns=("Secretário", "Fala"))
-        lista_atas.heading("#0", text="Ata")
-        lista_atas.heading("Secretário", text="Secretário")
-        lista_atas.heading("Fala", text="Fala")
-        lista_atas.pack(fill="both", expand=True)
+        # Inserir dados no Treeview
+        for descricao_completa, falas in dados_atas.items():
+            item_ata = lista_atas.insert("", "end", text=f"{descricao_completa}")
+            for secretario_completo, fala in falas:
+                lista_atas.insert(item_ata, "end", values=(secretario_completo, fala))
 
-        # Inserir dados na lista
-        print(dados_atas)
-        for numero_ata, falas in dados_atas.items():
-            item_ata = lista_atas.insert("", "end", text=f"Ata {numero_ata}")
-            for secretario, fala in falas:
-                lista_atas.insert(item_ata, "end", values=(secretario, fala))
 
+    # Função para limpar todas as atas e falas
     def limpar_todas_as_entidades(self):
         resultado = messagebox.askyesno("Confirmação", "Tem certeza que deseja deletar TODAS as atas e falas?")
         if resultado:
@@ -215,6 +236,11 @@ class MeetingManagerApp:
             messagebox.showinfo("Sucesso", "Todas as atas e falas foram deletadas.")
             # Chamar a função para atualizar a view
             self.listar_atas()
+
+
+
+
+# Função principal
 if __name__ == "__main__":
     conn = get_connection()
     create_tables(conn)
