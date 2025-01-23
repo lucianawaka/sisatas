@@ -16,6 +16,7 @@ class MeetingManagerApp:
         self.conn = get_connection()
         self.root = root
         self.root.title("Gerenciador de Atas")
+        #self.root.state('zoomed')
         ctk.set_appearance_mode("light")  # Tema: "light", "dark", "system"
         ctk.set_default_color_theme("green")  # Cor principal do tema
         self.setup_ui()
