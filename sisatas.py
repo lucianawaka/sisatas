@@ -17,7 +17,8 @@ class MeetingManagerApp:
         self.conn = get_connection()
         self.root = root
         self.root.title("Gerenciador de Atas")
-        #self.root.state('zoomed')
+        self.root.geometry(f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0")
+        self.root.update_idletasks()  # Garante que o tkinter atualize as dimensões da janela
         ctk.set_appearance_mode("light")  # Tema: "light", "dark", "system"
         ctk.set_default_color_theme("green")  # Cor principal do tema
         self.setup_ui()
