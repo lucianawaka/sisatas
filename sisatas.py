@@ -115,7 +115,9 @@ class MeetingManagerApp:
 
         # Atualizar secretários com nome e secretaria
         secretarios = listar_secretarios(self.conn)
-        valores_combo_secretarios = [f"{s[1]} ({get_secretaria_by_secretario(self.conn, s[1])})" for s in secretarios]
+        valores_combo_secretarios = [
+            f"{s[1]} ({get_secretaria_by_secretario(self.conn, s[1])})" for s in secretarios
+        ]
         self.combo_secretarios.configure(values=valores_combo_secretarios)
 
         # Atualizar atas no ComboBox
@@ -126,13 +128,16 @@ class MeetingManagerApp:
 
         # Criar a lista formatada para exibição no ComboBox
         valores_combo_atas = [f"{a[1]} - {a[2]}" for a in atas_ordenadas]
-        # Verificar se há valores para evitar erro de índice
+
+        # Atualizar as opções disponíveis no ComboBox
+        self.combo_atas.configure(values=valores_combo_atas)
+
+        # Definir a primeira opção como valor selecionado ou um padrão
         if valores_combo_atas:
-            # Definir a primeira opção como o primeiro valor da lista
-            self.combo_atas.set(valores_combo_atas[0])
+            self.combo_atas.set(valores_combo_atas[0])  # Selecionar o primeiro valor
         else:
-            # Caso a lista esteja vazia, definir como "Selecione uma Ata"
-            self.combo_atas.set("Selecione uma Ata")
+            self.combo_atas.set("Selecione uma Ata")  # Valor padrão caso a lista esteja vazia
+
 
     # Adicionar secretaria
     def adicionar_secretaria(self):
