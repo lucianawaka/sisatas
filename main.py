@@ -150,12 +150,15 @@ class MeetingManagerApp:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
     def adicionar_fala(self):
-        ata = self.combo_atas.get()
+        ata = self.combo_atas.get().split('-')[0]
         secretario = self.combo_secretarios.get()
         fala = self.html_editor_fala.get("1.0", "end").strip()  # Captura o HTML do editor
         if ata and secretario and fala:
+            print(ata)
+            print(secretario)
+            print(fala)
             adicionar_fala(self.conn, ata, secretario, fala)
-            self.html_editor_fala.set_html("<p>Escreva aqui...</p>")  # Reseta o editor
+            self.html_editor_fala.set_html("")  # Reseta o editor
             messagebox.showinfo("Sucesso", "Fala adicionada!")
         else:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
@@ -172,7 +175,7 @@ class MeetingManagerApp:
         ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
         atas = listar_atas(self.conn)
         for ata in atas:
-            ctk.CTkLabel(self.root, text=f"Ata: {ata[1]} - Data: {ata[2]}").pack(anchor="w", pady=5)
+            ctk.CTkLabel(self.root, text=f"Ata: {ata[1]}").pack(anchor="w", pady=5)
 
             falas = listar_falas_por_ata(self.conn, ata[0])
             if falas:
