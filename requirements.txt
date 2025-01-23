@@ -4,3 +4,4 @@ tkcalendar
 customtkinter
 tkinterhtml
 pyinstaller
+tkhtmlview
