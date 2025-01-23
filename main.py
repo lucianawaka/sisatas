@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
+from tkinter import ttk
 from tkinter import Toplevel
 from tkhtmlview import HTMLLabel, HTMLScrolledText
 from tkcalendar import DateEntry
@@ -162,24 +163,38 @@ class MeetingManagerApp:
 
 
     def listar_atas(self):
-        self.clear_content_frame()  # Limpa os widgets da tela atual antes de carregar a lista de atas.
+        self.clear_content_frame()
 
-        # Botão de voltar ao menu principal
+        # Botão de voltar
         botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=lambda: self.return_to_main_menu())
         botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
-        # Título da seção
+        # Título
         ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
-        atas = listar_atas(self.conn)
-        for ata in atas:
-            ctk.CTkLabel(self.root, text=f"Ata: {ata[1]}").pack(anchor="w", pady=5)
 
-            falas = listar_falas_por_ata(self.conn, ata[0])
-            if falas:
-                for fala in falas:
-                    HTMLLabel(self.root, html=f"<b>Secretário:</b> {fala[1]}<br><p>{fala[2]}</p>").pack(anchor="w", padx=20)
-            else:
-                ctk.CTkLabel(self.root, text="  Nenhuma fala registrada.", font=("Arial", 10)).pack(anchor="w", padx=20)
+        # Obter dados das atas e falas
+        atas = listar_atas(self.conn)
+        dados_atas = {}
+        for ata in atas:
+            numero_ata = ata[0]
+            data_ata = ata[2]
+            dados_atas[numero_ata] = []
+            falas = listar_falas_por_ata(self.conn, numero_ata)
+            for fala in falas:
+                dados_atas[numero_ata].append((fala[1], fala[2]))
+
+        # Criar uma lista com rolagem
+        lista_atas = ttk.Treeview(self.root, columns=("Secretário", "Fala"))
+        lista_atas.heading("#0", text="Ata")
+        lista_atas.heading("Secretário", text="Secretário")
+        lista_atas.heading("Fala", text="Fala")
+        lista_atas.pack(fill="both", expand=True)
+
+        # Inserir dados na lista
+        for numero_ata, falas in dados_atas.items():
+            item_ata = lista_atas.insert("", "end", text=f"Ata {numero_ata} - {data_ata}")
+            for secretario, fala in falas:
+                lista_atas.insert(item_ata, "end", values=(secretario, fala))
 
 
 if __name__ == "__main__":
