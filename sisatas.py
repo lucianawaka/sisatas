@@ -126,12 +126,13 @@ class MeetingManagerApp:
 
         # Criar a lista formatada para exibição no ComboBox
         valores_combo_atas = [f"{a[1]} - {a[2]}" for a in atas_ordenadas]
-
-        # Atualizar o ComboBox de atas com as atas ordenadas
-        self.combo_atas.configure(values=valores_combo_atas)
-
-        # Definir a primeira opção como "Selecione uma Ata"
-        self.combo_atas.set(valores_combo_atas[0])
+        # Verificar se há valores para evitar erro de índice
+        if valores_combo_atas:
+            # Definir a primeira opção como o primeiro valor da lista
+            self.combo_atas.set(valores_combo_atas[0])
+        else:
+            # Caso a lista esteja vazia, definir como "Selecione uma Ata"
+            self.combo_atas.set("Selecione uma Ata")
 
     # Adicionar secretaria
     def adicionar_secretaria(self):
@@ -271,6 +272,11 @@ class MeetingManagerApp:
         resultado = messagebox.askyesno("Confirmação", "Tem certeza que deseja deletar TODAS as atas e falas?")
         if resultado:
             cursor = self.conn.cursor()
+    
+            # Deleta todas as falas
+            cursor.execute("DELETE FROM falas")
+
+            # Deleta todas as atas
             cursor.execute("DELETE FROM atas")
             self.conn.commit()
             messagebox.showinfo("Sucesso", "Todas as atas e falas foram deletadas.")
