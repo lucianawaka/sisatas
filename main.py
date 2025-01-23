@@ -90,7 +90,7 @@ class MeetingManagerApp:
         botao_fala.pack(anchor="center", padx=5, pady=5)
 
         # Botão para listar atas
-        botao_listar_atas = ctk.CTkButton(self.root, text="Listar Atas", command=self.listar_atas)
+        botao_listar_atas = ctk.CTkButton(self.root, text="Listar Atas", command=self.listar_atas, fg_color="blue", hover_color="#00008B")
         botao_listar_atas.pack(side="top", padx=10, pady=5)
 
         self.atualizar_comboboxes()
