@@ -115,9 +115,22 @@ class MeetingManagerApp:
         secretarios = listar_secretarios(self.conn)
         self.combo_secretarios.configure(values=[s[1] for s in secretarios])
 
-        # Atualizar as atas
+        # Atualizar atas no ComboBox
         atas = listar_atas(self.conn)
-        self.combo_atas.configure(values=[a[1] + "- " + a[2] for a in atas])
+
+        # Ordenar as atas pelo ID em ordem decrescente
+        atas_ordenadas = sorted(atas, key=lambda x: x[0], reverse=True)
+
+        # Criar a lista formatada para exibição no ComboBox
+        valores_combo_atas = [f"{a[1]} - {a[2]}" for a in atas_ordenadas]
+
+        # Atualizar o ComboBox de atas com as atas ordenadas
+        self.combo_atas.configure(values=valores_combo_atas)
+
+        # Definir a primeira opção como "Selecione uma Ata"
+        self.combo_atas.set(valores_combo_atas[0])
+
+    # Adicionar secretaria
     def adicionar_secretaria(self):
         nome = self.entrada_secretaria.get().strip()
         if not nome:
