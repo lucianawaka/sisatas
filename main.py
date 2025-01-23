@@ -154,9 +154,6 @@ class MeetingManagerApp:
         secretario = self.combo_secretarios.get()
         fala = self.html_editor_fala.get("1.0", "end").strip()  # Captura o HTML do editor
         if ata and secretario and fala:
-            print(ata)
-            print(secretario)
-            print(fala)
             adicionar_fala(self.conn, ata, secretario, fala)
             self.html_editor_fala.set_html("")  # Reseta o editor
             messagebox.showinfo("Sucesso", "Fala adicionada!")
