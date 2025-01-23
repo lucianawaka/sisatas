@@ -86,7 +86,7 @@ class MeetingManagerApp:
 
         # Editor HTML para a fala
         self.html_editor_fala = HTMLScrolledText(frame_fala, html="", height=16, width=80)
-        self.html_editor_fala.pack(anchor="w", padx=5, pady=5)
+        self.html_editor_fala.pack(anchor="w", padx=5, pady=5,fill="both", expand=True)
 
         # Botão de Adicionar Fala
         botao_fala = ctk.CTkButton(frame_fala, text="Adicionar Fala", command=self.adicionar_fala, width=150)
@@ -113,9 +113,10 @@ class MeetingManagerApp:
         secretarias = listar_secretarias(self.conn)
         self.combo_secretarias.configure(values=[s[1] for s in secretarias])
 
-        # Atualizar os secretarios
+        # Atualizar secretários com nome e secretaria
         secretarios = listar_secretarios(self.conn)
-        self.combo_secretarios.configure(values=[s[1] for s in secretarios])
+        valores_combo_secretarios = [f"{s[1]} ({get_secretaria_by_secretario(self.conn, s[1])})" for s in secretarios]
+        self.combo_secretarios.configure(values=valores_combo_secretarios)
 
         # Atualizar atas no ComboBox
         atas = listar_atas(self.conn)
@@ -170,13 +171,17 @@ class MeetingManagerApp:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
     def adicionar_fala(self):
-        ata = self.combo_atas.get().split('-')[0]
-        secretario = self.combo_secretarios.get()
+        ata = self.combo_atas.get().split('-')[0].strip()  # Captura apenas a descrição da ata
+        secretario = self.combo_secretarios.get().split(' (')[0].strip()  # Captura apenas o nome do secretário
         fala = self.html_editor_fala.get("1.0", "end").strip()  # Captura o HTML do editor
+
         if ata and secretario and fala:
-            adicionar_fala(self.conn, ata, secretario, fala)
-            self.html_editor_fala.set_html("")  # Reseta o editor
-            messagebox.showinfo("Sucesso", "Fala adicionada!")
+            try:
+                adicionar_fala(self.conn, ata, secretario, fala)
+                self.html_editor_fala.set_html("")  # Reseta o editor
+                messagebox.showinfo("Sucesso", "Fala adicionada!")
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao adicionar fala: {e}")
         else:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
