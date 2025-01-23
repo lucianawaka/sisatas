@@ -18,13 +18,13 @@ pip install -r requirements.txt
 **Run terminal**
 
 ```
-python main.py
+python sisatas.py
 ```
 
 **Gerar .exe da aplicação no terminal**
 
 ```
-pyinstaller --onefile -w main.py
+pyinstaller --onefile -w sisatas.py
 
 ```
 
