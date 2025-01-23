@@ -3,3 +3,4 @@ pillow
 tkcalendar
 customtkinter
 tkinterhtml
+pyinstaller
