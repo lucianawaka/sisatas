@@ -58,33 +58,6 @@ class MeetingManagerApp:
         label_titulo = ctk.CTkLabel(frame_menu, text="Gerenciador de Atas", font=("Arial", 18, "bold"))
         label_titulo.pack(side="left", padx=10, pady=5)
 
-        # # Frame para cadastro de Secretaria
-        # frame_secretaria = ctk.CTkFrame(self.root)
-        # frame_secretaria.pack(fill="x", padx=10, pady=5)
-
-        # ctk.CTkLabel(frame_secretaria, text="Adicionar Secretaria").pack(side="left", padx=5, pady=5)
-
-        # self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Nome da Secretaria", width=200)
-        # self.entrada_secretaria.pack(side="left", padx=6, pady=5)
-
-        # botao_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria)
-        # botao_secretaria.pack(side="left", padx=5, pady=5)
-
-        # Frame para cadastro de Secretário
-        frame_secretario = ctk.CTkFrame(self.root)
-        frame_secretario.pack(fill="x", padx=10, pady=5)
-
-        ctk.CTkLabel(frame_secretario, text="Adicionar Secretário").pack(side="left", padx=5, pady=5)
-
-        self.entrada_secretario = ctk.CTkEntry(frame_secretario, placeholder_text="Nome do Secretário", width=200)
-        self.entrada_secretario.pack(side="left", padx=5, pady=5)
-
-        self.combo_secretarias = ctk.CTkComboBox(frame_secretario, values=['Selectione uma Secretaria'], width=200)
-        self.combo_secretarias.pack(side="left", padx=5, pady=5)
-
-        botao_secretario = ctk.CTkButton(frame_secretario, text="Adicionar", command=self.adicionar_secretario)
-        botao_secretario.pack(side="left", padx=5, pady=5)
-
         # Frame para cadastro de Ata
         frame_ata = ctk.CTkFrame(self.root)
         frame_ata.pack(fill="x", padx=10, pady=5)
@@ -139,35 +112,38 @@ class MeetingManagerApp:
             widget.destroy()
 
     def atualizar_comboboxes(self):
-        # Atualizar as secretarias
-        secretarias = listar_secretarias(self.conn)
-        self.combo_secretarias.configure(values=[s[1] for s in secretarias])
+        try:
+            # Atualizar as secretarias
+            secretarias = listar_secretarias(self.conn)
+            if hasattr(self, "combo_secretarias") and self.combo_secretarias.winfo_exists():
+                self.combo_secretarias.configure(values=[s[1] for s in secretarias])
 
-        # Atualizar secretários com nome e secretaria
-        secretarios = listar_secretarios(self.conn)
-        valores_combo_secretarios = [
-            f"{s[1]} ({get_secretaria_by_secretario(self.conn, s[1])})" for s in secretarios
-        ]
-        self.combo_secretarios.configure(values=valores_combo_secretarios)
+            # Atualizar secretários com nome e secretaria
+            secretarios = listar_secretarios(self.conn)
+            valores_combo_secretarios = [
+                f"{s[1]} ({get_secretaria_by_secretario(self.conn, s[1])})" for s in secretarios
+            ]
+            if hasattr(self, "combo_secretarios") and self.combo_secretarios.winfo_exists():
+                self.combo_secretarios.configure(values=valores_combo_secretarios)
+            # Atualizar atas no ComboBox
+            atas = listar_atas(self.conn)
 
-        # Atualizar atas no ComboBox
-        atas = listar_atas(self.conn)
+            # Ordenar as atas pelo ID em ordem decrescente
+            atas_ordenadas = sorted(atas, key=lambda x: x[0], reverse=True)
 
-        # Ordenar as atas pelo ID em ordem decrescente
-        atas_ordenadas = sorted(atas, key=lambda x: x[0], reverse=True)
+            # Criar a lista formatada para exibição no ComboBox
+            valores_combo_atas = [f"{a[1]} - {a[2]}" for a in atas_ordenadas]
 
-        # Criar a lista formatada para exibição no ComboBox
-        valores_combo_atas = [f"{a[1]} - {a[2]}" for a in atas_ordenadas]
+            # Atualizar as opções disponíveis no ComboBox
+            self.combo_atas.configure(values=valores_combo_atas)
 
-        # Atualizar as opções disponíveis no ComboBox
-        self.combo_atas.configure(values=valores_combo_atas)
-
-        # Definir a primeira opção como valor selecionado ou um padrão
-        if valores_combo_atas:
-            self.combo_atas.set(valores_combo_atas[0])  # Selecionar o primeiro valor
-        else:
-            self.combo_atas.set("Selecione uma Ata")  # Valor padrão caso a lista esteja vazia
-
+            # Definir a primeira opção como valor selecionado ou um padrão
+            if valores_combo_atas:
+                self.combo_atas.set(valores_combo_atas[0])  # Selecionar o primeiro valor
+            else:
+                self.combo_atas.set("Selecione uma Ata")  # Valor padrão caso a lista esteja vazia
+        except Exception as e:
+            print(f"Erro ao atualizar comboboxes: {e}")
 
     # Função para realizar backup
     def realizar_backup(self):
@@ -240,10 +216,13 @@ class MeetingManagerApp:
         nome = self.entrada_secretario.get()
         secretaria = self.combo_secretarias.get()
         if nome and secretaria:
-            adicionar_secretario(self.conn, nome, secretaria)
-            self.entrada_secretario.delete(0, ctk.END)
-            self.atualizar_comboboxes()
-            messagebox.showinfo("Sucesso", "Secretário adicionado!")
+            try:
+                adicionar_secretario(self.conn, nome, secretaria)
+                self.entrada_secretario.delete(0, ctk.END)
+                self.atualizar_comboboxes()
+                messagebox.showinfo("Sucesso", "Secretário adicionado com sucesso!")
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao adicionar secretário: {e}")
         else:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
@@ -286,14 +265,39 @@ class MeetingManagerApp:
 
 
     def menu_secretario(self):
-        pass
+        self.clear_content_frame()
+
+        # Botão de voltar
+        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu)
+        botao_voltar.pack(anchor="nw", padx=10, pady=10)
+
+        # Título do menu
+        ctk.CTkLabel(self.root, text="Adicionar Secretário", font=("Arial", 16, "bold")).pack(pady=10)
+
+        # Frame para cadastro de Secretário
+        frame_secretario = ctk.CTkFrame(self.root)
+        frame_secretario.pack(fill="x", padx=10, pady=5)
+
+        ctk.CTkLabel(frame_secretario, text="Nome do Secretário:").pack(side="left", padx=5, pady=5)
+
+        self.entrada_secretario = ctk.CTkEntry(frame_secretario, placeholder_text="Digite o nome", width=300)
+        self.entrada_secretario.pack(side="left", padx=5, pady=5)
+
+        self.combo_secretarias = ctk.CTkComboBox(frame_secretario, values=['Selecione uma Secretaria'], width=300)
+        self.combo_secretarias.pack(side="left", padx=5, pady=5)
+
+        botao_adicionar_secretario = ctk.CTkButton(frame_secretario, text="Adicionar", command=self.adicionar_secretario, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
+        botao_adicionar_secretario.pack(side="left", padx=5, pady=5)
+
+        # Atualiza o combobox com as secretarias disponíveis
+        self.atualizar_comboboxes()
 
 
     def menu_secretaria(self):
         self.clear_content_frame()
 
         # Botão de voltar
-        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu, fg_color="#ff6347", hover_color="#ff4500", text_color="#FFFFFF")
+        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu)
         botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
         # Título do menu
@@ -305,7 +309,7 @@ class MeetingManagerApp:
 
         ctk.CTkLabel(frame_secretaria, text="Nome da Secretaria:").pack(side="left", padx=5, pady=5)
 
-        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Digite o nome", width=200)
+        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Digite o nome", width=300)
         self.entrada_secretaria.pack(side="left", padx=5, pady=5)
 
         botao_adicionar_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
