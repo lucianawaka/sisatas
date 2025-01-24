@@ -35,11 +35,11 @@ class MeetingManagerApp:
         frame_menu.pack(fill="x", padx=10, pady=5)
 
         # Botão de Backup
-        botao_backup = ctk.CTkButton(frame_menu, text="Backup", command=self.realizar_backup, width=100)
+        botao_backup = ctk.CTkButton(frame_menu, text="Backup", command=self.realizar_backup, width=100,fg_color="#1E90FF", hover_color="#4682B4", text_color="#000000")
         botao_backup.pack(side="right", padx=5, pady=5)
 
         # Botão de Carregar Backup
-        botao_carregar_backup = ctk.CTkButton(frame_menu, text="Carregar Backup", command=self.carregar_backup, width=150)
+        botao_carregar_backup = ctk.CTkButton(frame_menu, text="Carregar Backup", command=self.carregar_backup, width=150, fg_color="#FFD700", hover_color="#FFC107", text_color="#000000")
         botao_carregar_backup.pack(side="right", padx=5, pady=5)
 
         # Label para o título do aplicativo
