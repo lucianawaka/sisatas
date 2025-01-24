@@ -35,28 +35,40 @@ class MeetingManagerApp:
         frame_menu.pack(fill="x", padx=10, pady=5)
 
         # Botão de Backup
-        botao_backup = ctk.CTkButton(frame_menu, text="Backup", command=self.realizar_backup, width=100,fg_color="#1E90FF", hover_color="#4682B4", text_color="#000000")
+        botao_backup = ctk.CTkButton(frame_menu, text="Backup", command=self.realizar_backup, width=100,fg_color="#dc3545", hover_color="#a71d2a", text_color="#FFFFFF")
         botao_backup.pack(side="right", padx=5, pady=5)
 
         # Botão de Carregar Backup
-        botao_carregar_backup = ctk.CTkButton(frame_menu, text="Carregar Backup", command=self.carregar_backup, width=150, fg_color="#FFD700", hover_color="#FFC107", text_color="#000000")
+        botao_carregar_backup = ctk.CTkButton(frame_menu, text="Carregar Backup", command=self.carregar_backup, width=150, fg_color="#6f42c1", hover_color="#4e2a8e", text_color="#FFFFFF")
         botao_carregar_backup.pack(side="right", padx=5, pady=5)
+
+        # Botão de Carregar Menu da Secretario
+        botao_secretario_menu = ctk.CTkButton(frame_menu, text="Adicionar Secretario", command=self.menu_secretario, width=150, fg_color="#fd7e14", hover_color="#e56406", text_color="#FFFFFF")
+        botao_secretario_menu.pack(side="right", padx=5, pady=5)
+
+        # Botão de Carregar Menu da Secretaria
+        botao_secretaria_menu = ctk.CTkButton(frame_menu, text="Adicionar Secretaria", command=self.menu_secretaria, width=150, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
+        botao_secretaria_menu.pack(side="right", padx=5, pady=5)
+
+        # Botão de Carregar Backup
+        botao_listar_atas = ctk.CTkButton(frame_menu, text="Listar Atas", command=self.listar_atas, width=150, fg_color="#007BFF", hover_color="#0056b3", text_color="#FFFFFF")
+        botao_listar_atas.pack(side="right", padx=5, pady=5)
 
         # Label para o título do aplicativo
         label_titulo = ctk.CTkLabel(frame_menu, text="Gerenciador de Atas", font=("Arial", 18, "bold"))
         label_titulo.pack(side="left", padx=10, pady=5)
 
-        # Frame para cadastro de Secretaria
-        frame_secretaria = ctk.CTkFrame(self.root)
-        frame_secretaria.pack(fill="x", padx=10, pady=5)
+        # # Frame para cadastro de Secretaria
+        # frame_secretaria = ctk.CTkFrame(self.root)
+        # frame_secretaria.pack(fill="x", padx=10, pady=5)
 
-        ctk.CTkLabel(frame_secretaria, text="Adicionar Secretaria").pack(side="left", padx=5, pady=5)
+        # ctk.CTkLabel(frame_secretaria, text="Adicionar Secretaria").pack(side="left", padx=5, pady=5)
 
-        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Nome da Secretaria", width=200)
-        self.entrada_secretaria.pack(side="left", padx=6, pady=5)
+        # self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Nome da Secretaria", width=200)
+        # self.entrada_secretaria.pack(side="left", padx=6, pady=5)
 
-        botao_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria)
-        botao_secretaria.pack(side="left", padx=5, pady=5)
+        # botao_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria)
+        # botao_secretaria.pack(side="left", padx=5, pady=5)
 
         # Frame para cadastro de Secretário
         frame_secretario = ctk.CTkFrame(self.root)
@@ -112,9 +124,7 @@ class MeetingManagerApp:
         botao_fala = ctk.CTkButton(frame_fala, text="Adicionar Fala", command=self.adicionar_fala, width=150)
         botao_fala.pack(anchor="center", padx=5, pady=5)
 
-        # Botão para listar atas
-        botao_listar_atas = ctk.CTkButton(self.root, text="Listar Atas", command=self.listar_atas, fg_color="blue", hover_color="#00008B")
-        botao_listar_atas.pack(side="top", padx=10, pady=5)
+
 
         self.atualizar_comboboxes()
 
@@ -220,10 +230,10 @@ class MeetingManagerApp:
         try:
             adicionar_secretaria(self.conn, nome)
             self.entrada_secretaria.delete(0, ctk.END)
-            self.atualizar_comboboxes()
             messagebox.showinfo("Sucesso", "Secretaria adicionada com sucesso!")
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao adicionar secretaria: {e}")
+
 
 
     def adicionar_secretario(self):
@@ -273,6 +283,33 @@ class MeetingManagerApp:
         text_widget.pack(fill="both", expand=True)
         button_close = tk.Button(popup, text="Fechar", command=popup.destroy)
         button_close.pack()
+
+
+    def menu_secretario(self):
+        pass
+
+
+    def menu_secretaria(self):
+        self.clear_content_frame()
+
+        # Botão de voltar
+        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu, fg_color="#ff6347", hover_color="#ff4500", text_color="#FFFFFF")
+        botao_voltar.pack(anchor="nw", padx=10, pady=10)
+
+        # Título do menu
+        ctk.CTkLabel(self.root, text="Adicionar Secretaria", font=("Arial", 16, "bold")).pack(pady=10)
+
+        # Frame para cadastro de Secretaria
+        frame_secretaria = ctk.CTkFrame(self.root)
+        frame_secretaria.pack(fill="x", padx=10, pady=5)
+
+        ctk.CTkLabel(frame_secretaria, text="Nome da Secretaria:").pack(side="left", padx=5, pady=5)
+
+        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Digite o nome", width=200)
+        self.entrada_secretaria.pack(side="left", padx=5, pady=5)
+
+        botao_adicionar_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
+        botao_adicionar_secretaria.pack(side="left", padx=5, pady=5)
 
     def listar_atas(self):
             self.clear_content_frame()
