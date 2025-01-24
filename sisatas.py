@@ -2,6 +2,9 @@ import customtkinter as ctk
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+from tkinter.filedialog import askdirectory, askopenfilename
+import shutil
+from datetime import datetime
 from tkinter import Toplevel
 from tkhtmlview import HTMLLabel, HTMLScrolledText
 from tkcalendar import DateEntry
@@ -26,6 +29,23 @@ class MeetingManagerApp:
 
 
     def setup_ui(self):
+
+        # Frame para o menu horizontal
+        frame_menu = ctk.CTkFrame(self.root, height=50)
+        frame_menu.pack(fill="x", padx=10, pady=5)
+
+        # Botão de Backup
+        botao_backup = ctk.CTkButton(frame_menu, text="Backup", command=self.realizar_backup, width=100)
+        botao_backup.pack(side="right", padx=5, pady=5)
+
+        # Botão de Carregar Backup
+        botao_carregar_backup = ctk.CTkButton(frame_menu, text="Carregar Backup", command=self.carregar_backup, width=150)
+        botao_carregar_backup.pack(side="right", padx=5, pady=5)
+
+        # Label para o título do aplicativo
+        label_titulo = ctk.CTkLabel(frame_menu, text="Gerenciador de Atas", font=("Arial", 18, "bold"))
+        label_titulo.pack(side="left", padx=10, pady=5)
+
         # Frame para cadastro de Secretaria
         frame_secretaria = ctk.CTkFrame(self.root)
         frame_secretaria.pack(fill="x", padx=10, pady=5)
@@ -138,6 +158,58 @@ class MeetingManagerApp:
         else:
             self.combo_atas.set("Selecione uma Ata")  # Valor padrão caso a lista esteja vazia
 
+
+    # Função para realizar backup
+    def realizar_backup(self):
+        try:
+            # Abrir janela para o usuário selecionar a pasta
+            pasta_selecionada = askdirectory(title="Selecione a pasta para salvar o backup")
+            
+            if not pasta_selecionada:
+                # Caso o usuário cancele a seleção
+                messagebox.showwarning("Backup", "Nenhuma pasta foi selecionada.")
+                return
+
+            # Gerar nome do arquivo de backup com data e hora
+            nome_backup = f"backup_atas_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
+
+            # Caminho completo para salvar o backup
+            caminho_backup = f"{pasta_selecionada}/{nome_backup}"
+
+            # Criar backup do banco de dados
+            shutil.copy("banco_de_dados_atas.db", caminho_backup)
+            messagebox.showinfo("Backup", f"Backup realizado com sucesso em: {caminho_backup}")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao realizar backup: {e}")
+
+
+    # Carregar o Backup
+    def carregar_backup(self):
+        try:
+            # Abrir janela para o usuário selecionar o arquivo de backup
+            arquivo_backup = askopenfilename(
+                title="Selecione o arquivo de backup",
+                filetypes=[("Banco de Dados", "*.db"), ("Todos os Arquivos", "*.*")]
+            )
+
+            if not arquivo_backup:
+                # Caso o usuário cancele a seleção
+                messagebox.showwarning("Carregar Backup", "Nenhum arquivo de backup foi selecionado.")
+                return
+
+            # Substituir o banco de dados principal pelo arquivo de backup
+            caminho_principal = "database/banco_de_dados_atas.db"
+            shutil.copy(arquivo_backup, caminho_principal)
+
+            # Reiniciar a conexão para garantir que os dados sejam atualizados
+            self.conn.close()
+            self.conn = get_connection()
+
+            # Atualizar a interface com os novos dados
+            self.atualizar_comboboxes()
+            messagebox.showinfo("Carregar Backup", "Backup carregado com sucesso! O sistema foi atualizado com os dados do backup.")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar backup: {e}")
 
     # Adicionar secretaria
     def adicionar_secretaria(self):
