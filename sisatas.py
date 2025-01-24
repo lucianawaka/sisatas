@@ -198,7 +198,7 @@ class MeetingManagerApp:
                 return
 
             # Substituir o banco de dados principal pelo arquivo de backup
-            caminho_principal = "database/banco_de_dados_atas.db"
+            caminho_principal = "banco_de_dados_atas.db"
             shutil.copy(arquivo_backup, caminho_principal)
 
             # Reiniciar a conexão para garantir que os dados sejam atualizados
