@@ -12,7 +12,7 @@ from database.connection import get_connection
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria, get_secretaria_por_id, atualizar_secretaria
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
-from controllers.ata import adicionar_ata, listar_atas
+from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades
 
 class MeetingManagerApp:
@@ -596,42 +596,66 @@ class MeetingManagerApp:
 
 
     def listar_atas(self):
-            self.clear_content_frame()
+        self.clear_content_frame()
 
-            # Botão de voltar
-            botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=lambda: self.return_to_main_menu())
-            botao_voltar.pack(anchor="nw", padx=10, pady=10)
+        # Botão de voltar
+        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=lambda: self.return_to_main_menu())
+        botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
-            # Criar o botão "Limpar Falas"
-            botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: self.limpar_todas_as_entidades(), fg_color="red", hover_color="orange")
-            botao_limpar.pack(pady=10)
+        # Criar o botão "Limpar Falas"
+        botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: self.limpar_todas_as_entidades(), fg_color="red", hover_color="orange")
+        botao_limpar.pack(pady=10)
 
-            # Título
-            ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
+        # Campo de busca
+        frame_busca = ctk.CTkFrame(self.root)
+        frame_busca.pack(fill="x", padx=10, pady=10)
 
-            # Frame para encapsular o Treeview e a Scrollbar
-            frame_lista_atas = ctk.CTkFrame(self.root)
-            frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=10)
+        label_busca = ctk.CTkLabel(frame_busca, text="Buscar Ata:")
+        label_busca.pack(side="left", padx=5)
 
-            # Criar o Treeview
-            lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
-            lista_atas.heading("#0", text="Ata (Descrição - Data)")
-            lista_atas.heading("Secretário", text="Secretário / Secretaria")
-            lista_atas.heading("Fala", text="Fala")
-            lista_atas.column("#0", width=250)
-            lista_atas.column("Secretário", width=200)
-            lista_atas.column("Fala", width=400)
+        campo_busca = ctk.CTkEntry(frame_busca)
+        campo_busca.pack(side="left", fill="x", expand=True, padx=5)
 
-            # Adicionar Scrollbar vertical
-            scrollbar_vertical = ttk.Scrollbar(frame_lista_atas, orient="vertical", command=lista_atas.yview)
-            lista_atas.configure(yscrollcommand=scrollbar_vertical.set)
+        botao_busca = ctk.CTkButton(frame_busca, text="Buscar", command=lambda: atualizar_lista(campo_busca.get()))
+        botao_busca.pack(side="left", padx=5)
 
-            # Posicionar o Treeview e a Scrollbar
-            lista_atas.pack(side="left", fill="both", expand=True)
-            scrollbar_vertical.pack(side="right", fill="y")
+        # Título
+        ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
 
-            # Obter dados das atas e falas
-            atas = listar_atas(self.conn)
+        # Frame para encapsular o Treeview e a Scrollbar
+        frame_lista_atas = ctk.CTkFrame(self.root)
+        frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Criar o Treeview
+        lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
+        lista_atas.heading("#0", text="Ata (Descrição - Data)")
+        lista_atas.heading("Secretário", text="Secretário / Secretaria")
+        lista_atas.heading("Fala", text="Fala")
+        lista_atas.column("#0", width=250)
+        lista_atas.column("Secretário", width=200)
+        lista_atas.column("Fala", width=400)
+
+        # Adicionar Scrollbar vertical
+        scrollbar_vertical = ttk.Scrollbar(frame_lista_atas, orient="vertical", command=lista_atas.yview)
+        lista_atas.configure(yscrollcommand=scrollbar_vertical.set)
+
+        # Posicionar o Treeview e a Scrollbar
+        lista_atas.pack(side="left", fill="both", expand=True)
+        scrollbar_vertical.pack(side="right", fill="y")
+
+        # Função para atualizar a lista de atas
+        def atualizar_lista(filtro):
+            # Limpar o Treeview
+            for item in lista_atas.get_children():
+                lista_atas.delete(item)
+
+            # Obter atas (todas ou filtradas)
+            if filtro.strip():
+                atas = buscar_atas_por_descricao(self.conn, filtro)
+            else:
+                atas = listar_atas(self.conn)
+
+            # Atualizar Treeview com atas filtradas
             dados_atas = {}
             for ata in atas:
                 numero_ata = ata[0]
@@ -654,16 +678,21 @@ class MeetingManagerApp:
                 for secretario_completo, fala in falas:
                     lista_atas.insert(item_ata, "end", values=(secretario_completo, fala))
 
-            # Função para capturar a fala selecionada e mostrar no popup
-            def on_double_click(event):
-                selected_item = lista_atas.selection()
-                if selected_item:
-                    # Obtém o texto da fala da coluna correspondente
-                    fala = lista_atas.item(selected_item[0], "values")[1]
-                    self.show_fala_popup(fala)
+        # Inicializar a lista de atas
+        atualizar_lista("")
 
-            # Associar o evento de clique duplo ao Treeview
-            lista_atas.bind("<Double-1>", on_double_click)
+        # Função para capturar a fala selecionada e mostrar no popup
+        def on_double_click(event):
+            selected_item = lista_atas.selection()
+            if selected_item:
+                # Obtém o texto da fala da coluna correspondente
+                fala = lista_atas.item(selected_item[0], "values")
+                if fala:
+                    self.show_fala_popup(fala[1])  # Pega a coluna da fala
+
+        # Associar o evento de clique duplo ao Treeview
+        lista_atas.bind("<Double-1>", on_double_click)
+
 
     # Função para limpar todas as atas e falas
     def limpar_todas_as_entidades(self):

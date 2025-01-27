@@ -17,3 +17,12 @@ def listar_falas_por_ata(conn, ata_id):
         """,
         (ata_id,),
     ).fetchall()
+def buscar_atas_por_descricao(conn, descricao_parcial):
+    """Busca atas que contenham a descrição informada."""
+    cursor = conn.cursor()
+    query = """
+        SELECT id, descricao, data
+        FROM atas
+        WHERE descricao LIKE ?
+    """
+    return cursor.execute(query, (f"%{descricao_parcial}%",)).fetchall()
