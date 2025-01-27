@@ -26,3 +26,14 @@ def buscar_atas_por_descricao(conn, descricao_parcial):
         WHERE descricao LIKE ?
     """
     return cursor.execute(query, (f"%{descricao_parcial}%",)).fetchall()
+def deletar_ata(conn, ata_id):
+    """Deleta uma ata específica e todas as falas associadas a ela."""
+    cursor = conn.cursor()
+
+    # Deleta todas as falas associadas à ata
+    cursor.execute("DELETE FROM falas WHERE ata_id = ?", (ata_id,))
+
+    # Deleta a ata
+    cursor.execute("DELETE FROM atas WHERE id = ?", (ata_id,))
+
+    conn.commit()
