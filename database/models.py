@@ -8,9 +8,10 @@ def create_tables(conn):
     ''')
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS secretarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
         secretaria_id INTEGER,
+        ativo BOOLEAN NOT NULL DEFAULT 1, -- Flag para indicar se o secretário está ativo ou não
         FOREIGN KEY (secretaria_id) REFERENCES secretarias (id)
     )
     ''')
