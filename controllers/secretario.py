@@ -63,3 +63,34 @@ def desativar_secretario(conn, secretario_id):
     cursor = conn.cursor()
     cursor.execute("UPDATE secretarios SET ativo = 0 WHERE id = ?", (secretario_id,))
     conn.commit()
+
+
+def editar_secretario(conn, secretario_id, novo_nome, nova_secretaria_nome):
+    cursor = conn.cursor()
+    # Busca o ID da nova secretaria pelo nome
+    cursor.execute("SELECT id FROM secretarias WHERE nome = ?", (nova_secretaria_nome,))
+    nova_secretaria_id = cursor.fetchone()
+    if nova_secretaria_id:
+        # Atualiza os dados do secretário
+        cursor.execute(
+            "UPDATE secretarios SET nome = ?, secretaria_id = ? WHERE id = ?",
+            (novo_nome, nova_secretaria_id[0], secretario_id),
+        )
+        conn.commit()
+    else:
+        raise ValueError("Secretaria não encontrada.")
+    
+def get_secretario_por_id(conn, secretario_id):
+    """
+    Retorna os dados do secretário (nome e secretaria) pelo ID.
+    """
+    cursor = conn.cursor()
+    query = """
+        SELECT secretarios.nome, secretarias.nome
+        FROM secretarios
+        INNER JOIN secretarias ON secretarios.secretaria_id = secretarias.id
+        WHERE secretarios.id = ?
+    """
+    cursor.execute(query, (secretario_id,))
+    return cursor.fetchone()
+

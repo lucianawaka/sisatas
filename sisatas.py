@@ -11,7 +11,7 @@ from tkcalendar import DateEntry
 from database.connection import get_connection
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
-from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario
+from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
 from controllers.ata import adicionar_ata, listar_atas
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades
 
@@ -260,6 +260,9 @@ class MeetingManagerApp:
             ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
             ctk.CTkLabel(frame, text=status).pack(side="left", padx=5)
 
+            botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda s_id=secretario[0]: self.editar_secretario(s_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
+            botao_editar.pack(side="right", padx=5)
+
             if secretario[3] == 1:
                 botao = ctk.CTkButton(frame, text="Desativar", command=lambda s_id=secretario[0]: self.desativar_secretario(s_id), fg_color="#ffa500", hover_color="#cc8400", text_color="#FFFFFF")
             else:
@@ -282,6 +285,77 @@ class MeetingManagerApp:
             messagebox.showinfo("Sucesso", "Secretário desativado!")
         except Exception as e:
             messagebox.showerror("Erro", str(e))
+
+    def get_lista_secretarias(self):
+        """
+        Retorna uma lista com os nomes das secretarias disponíveis no banco de dados.
+        """
+        try:
+            # Obtém as secretarias usando a função listar_secretarias do controller
+            secretarias = listar_secretarias(self.conn)
+            return [s[1] for s in secretarias]  # Retorna apenas os nomes das secretarias
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar secretarias: {e}")
+            return []
+
+    def editar_secretario(self, secretario_id):
+        # Cria uma nova janela para edição
+        janela_edicao = ctk.CTkToplevel(self.root)
+        janela_edicao.title("Editar Secretário")
+        janela_edicao.geometry("400x300")
+        janela_edicao.grab_set()
+
+        # Obtém os dados atuais do secretário
+        secretario_atual = get_secretario_por_id(self.conn, secretario_id)
+        if not secretario_atual:
+            messagebox.showerror("Erro", "Secretário não encontrado.")
+            janela_edicao.destroy()
+            return
+
+        nome_atual, secretaria_atual = secretario_atual
+
+        ctk.CTkLabel(janela_edicao, text="Nome do Secretário:").pack(pady=10)
+        entrada_nome = ctk.CTkEntry(janela_edicao, width=300)
+        entrada_nome.insert(0, nome_atual)
+        entrada_nome.pack(pady=10)
+
+        ctk.CTkLabel(janela_edicao, text="Secretaria:").pack(pady=10)
+        combo_secretarias = ctk.CTkComboBox(janela_edicao, values=self.get_lista_secretarias(), width=300)
+        combo_secretarias.set(secretaria_atual)
+        combo_secretarias.pack(pady=10)
+
+        def salvar_edicao():
+            novo_nome = entrada_nome.get().strip()
+            nova_secretaria = combo_secretarias.get().strip()
+            if not novo_nome or not nova_secretaria:
+                messagebox.showerror("Erro", "Todos os campos devem ser preenchidos.")
+                return
+            try:
+                editar_secretario(self.conn, secretario_id, novo_nome, nova_secretaria)
+                self.atualizar_lista_secretarios()
+                messagebox.showinfo("Sucesso", "Dados do secretário atualizados com sucesso!")
+                janela_edicao.destroy()
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao editar secretário: {e}")
+
+        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=20)
+
+
+        def salvar_edicao():
+            novo_nome = entrada_nome.get().strip()
+            nova_secretaria = combo_secretarias.get().strip()
+            if not novo_nome or not nova_secretaria:
+                messagebox.showerror("Erro", "Todos os campos devem ser preenchidos.")
+                return
+            try:
+                editar_secretario(self.conn, secretario_id, novo_nome, nova_secretaria)
+                self.atualizar_lista_secretarios()
+                messagebox.showinfo("Sucesso", "Dados do secretário atualizados com sucesso!")
+                janela_edicao.destroy()
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao editar secretário: {e}")
+
+        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=20)
 
 # Secretário fim
 
@@ -322,7 +396,7 @@ class MeetingManagerApp:
         button_close = tk.Button(popup, text="Fechar", command=popup.destroy)
         button_close.pack()
 
-
+    # Menu secretário Início
     def menu_secretario(self):
         self.clear_content_frame()
 
@@ -359,6 +433,7 @@ class MeetingManagerApp:
         self.lista_secretarios.pack(fill="both", expand=True)
 
         self.atualizar_lista_secretarios()
+        # Menu secretario fim
 
     # Menu Secretaria
     def menu_secretaria(self):
