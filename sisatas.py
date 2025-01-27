@@ -242,9 +242,9 @@ class MeetingManagerApp:
             ctk.CTkLabel(frame, text=status).pack(side="left", padx=5)
 
             if secretario[3] == 1:
-                botao = ctk.CTkButton(frame, text="Desativar", command=lambda s_id=secretario[0]: self.desativar_secretario(s_id), hover_color="#a71d2a", text_color="#FFFFFF")
+                botao = ctk.CTkButton(frame, text="Desativar", command=lambda s_id=secretario[0]: self.desativar_secretario(s_id), fg_color="#ffa500", hover_color="#cc8400", text_color="#FFFFFF")
             else:
-                botao = ctk.CTkButton(frame, text="Ativar", command=lambda s_id=secretario[0]: self.ativar_secretario(s_id))
+                botao = ctk.CTkButton(frame, text="Ativar", command=lambda s_id=secretario[0]: self.ativar_secretario(s_id), fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
 
             botao.pack(side="right", padx=5)
 
