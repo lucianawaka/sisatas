@@ -10,7 +10,7 @@ from tkhtmlview import HTMLLabel, HTMLScrolledText
 from tkcalendar import DateEntry
 from database.connection import get_connection
 from database.models import create_tables
-from controllers.secretaria import adicionar_secretaria, listar_secretarias
+from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
 from controllers.ata import adicionar_ata, listar_atas
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades
@@ -227,6 +227,64 @@ class MeetingManagerApp:
 
             ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
 
+            botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
+            botao_deletar.pack(side="right", padx=5)
+
+            botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
+            botao_editar.pack(side="right", padx=5)
+
+
+
+    def editar_secretaria(self, secretaria_id):
+        # Cria uma nova janela para edição
+        janela_edicao = ctk.CTkToplevel(self.root)
+        janela_edicao.title("Editar Secretaria")
+        janela_edicao.geometry("400x200")
+        janela_edicao.grab_set()
+
+        # Obtém o nome atual da secretaria
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT nome FROM secretarias WHERE id = ?", (secretaria_id,))
+        secretaria_atual = cursor.fetchone()
+
+        if not secretaria_atual:
+            messagebox.showerror("Erro", "Secretaria não encontrada.")
+            janela_edicao.destroy()
+            return
+
+        nome_atual = secretaria_atual[0]
+
+        ctk.CTkLabel(janela_edicao, text="Nome da Secretaria:").pack(pady=10)
+        entrada_nome = ctk.CTkEntry(janela_edicao, width=300)
+        entrada_nome.insert(0, nome_atual)
+        entrada_nome.pack(pady=10)
+
+        def salvar_edicao():
+            novo_nome = entrada_nome.get().strip()
+            if not novo_nome:
+                messagebox.showerror("Erro", "O nome da secretaria não pode estar vazio.")
+                return
+            try:
+                cursor.execute("UPDATE secretarias SET nome = ? WHERE id = ?", (novo_nome, secretaria_id))
+                self.conn.commit()
+                self.atualizar_lista_secretarias()
+                messagebox.showinfo("Sucesso", "Secretaria atualizada com sucesso!")
+                janela_edicao.destroy()
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao editar secretaria: {e}")
+
+        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=20)
+
+    def deletar_secretaria(self, secretaria_id):
+        resposta = messagebox.askyesno("Confirmação", "Tem certeza de que deseja deletar esta secretaria?")
+        if resposta:
+            try:
+                deletar_secretaria(self.conn, secretaria_id)
+                self.atualizar_lista_secretarias()
+                messagebox.showinfo("Sucesso", "Secretaria deletada com sucesso!")
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao deletar secretaria: {e}")
+
 
     # Secretaria FIM
 # Secretário
@@ -421,6 +479,9 @@ class MeetingManagerApp:
 
         botao_adicionar_secretario = ctk.CTkButton(frame_secretario, text="Adicionar", command=self.adicionar_secretario, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
         botao_adicionar_secretario.pack(side="left", padx=5, pady=5)
+        
+        # Título da listagem de secretários
+        ctk.CTkLabel(self.root, text="Secretarios", font=("Arial", 16, "bold")).pack(pady=10)
 
         # Atualiza o combobox com as secretarias disponíveis
         self.atualizar_comboboxes()
