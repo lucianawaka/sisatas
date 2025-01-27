@@ -10,7 +10,7 @@ from tkhtmlview import HTMLLabel, HTMLScrolledText
 from tkcalendar import DateEntry
 from database.connection import get_connection
 from database.models import create_tables
-from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria
+from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria, get_secretaria_por_id, atualizar_secretaria
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
 from controllers.ata import adicionar_ata, listar_atas
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades
@@ -227,13 +227,79 @@ class MeetingManagerApp:
 
             ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
 
+            botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
+            botao_editar.pack(side="right", padx=5)
+
+            botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
+            botao_deletar.pack(side="right", padx=5)
+
+
+    def menu_secretaria(self):
+        self.clear_content_frame()
+
+        # Botão de voltar
+        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu)
+        botao_voltar.pack(anchor="nw", padx=10, pady=10)
+
+        # Título do menu
+        ctk.CTkLabel(self.root, text="Adicionar Secretaria", font=("Arial", 16, "bold")).pack(pady=10)
+
+        # Frame para cadastro de Secretaria
+        frame_secretaria = ctk.CTkFrame(self.root)
+        frame_secretaria.pack(fill="x", padx=10, pady=5)
+
+        ctk.CTkLabel(frame_secretaria, text="Nome da Secretaria:").pack(side="left", padx=5, pady=5)
+
+        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Digite o nome", width=300)
+        self.entrada_secretaria.pack(side="left", padx=5, pady=5)
+
+        botao_adicionar_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
+        botao_adicionar_secretaria.pack(side="left", padx=5, pady=5)
+
+        # Título da listagem de secretarias
+        ctk.CTkLabel(self.root, text="Secretarias", font=("Arial", 16, "bold")).pack(pady=10)
+
+        # Frame para listagem de Secretarias
+        frame_lista_secretarias = ctk.CTkFrame(self.root)
+        frame_lista_secretarias.pack(fill="both", expand=True, padx=10, pady=5)
+
+        self.lista_secretarias = ctk.CTkScrollableFrame(frame_lista_secretarias, width=400, height=200)
+        self.lista_secretarias.pack(fill="both", expand=True)
+
+        self.atualizar_lista_secretarias()
+
+    def adicionar_secretaria(self):
+        nome = self.entrada_secretaria.get().strip()
+        if not nome:
+            messagebox.showerror("Erro", "O nome da secretaria não pode estar vazio.")
+            return
+        try:
+            adicionar_secretaria(self.conn, nome)
+            self.entrada_secretaria.delete(0, ctk.END)
+            self.atualizar_lista_secretarias()
+            messagebox.showinfo("Sucesso", "Secretaria adicionada com sucesso!")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao adicionar secretaria: {e}")
+
+    def atualizar_lista_secretarias(self):
+        for widget in self.lista_secretarias.winfo_children():
+            widget.destroy()
+
+        secretarias = listar_secretarias(self.conn)
+
+        for secretaria in secretarias:
+            frame = ctk.CTkFrame(self.lista_secretarias)
+            frame.pack(fill="x", padx=5, pady=5)
+
+            nome = f"{secretaria[1]}"
+
+            ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
+
             botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
             botao_deletar.pack(side="right", padx=5)
 
             botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
             botao_editar.pack(side="right", padx=5)
-
-
 
     def editar_secretaria(self, secretaria_id):
         # Cria uma nova janela para edição
@@ -242,17 +308,15 @@ class MeetingManagerApp:
         janela_edicao.geometry("400x200")
         janela_edicao.grab_set()
 
-        # Obtém o nome atual da secretaria
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT nome FROM secretarias WHERE id = ?", (secretaria_id,))
-        secretaria_atual = cursor.fetchone()
+        # Obtém o nome atual da secretaria do controller
+        secretaria_atual = get_secretaria_por_id(self.conn, secretaria_id)
 
         if not secretaria_atual:
             messagebox.showerror("Erro", "Secretaria não encontrada.")
             janela_edicao.destroy()
             return
 
-        nome_atual = secretaria_atual[0]
+        nome_atual = secretaria_atual["nome"]
 
         ctk.CTkLabel(janela_edicao, text="Nome da Secretaria:").pack(pady=10)
         entrada_nome = ctk.CTkEntry(janela_edicao, width=300)
@@ -265,8 +329,7 @@ class MeetingManagerApp:
                 messagebox.showerror("Erro", "O nome da secretaria não pode estar vazio.")
                 return
             try:
-                cursor.execute("UPDATE secretarias SET nome = ? WHERE id = ?", (novo_nome, secretaria_id))
-                self.conn.commit()
+                atualizar_secretaria(self.conn, secretaria_id, novo_nome)
                 self.atualizar_lista_secretarias()
                 messagebox.showinfo("Sucesso", "Secretaria atualizada com sucesso!")
                 janela_edicao.destroy()
