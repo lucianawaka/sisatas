@@ -35,11 +35,11 @@ class MeetingManagerApp:
         frame_menu.pack(fill="x", padx=10, pady=5)
 
         # Botão de Backup
-        botao_backup = ctk.CTkButton(frame_menu, text="Backup", command=self.realizar_backup, width=100,fg_color="#dc3545", hover_color="#a71d2a", text_color="#FFFFFF")
+        botao_backup = ctk.CTkButton(frame_menu, text="Exportar dados", command=self.realizar_backup, width=150,fg_color="#dc3545", hover_color="#a71d2a", text_color="#FFFFFF")
         botao_backup.pack(side="right", padx=5, pady=5)
 
-        # Botão de Carregar Backup
-        botao_carregar_backup = ctk.CTkButton(frame_menu, text="Carregar Backup", command=self.carregar_backup, width=150, fg_color="#6f42c1", hover_color="#4e2a8e", text_color="#FFFFFF")
+        # Botão de Importar dados
+        botao_carregar_backup = ctk.CTkButton(frame_menu, text="Importar dados", command=self.carregar_backup, width=150, fg_color="#6f42c1", hover_color="#4e2a8e", text_color="#FFFFFF")
         botao_carregar_backup.pack(side="right", padx=5, pady=5)
 
         # Botão de Carregar Menu da Secretario
@@ -50,7 +50,7 @@ class MeetingManagerApp:
         botao_secretaria_menu = ctk.CTkButton(frame_menu, text="Adicionar Secretaria", command=self.menu_secretaria, width=150, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
         botao_secretaria_menu.pack(side="right", padx=5, pady=5)
 
-        # Botão de Carregar Backup
+        # Botão de Listar Atas
         botao_listar_atas = ctk.CTkButton(frame_menu, text="Listar Atas", command=self.listar_atas, width=150, fg_color="#007BFF", hover_color="#0056b3", text_color="#FFFFFF")
         botao_listar_atas.pack(side="right", padx=5, pady=5)
 
@@ -149,11 +149,11 @@ class MeetingManagerApp:
     def realizar_backup(self):
         try:
             # Abrir janela para o usuário selecionar a pasta
-            pasta_selecionada = askdirectory(title="Selecione a pasta para salvar o backup")
+            pasta_selecionada = askdirectory(title="Selecione a pasta para salvar os dados")
             
             if not pasta_selecionada:
                 # Caso o usuário cancele a seleção
-                messagebox.showwarning("Backup", "Nenhuma pasta foi selecionada.")
+                messagebox.showwarning("Exportar dados", "Nenhuma pasta foi selecionada.")
                 return
 
             # Gerar nome do arquivo de backup com data e hora
@@ -164,7 +164,7 @@ class MeetingManagerApp:
 
             # Criar backup do banco de dados
             shutil.copy("banco_de_dados_atas.db", caminho_backup)
-            messagebox.showinfo("Backup", f"Backup realizado com sucesso em: {caminho_backup}")
+            messagebox.showinfo("Backup", f"Dados salvos com sucesso em: {caminho_backup}")
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao realizar backup: {e}")
 
@@ -180,7 +180,7 @@ class MeetingManagerApp:
 
             if not arquivo_backup:
                 # Caso o usuário cancele a seleção
-                messagebox.showwarning("Carregar Backup", "Nenhum arquivo de backup foi selecionado.")
+                messagebox.showwarning("Importar dados", "Nenhum arquivo de backup foi selecionado.")
                 return
 
             # Substituir o banco de dados principal pelo arquivo de backup
@@ -193,9 +193,9 @@ class MeetingManagerApp:
 
             # Atualizar a interface com os novos dados
             self.atualizar_comboboxes()
-            messagebox.showinfo("Carregar Backup", "Backup carregado com sucesso! O sistema foi atualizado com os dados do backup.")
+            messagebox.showinfo("Importar dados", "Backup carregado com sucesso! O sistema foi atualizado com os dados do backup.")
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao carregar backup: {e}")
+            messagebox.showerror("Erro", f"Erro ao Importar dados: {e}")
 
     # Adicionar secretaria
     def adicionar_secretaria(self):
