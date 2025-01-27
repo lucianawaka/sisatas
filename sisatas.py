@@ -11,7 +11,7 @@ from tkcalendar import DateEntry
 from database.connection import get_connection
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
-from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario
+from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario
 from controllers.ata import adicionar_ata, listar_atas
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades
 
@@ -43,7 +43,7 @@ class MeetingManagerApp:
         botao_carregar_backup.pack(side="right", padx=5, pady=5)
 
         # Botão de Carregar Menu da Secretario
-        botao_secretario_menu = ctk.CTkButton(frame_menu, text="Adicionar Secretario", command=self.menu_secretario, width=150, fg_color="#fd7e14", hover_color="#e56406", text_color="#FFFFFF")
+        botao_secretario_menu = ctk.CTkButton(frame_menu, text="Secretarios", command=self.menu_secretario, width=150, fg_color="#fd7e14", hover_color="#e56406", text_color="#FFFFFF")
         botao_secretario_menu.pack(side="right", padx=5, pady=5)
 
         # Botão de Carregar Menu da Secretaria
@@ -210,8 +210,7 @@ class MeetingManagerApp:
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao adicionar secretaria: {e}")
 
-
-
+# Secretário
     def adicionar_secretario(self):
         nome = self.entrada_secretario.get()
         secretaria = self.combo_secretarias.get()
@@ -219,12 +218,53 @@ class MeetingManagerApp:
             try:
                 adicionar_secretario(self.conn, nome, secretaria)
                 self.entrada_secretario.delete(0, ctk.END)
-                self.atualizar_comboboxes()
-                messagebox.showinfo("Sucesso", "Secretário adicionado com sucesso!")
+                self.atualizar_lista_secretarios()
+                messagebox.showinfo("Sucesso", "Secretário adicionado!")
             except Exception as e:
-                messagebox.showerror("Erro", f"Erro ao adicionar secretário: {e}")
+                messagebox.showerror("Erro", str(e))
         else:
             messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
+
+    def atualizar_lista_secretarios(self):
+        for widget in self.lista_secretarios.winfo_children():
+            widget.destroy()
+
+        secretarios = listar_secretarios(self.conn, incluir_inativos=True)
+
+        for secretario in secretarios:
+            frame = ctk.CTkFrame(self.lista_secretarios)
+            frame.pack(fill="x", padx=5, pady=5)
+
+            nome = f"{secretario[1]} ({secretario[2]})"
+            status = "Ativo" if secretario[3] == 1 else "Inativo"
+
+            ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
+            ctk.CTkLabel(frame, text=status).pack(side="left", padx=5)
+
+            if secretario[3] == 1:
+                botao = ctk.CTkButton(frame, text="Desativar", command=lambda s_id=secretario[0]: self.desativar_secretario(s_id), hover_color="#a71d2a", text_color="#FFFFFF")
+            else:
+                botao = ctk.CTkButton(frame, text="Ativar", command=lambda s_id=secretario[0]: self.ativar_secretario(s_id))
+
+            botao.pack(side="right", padx=5)
+
+    def ativar_secretario(self, secretario_id):
+        try:
+            ativar_secretario(self.conn, secretario_id)
+            self.atualizar_lista_secretarios()
+            messagebox.showinfo("Sucesso", "Secretário ativado!")
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+    def desativar_secretario(self, secretario_id):
+        try:
+            desativar_secretario(self.conn, secretario_id)
+            self.atualizar_lista_secretarios()
+            messagebox.showinfo("Sucesso", "Secretário desativado!")
+        except Exception as e:
+            messagebox.showerror("Erro", str(e))
+
+# Secretário fim
 
     def adicionar_ata(self):
         descricao = self.descricao_ata.get()
@@ -291,6 +331,15 @@ class MeetingManagerApp:
 
         # Atualiza o combobox com as secretarias disponíveis
         self.atualizar_comboboxes()
+
+        # Frame para listagem de secretários
+        frame_lista_secretarios = ctk.CTkFrame(self.root)
+        frame_lista_secretarios.pack(fill="both", expand=True, padx=10, pady=5)
+
+        self.lista_secretarios = ctk.CTkScrollableFrame(frame_lista_secretarios, width=400, height=200)
+        self.lista_secretarios.pack(fill="both", expand=True)
+
+        self.atualizar_lista_secretarios()
 
 
     def menu_secretaria(self):
