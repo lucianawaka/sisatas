@@ -8,7 +8,7 @@ from datetime import datetime
 from tkinter import Toplevel
 from tkhtmlview import HTMLLabel, HTMLScrolledText
 from tkcalendar import DateEntry
-from database.connection import get_connection, atualizar_banco
+from database.connection import get_connection
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario
@@ -18,8 +18,7 @@ from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_
 class MeetingManagerApp:
     def __init__(self, root):
         self.conn = get_connection()
-        atualizar_banco(self.conn)
-
+        #atualizar_banco(self.conn)
         self.root = root
         self.root.title("Gerenciador de Atas")
         self.root.geometry(f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0")
