@@ -11,6 +11,7 @@ def create_tables(conn):
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
         secretaria_id INTEGER,
+        ativo BOOLEAN NOT NULL DEFAULT 1, 
         FOREIGN KEY (secretaria_id) REFERENCES secretarias (id)
     )
     ''')
