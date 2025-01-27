@@ -8,7 +8,7 @@ from datetime import datetime
 from tkinter import Toplevel
 from tkhtmlview import HTMLLabel, HTMLScrolledText
 from tkcalendar import DateEntry
-from database.connection import get_connection
+from database.connection import get_connection, atualizar_banco
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario
@@ -18,6 +18,8 @@ from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_
 class MeetingManagerApp:
     def __init__(self, root):
         self.conn = get_connection()
+        atualizar_banco(self.conn)
+
         self.root = root
         self.root.title("Gerenciador de Atas")
         self.root.geometry(f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0")
@@ -47,7 +49,7 @@ class MeetingManagerApp:
         botao_secretario_menu.pack(side="right", padx=5, pady=5)
 
         # Botão de Carregar Menu da Secretaria
-        botao_secretaria_menu = ctk.CTkButton(frame_menu, text="Adicionar Secretaria", command=self.menu_secretaria, width=150, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
+        botao_secretaria_menu = ctk.CTkButton(frame_menu, text="Secretarias", command=self.menu_secretaria, width=150, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
         botao_secretaria_menu.pack(side="right", padx=5, pady=5)
 
         # Botão de Listar Atas
@@ -197,7 +199,8 @@ class MeetingManagerApp:
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao Importar dados: {e}")
 
-    # Adicionar secretaria
+    # Secretaria inicio 
+
     def adicionar_secretaria(self):
         nome = self.entrada_secretaria.get().strip()
         if not nome:
@@ -206,10 +209,27 @@ class MeetingManagerApp:
         try:
             adicionar_secretaria(self.conn, nome)
             self.entrada_secretaria.delete(0, ctk.END)
+            self.atualizar_lista_secretarias()
             messagebox.showinfo("Sucesso", "Secretaria adicionada com sucesso!")
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao adicionar secretaria: {e}")
 
+    def atualizar_lista_secretarias(self):
+        for widget in self.lista_secretarias.winfo_children():
+            widget.destroy()
+
+        secretarias = listar_secretarias(self.conn)
+
+        for secretaria in secretarias:
+            frame = ctk.CTkFrame(self.lista_secretarias)
+            frame.pack(fill="x", padx=5, pady=5)
+
+            nome = f"{secretaria[1]}"
+
+            ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
+
+
+    # Secretaria FIM
 # Secretário
     def adicionar_secretario(self):
         nome = self.entrada_secretario.get()
@@ -341,7 +361,7 @@ class MeetingManagerApp:
 
         self.atualizar_lista_secretarios()
 
-
+    # Menu Secretaria
     def menu_secretaria(self):
         self.clear_content_frame()
 
@@ -363,6 +383,19 @@ class MeetingManagerApp:
 
         botao_adicionar_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
         botao_adicionar_secretaria.pack(side="left", padx=5, pady=5)
+
+        # Título da listagem de secretarias
+        ctk.CTkLabel(self.root, text="Secretarias", font=("Arial", 16, "bold")).pack(pady=10)
+
+        # Frame para listagem de Secretarias
+        frame_lista_secretarias = ctk.CTkFrame(self.root)
+        frame_lista_secretarias.pack(fill="both", expand=True, padx=10, pady=5)
+
+        self.lista_secretarias = ctk.CTkScrollableFrame(frame_lista_secretarias, width=400, height=200)
+        self.lista_secretarias.pack(fill="both", expand=True)
+
+        self.atualizar_lista_secretarias()
+
 
     def listar_atas(self):
             self.clear_content_frame()
