@@ -61,3 +61,13 @@ def atualizar_fala(conn, fala_id, novo_texto):
     query = "UPDATE falas SET fala = ? WHERE id = ?"
     cursor.execute(query, (novo_texto, fala_id))
     conn.commit()
+def deletar_fala(conn, fala_id):
+    """
+    Deleta uma fala específica do banco de dados.
+    :param conn: Conexão com o banco de dados.
+    :param fala_id: ID da fala a ser deletada.
+    """
+    cursor = conn.cursor()
+    query = "DELETE FROM falas WHERE id = ?"
+    cursor.execute(query, (fala_id,))
+    conn.commit()
