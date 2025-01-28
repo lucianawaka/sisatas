@@ -757,6 +757,16 @@ class MeetingManagerApp:
             except Exception as e:
                 # Exibe uma mensagem de erro caso algo dê errado
                 self.show_error_message(f"Erro ao atualizar fala: {e}")
+        # Botão para deletar a fala
+        def deletar_fala_popup():
+            try:
+                # Confirmação de exclusão
+                if messagebox.askyesno("Confirmar Exclusão", "Tem certeza que deseja deletar esta fala?"):
+                    deletar_fala(self.conn, fala_id)  # Chama a função para deletar no banco
+                    popup.destroy()
+                    self.listar_atas()  # Atualiza a lista de atas
+            except Exception as e:
+                self.show_error_message(f"Erro ao deletar fala: {e}")
 
         # Botão para salvar
         botao_salvar = ctk.CTkButton(popup, text="Salvar", command=salvar_fala)
@@ -767,6 +777,9 @@ class MeetingManagerApp:
         botao_cancelar.pack(pady=10)
 
 
+        # Botão para deletar
+        botao_deletar = ctk.CTkButton(popup, text="Deletar", command=deletar_fala_popup, fg_color="red", hover_color="orange")
+        botao_deletar.pack(pady=10)
 
 
     # Função para limpar todas as atas e falas
