@@ -13,7 +13,7 @@ from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria, get_secretaria_por_id, atualizar_secretaria
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
 from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao
-from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades
+from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala
 
 class MeetingManagerApp:
     def __init__(self, root):

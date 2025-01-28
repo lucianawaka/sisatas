@@ -49,3 +49,15 @@ def limpar_todas_as_entidades(conn):
     cursor.execute("DELETE FROM atas")
 
     conn.commit()
+
+def atualizar_fala(conn, fala_id, novo_texto):
+    """
+    Atualiza o texto de uma fala no banco de dados.
+    :param conn: Conexão com o banco de dados.
+    :param fala_id: ID da fala a ser atualizada.
+    :param novo_texto: Novo texto da fala.
+    """
+    cursor = conn.cursor()
+    query = "UPDATE falas SET fala = ? WHERE id = ?"
+    cursor.execute(query, (novo_texto, fala_id))
+    conn.commit()
