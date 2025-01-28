@@ -594,6 +594,34 @@ class MeetingManagerApp:
 
         self.atualizar_lista_secretarias()
 
+    def show_success_message(self, message):
+        """
+        Exibe uma mensagem de sucesso em uma janela de pop-up.
+        :param message: Texto da mensagem.
+        """
+        popup = ctk.CTkToplevel(self.root)
+        popup.title("Sucesso")
+        popup.geometry("300x150")
+        label = ctk.CTkLabel(popup, text=message, wraplength=280, justify="center")
+        label.pack(pady=20)
+        botao_ok = ctk.CTkButton(popup, text="OK", command=popup.destroy)
+        botao_ok.pack(pady=10)
+
+
+    def show_error_message(self, message):
+        """
+        Exibe uma mensagem de erro em uma janela de pop-up.
+        :param message: Texto da mensagem.
+        """
+        popup = ctk.CTkToplevel(self.root)
+        popup.title("Erro")
+        popup.geometry("300x150")
+        label = ctk.CTkLabel(popup, text=message, wraplength=280, justify="center", fg_color="red")
+        label.pack(pady=20)
+        botao_ok = ctk.CTkButton(popup, text="OK", command=popup.destroy)
+        botao_ok.pack(pady=10)
+
+
 
     def listar_atas(self):
         self.clear_content_frame()
@@ -627,7 +655,7 @@ class MeetingManagerApp:
         frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Criar o Treeview
-        lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
+        lista_atas = ttk.Treeview(frame_lista_atas, columns=("Fala ID", "Secretário", "Fala"))
         lista_atas.heading("#0", text="Ata (Descrição - Data)")
         lista_atas.heading("Secretário", text="Secretário / Secretaria")
         lista_atas.heading("Fala", text="Fala")
@@ -667,16 +695,17 @@ class MeetingManagerApp:
                 # Obter falas vinculadas à ata
                 falas = listar_falas_por_ata(self.conn, numero_ata)
                 for fala in falas:
+                    fala_id = fala[0]
                     secretario_nome = fala[1]  # Nome do secretário
                     secretaria_nome = get_secretaria_by_secretario(self.conn, secretario_nome)
                     secretario_completo = f"{secretario_nome} ({secretaria_nome})"
-                    dados_atas[descricao_completa].append((secretario_completo, fala[2]))
+                    dados_atas[descricao_completa].append((fala_id, secretario_completo, fala[2]))
 
             # Inserir dados no Treeview
             for descricao_completa, falas in dados_atas.items():
                 item_ata = lista_atas.insert("", "end", text=f"{descricao_completa}")
-                for secretario_completo, fala in falas:
-                    lista_atas.insert(item_ata, "end", values=(secretario_completo, fala))
+                for fala_id, secretario_completo, fala_texto in falas:
+                    lista_atas.insert(item_ata, "end", values=(fala_id, secretario_completo, fala_texto))
 
         # Inicializar a lista de atas
         atualizar_lista("")
@@ -685,13 +714,61 @@ class MeetingManagerApp:
         def on_double_click(event):
             selected_item = lista_atas.selection()
             if selected_item:
-                # Obtém o texto da fala da coluna correspondente
-                fala = lista_atas.item(selected_item[0], "values")
-                if fala:
-                    self.show_fala_popup(fala[1])  # Pega a coluna da fala
+                fala_data = lista_atas.item(selected_item[0], "values")
+                if fala_data:
+                    fala_id = fala_data[0]  # ID da fala
+                    texto_atual = fala_data[2]  # Texto da fala
+                    self.show_fala_popup(fala_id, texto_atual)
 
         # Associar o evento de clique duplo ao Treeview
         lista_atas.bind("<Double-1>", on_double_click)
+
+    # fim listar_atas
+
+    def show_fala_popup(self, fala_id, texto_atual):
+        popup = ctk.CTkToplevel(self.root)
+        popup.title("Editar Fala")
+        popup.geometry("400x300")
+
+        # Label para instrução
+        label = ctk.CTkLabel(popup, text="Edite a fala:")
+        label.pack(pady=10)
+
+        # Campo de texto para edição
+        texto_fala = ctk.CTkTextbox(popup, wrap="word", height=10)
+        texto_fala.insert("1.0", texto_atual)  # Pré-popular com o texto atual
+        texto_fala.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Botão para salvar a edição
+        def salvar_fala():
+            novo_texto = texto_fala.get("1.0", "end").strip()  # Captura o texto editado
+            if novo_texto:  # Verifica se o texto não está vazio
+                try:
+
+                    # Atualiza o banco de dados com o novo texto da fala
+                    atualizar_fala(self.conn, fala_id, novo_texto)
+                
+                    # Fecha o pop-up após salvar
+                    popup.destroy()
+                    
+                    # Atualiza a lista de atas no Treeview para refletir as mudanças
+                    self.listar_atas()
+                    # Exibe uma mensagem de sucesso
+                    self.show_success_message("Fala atualizada com sucesso!")    
+
+                except Exception as e:
+                    # Exibe uma mensagem de erro caso algo dê errado
+                    self.show_error_message(f"Erro ao atualizar fala: {e}")
+
+        # Botão para salvar
+        botao_salvar = ctk.CTkButton(popup, text="Salvar", command=salvar_fala)
+        botao_salvar.pack(pady=10)
+
+        # Botão para cancelar
+        botao_cancelar = ctk.CTkButton(popup, text="Cancelar", command=popup.destroy)
+        botao_cancelar.pack(pady=10)
+
+
 
 
     # Função para limpar todas as atas e falas
