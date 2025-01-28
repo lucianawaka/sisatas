@@ -13,7 +13,7 @@ from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria, get_secretaria_por_id, atualizar_secretaria
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
 from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao
-from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala
+from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
 
 class MeetingManagerApp:
     def __init__(self, root):
@@ -742,23 +742,21 @@ class MeetingManagerApp:
         # Botão para salvar a edição
         def salvar_fala():
             novo_texto = texto_fala.get("1.0", "end").strip()  # Captura o texto editado
-            if novo_texto:  # Verifica se o texto não está vazio
-                try:
-
-                    # Atualiza o banco de dados com o novo texto da fala
-                    atualizar_fala(self.conn, fala_id, novo_texto)
+            try:
+                # Atualiza o banco de dados com o novo texto da fala
+                atualizar_fala(self.conn, fala_id, novo_texto)
+            
+                # Fecha o pop-up após salvar
+                popup.destroy()
                 
-                    # Fecha o pop-up após salvar
-                    popup.destroy()
-                    
-                    # Atualiza a lista de atas no Treeview para refletir as mudanças
-                    self.listar_atas()
-                    # Exibe uma mensagem de sucesso
-                    self.show_success_message("Fala atualizada com sucesso!")    
+                # Atualiza a lista de atas no Treeview para refletir as mudanças
+                self.listar_atas()
+                # Exibe uma mensagem de sucesso
+                self.show_success_message("Fala atualizada com sucesso!")    
 
-                except Exception as e:
-                    # Exibe uma mensagem de erro caso algo dê errado
-                    self.show_error_message(f"Erro ao atualizar fala: {e}")
+            except Exception as e:
+                # Exibe uma mensagem de erro caso algo dê errado
+                self.show_error_message(f"Erro ao atualizar fala: {e}")
 
         # Botão para salvar
         botao_salvar = ctk.CTkButton(popup, text="Salvar", command=salvar_fala)
