@@ -1,4 +1,8 @@
 ### # Sisatas
+Sistema para gerir Atas para o Prefeito Sandro.
+O sistema é um executável que rodará no Notebook do Prefeito.
+**O banco de dados** é salvo no arquivo: banco_de_dados.db.
+Para carregar um banco de dados já existente, importe por dentro do sistema a base de dados.
 
 ## Rodar localmente
 
