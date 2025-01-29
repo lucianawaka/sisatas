@@ -12,7 +12,7 @@ from database.connection import get_connection
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria, get_secretaria_por_id, atualizar_secretaria
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
-from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao
+from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao, deletar_ata, editar_ata
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
 
 class MeetingManagerApp:
@@ -655,11 +655,11 @@ class MeetingManagerApp:
         frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Criar o Treeview
-        lista_atas = ttk.Treeview(frame_lista_atas, columns=("Fala ID", "Secretário", "Fala"))
+        lista_atas = ttk.Treeview(frame_lista_atas, columns=( "Secretário", "Fala"))
         lista_atas.heading("#0", text="Ata (Descrição - Data)")
         lista_atas.heading("Secretário", text="Secretário / Secretaria")
         lista_atas.heading("Fala", text="Fala")
-        lista_atas.column("#0", width=250)
+        #lista_atas.column("#0", width=250)
         lista_atas.column("Secretário", width=200)
         lista_atas.column("Fala", width=400)
 
@@ -695,17 +695,17 @@ class MeetingManagerApp:
                 # Obter falas vinculadas à ata
                 falas = listar_falas_por_ata(self.conn, numero_ata)
                 for fala in falas:
-                    fala_id = fala[0]
+                    #fala_id = fala[0]
                     secretario_nome = fala[1]  # Nome do secretário
                     secretaria_nome = get_secretaria_by_secretario(self.conn, secretario_nome)
                     secretario_completo = f"{secretario_nome} ({secretaria_nome})"
-                    dados_atas[descricao_completa].append((fala_id, secretario_completo, fala[2]))
+                    dados_atas[descricao_completa].append((secretario_completo, fala[2]))
 
             # Inserir dados no Treeview
             for descricao_completa, falas in dados_atas.items():
                 item_ata = lista_atas.insert("", "end", text=f"{descricao_completa}")
-                for fala_id, secretario_completo, fala_texto in falas:
-                    lista_atas.insert(item_ata, "end", values=(fala_id, secretario_completo, fala_texto))
+                for secretario_completo, fala_texto in falas:
+                    lista_atas.insert(item_ata, "end", values=(secretario_completo, fala_texto))
 
         # Inicializar a lista de atas
         atualizar_lista("")

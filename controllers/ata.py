@@ -37,3 +37,9 @@ def deletar_ata(conn, ata_id):
     cursor.execute("DELETE FROM atas WHERE id = ?", (ata_id,))
 
     conn.commit()
+
+def editar_ata(conn, ata_id, nova_descricao, nova_data):
+    """Edita a descrição e data de uma ata específica."""
+    cursor = conn.cursor()
+    cursor.execute("UPDATE atas SET descricao = ?, data = ? WHERE id = ?", (nova_descricao, nova_data, ata_id))
+    conn.commit()
