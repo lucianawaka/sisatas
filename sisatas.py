@@ -51,6 +51,10 @@ class MeetingManagerApp:
         botao_secretaria_menu = ctk.CTkButton(frame_menu, text="Secretarias", command=self.menu_secretaria, width=150, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
         botao_secretaria_menu.pack(side="right", padx=5, pady=5)
 
+        # Botão de Carregar Menu da Atas
+        botao_atas_menu = ctk.CTkButton(frame_menu, text="Atas", command=self.menu_atas, width=150, fg_color="#17a2b8", hover_color="#117a8b", text_color="#FFFFFF")
+        botao_atas_menu.pack(side="right", padx=5, pady=5)
+
         # Botão de Listar Atas
         botao_listar_atas = ctk.CTkButton(frame_menu, text="Listar Atas", command=self.listar_atas, width=150, fg_color="#007BFF", hover_color="#0056b3", text_color="#FFFFFF")
         botao_listar_atas.pack(side="right", padx=5, pady=5)
@@ -71,7 +75,7 @@ class MeetingManagerApp:
         self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
         self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
-        botao_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata)
+        botao_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata_principal)
         botao_ata.pack(side="left", padx=5, pady=5)
 
         # Frame para registro de Falas
@@ -480,7 +484,7 @@ class MeetingManagerApp:
 
 # Secretário fim
 
-    def adicionar_ata(self):
+    def adicionar_ata_principal(self):
         descricao = self.descricao_ata.get()
         data = self.entrada_data_ata.get()
         if descricao and data:
@@ -559,41 +563,131 @@ class MeetingManagerApp:
         self.atualizar_lista_secretarios()
         # Menu secretario fim
 
-    # Menu Secretaria
-    def menu_secretaria(self):
-        self.clear_content_frame()
+        # Menu ata inicio
+    def menu_atas(self):
+            self.clear_content_frame()
 
-        # Botão de voltar
-        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu)
-        botao_voltar.pack(anchor="nw", padx=10, pady=10)
+            # Botão de voltar
+            botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu)
+            botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
-        # Título do menu
-        ctk.CTkLabel(self.root, text="Adicionar Secretaria", font=("Arial", 16, "bold")).pack(pady=10)
+            # Título do menu
+            ctk.CTkLabel(self.root, text="Adicionar Ata", font=("Arial", 16, "bold")).pack(pady=10)
 
-        # Frame para cadastro de Secretaria
-        frame_secretaria = ctk.CTkFrame(self.root)
-        frame_secretaria.pack(fill="x", padx=10, pady=5)
+            # Frame para cadastro de Ata
+            frame_ata = ctk.CTkFrame(self.root)
+            frame_ata.pack(fill="x", padx=10, pady=5)
 
-        ctk.CTkLabel(frame_secretaria, text="Nome da Secretaria:").pack(side="left", padx=5, pady=5)
+            ctk.CTkLabel(frame_ata, text="Descrição da Ata:").pack(side="left", padx=5, pady=5)
+            self.entrada_descricao_ata = ctk.CTkEntry(frame_ata, placeholder_text="Digite a descrição", width=300)
+            self.entrada_descricao_ata.pack(side="left", padx=5, pady=5)
 
-        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Digite o nome", width=300)
-        self.entrada_secretaria.pack(side="left", padx=5, pady=5)
+            ctk.CTkLabel(frame_ata, text="Data da Ata:").pack(side="left", padx=5, pady=5)
+            self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
+            self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
-        botao_adicionar_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
-        botao_adicionar_secretaria.pack(side="left", padx=5, pady=5)
+            botao_adicionar_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
+            botao_adicionar_ata.pack(side="left", padx=5, pady=5)
 
-        # Título da listagem de secretarias
-        ctk.CTkLabel(self.root, text="Secretarias", font=("Arial", 16, "bold")).pack(pady=10)
+            # Título da listagem de atas
+            ctk.CTkLabel(self.root, text="Atas", font=("Arial", 16, "bold")).pack(pady=10)
 
-        # Frame para listagem de Secretarias
-        frame_lista_secretarias = ctk.CTkFrame(self.root)
-        frame_lista_secretarias.pack(fill="both", expand=True, padx=10, pady=5)
+            # Frame para listagem de Atas
+            frame_lista_atas = ctk.CTkFrame(self.root)
+            frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=5)
 
-        self.lista_secretarias = ctk.CTkScrollableFrame(frame_lista_secretarias, width=400, height=200)
-        self.lista_secretarias.pack(fill="both", expand=True)
+            self.lista_atas = ctk.CTkScrollableFrame(frame_lista_atas, width=500, height=200)
+            self.lista_atas.pack(fill="both", expand=True)
 
-        self.atualizar_lista_secretarias()
+            self.atualizar_lista_atas()
 
+    def adicionar_ata(self):
+        descricao = self.entrada_descricao_ata.get().strip()
+        data = self.entrada_data_ata.get().strip()
+        if not descricao or not data:
+            messagebox.showerror("Erro", "A descrição e a data não podem estar vazias.")
+            return
+        try:
+            adicionar_ata(self.conn, descricao, data)
+            self.entrada_descricao_ata.delete(0, ctk.END)
+            self.entrada_data_ata.delete(0, ctk.END)
+            self.atualizar_lista_atas()
+            messagebox.showinfo("Sucesso", "Ata adicionada com sucesso!")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao adicionar ata: {e}")
+
+    def atualizar_lista_atas(self):
+        for widget in self.lista_atas.winfo_children():
+            widget.destroy()
+
+        atas = listar_atas(self.conn)
+
+        for ata in atas:
+            frame = ctk.CTkFrame(self.lista_atas)
+            frame.pack(fill="x", padx=5, pady=5)
+
+            descricao = f"{ata[1]} ({ata[2]})"
+            ctk.CTkLabel(frame, text=descricao).pack(side="left", padx=5)
+
+            botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda a_id=ata[0]: self.deletar_ata(a_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
+            botao_deletar.pack(side="right", padx=5)
+
+            botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda a_id=ata[0]: self.editar_ata(a_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
+            botao_editar.pack(side="right", padx=5)
+
+    def editar_ata(self, ata_id):
+        janela_edicao = ctk.CTkToplevel(self.root)
+        janela_edicao.title("Editar Ata")
+        janela_edicao.geometry("400x250")
+        janela_edicao.grab_set()
+
+        ata_atual = [ata for ata in listar_atas(self.conn) if ata[0] == ata_id]
+        if not ata_atual:
+            messagebox.showerror("Erro", "Ata não encontrada.")
+            janela_edicao.destroy()
+            return
+
+
+        descricao_atual, data_atual = ata_atual[0][1], ata_atual[0][2]
+
+        ctk.CTkLabel(janela_edicao, text="Descrição da Ata:").pack(pady=10)
+        entrada_descricao = ctk.CTkEntry(janela_edicao, width=300)
+        entrada_descricao.insert(0, descricao_atual)
+        entrada_descricao.pack(pady=5)
+
+        ctk.CTkLabel(janela_edicao, text="Data da Ata:").pack(pady=10)
+        entrada_data = DateEntry(janela_edicao, width=18, background="darkblue", foreground="white", borderwidth=2, date_pattern='dd/MM/yyyy')
+        entrada_data.set_date(data_atual)
+        entrada_data.pack(pady=5)
+
+        def salvar_edicao():
+            nova_descricao = entrada_descricao.get().strip()
+            nova_data = entrada_data.get().strip()
+            if not nova_descricao or not nova_data:
+                messagebox.showerror("Erro", "A descrição e a data não podem estar vazias.")
+                return
+            try:
+                editar_ata(self.conn, ata_id, nova_descricao, nova_data)
+                self.atualizar_lista_atas()
+                messagebox.showinfo("Sucesso", "Ata atualizada com sucesso!")
+                janela_edicao.destroy()
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao editar ata: {e}")
+
+        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=20)
+
+    def deletar_ata(self, ata_id):
+        resposta = messagebox.askyesno("Confirmação", "Tem certeza de que deseja deletar esta ata?")
+        if resposta:
+            try:
+                deletar_ata(self.conn, ata_id)
+                self.atualizar_lista_atas()
+                messagebox.showinfo("Sucesso", "Ata deletada com sucesso!")
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao deletar ata: {e}")
+
+        # Menu ata fim
+ 
     def show_success_message(self, message):
         """
         Exibe uma mensagem de sucesso em uma janela de pop-up.
@@ -631,8 +725,8 @@ class MeetingManagerApp:
         botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
         # Criar o botão "Limpar Falas"
-        botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: self.limpar_todas_as_entidades(), fg_color="red", hover_color="orange")
-        botao_limpar.pack(pady=10)
+        # botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: self.limpar_todas_as_entidades(), fg_color="red", hover_color="orange")
+        # botao_limpar.pack(pady=10)
 
         # Campo de busca
         frame_busca = ctk.CTkFrame(self.root)
