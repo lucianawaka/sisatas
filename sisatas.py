@@ -687,7 +687,7 @@ class MeetingManagerApp:
         """
     # Obtém os dados da ata e as falas; se a ata não existir, uma exceção será lançada.
         try:
-            descricao, data, falas = obter_dados_ata(self.conn, ata_id)
+            descricao, data, falas, horario_inicio, horario_termino = obter_dados_ata(self.conn, ata_id)
         except ValueError as e:
             messagebox.showerror("Erro", str(e))
             return
@@ -721,7 +721,7 @@ class MeetingManagerApp:
 
         # --- Título ---
         c.setFont("Helvetica-Bold", 16)
-        titulo = f"{descricao} - {data}"
+        titulo = f"{descricao} - {data} - {horario_inicio} - {horario_termino}"
         c.drawString(margin, y, titulo)
         y -= 30
 

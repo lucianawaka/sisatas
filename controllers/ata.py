@@ -20,14 +20,14 @@ def obter_dados_ata(conn, ata_id):
     :raises ValueError: se a ata não for encontrada.
     """
     cursor = conn.cursor()
-    cursor.execute("SELECT descricao, data FROM atas WHERE id = ?", (ata_id,))
+    cursor.execute("SELECT descricao, data, horario_inicio, horario_termino FROM atas WHERE id = ?", (ata_id,))
     ata = cursor.fetchone()
     if not ata:
         raise ValueError("Ata não encontrada.")
-    descricao, data = ata
+    descricao, data, horario_inicio, horario_termino = ata
 
     falas = listar_falas_por_ata(conn, ata_id)
-    return descricao, data, falas
+    return descricao, data, falas, horario_inicio, horario_termino
 
 
 def listar_falas_por_ata(conn, ata_id):
