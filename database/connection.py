@@ -5,5 +5,12 @@ def get_connection():
     return conn
 def atualizar_banco(conn):
     cursor = conn.cursor()
-    cursor.execute("ALTER TABLE secretarios ADD COLUMN ativo BOOLEAN NOT NULL DEFAULT 1")
+    try:
+        cursor.execute("ALTER TABLE atas ADD COLUMN horario_inicio TEXT NOT NULL DEFAULT ''")
+    except Exception as e:
+        print("Erro ao adicionar a coluna 'horario_inicio' (possivelmente ela já existe):", e)
+    try:
+        cursor.execute("ALTER TABLE atas ADD COLUMN horario_termino TEXT NOT NULL DEFAULT ''")
+    except Exception as e:
+        print("Erro ao adicionar a coluna 'horario_termino' (possivelmente ela já existe):", e)
     conn.commit()

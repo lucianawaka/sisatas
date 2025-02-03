@@ -13,7 +13,7 @@ from datetime import datetime
 from tkinter import Toplevel
 from tkhtmlview import HTMLLabel, HTMLScrolledText
 from tkcalendar import DateEntry
-from database.connection import get_connection
+from database.connection import get_connection, atualizar_banco
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria, get_secretaria_por_id, atualizar_secretaria
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
@@ -79,6 +79,14 @@ class MeetingManagerApp:
 
         self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
         self.entrada_data_ata.pack(side="left", padx=5, pady=5)
+        
+        ctk.CTkLabel(frame_ata, text="Horário de Início:").pack(side="left", padx=5, pady=5)
+        self.entrada_horario_inicio = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
+        self.entrada_horario_inicio.pack(side="left", padx=5, pady=5)
+
+        ctk.CTkLabel(frame_ata, text="Horário de Término:").pack(side="left", padx=5, pady=5)
+        self.entrada_horario_termino = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
+        self.entrada_horario_termino.pack(side="left", padx=5, pady=5)
 
         botao_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata_principal)
         botao_ata.pack(side="left", padx=5, pady=5)
@@ -492,9 +500,17 @@ class MeetingManagerApp:
     def adicionar_ata_principal(self):
         descricao = self.descricao_ata.get()
         data = self.entrada_data_ata.get()
+        horario_inicio = self.entrada_horario_inicio.get().strip()
+        horario_termino = self.entrada_horario_termino.get().strip()
+        
+        if not descricao or not data or not horario_inicio or not horario_termino:
+            messagebox.showerror("Erro", "Todos os campos devem ser preenchidos.")
         if descricao and data:
-            adicionar_ata(self.conn, descricao, data)
+            adicionar_ata(self.conn, descricao, data, horario_inicio, horario_termino)
             self.descricao_ata.delete(0, ctk.END)
+            self.entrada_data_ata.delete(0, ctk.END)
+            self.entrada_horario_inicio.delete(0, ctk.END)
+            self.entrada_horario_termino.delete(0, ctk.END)
             self.atualizar_comboboxes()
             messagebox.showinfo("Sucesso", "Ata adicionada!")
         else:
@@ -591,6 +607,14 @@ class MeetingManagerApp:
             self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
             self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
+            ctk.CTkLabel(frame_ata, text="Horário de Início:").pack(side="left", padx=5, pady=5)
+            self.entrada_horario_inicio = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
+            self.entrada_horario_inicio.pack(side="left", padx=5, pady=5)
+
+            ctk.CTkLabel(frame_ata, text="Horário de Término:").pack(side="left", padx=5, pady=5)
+            self.entrada_horario_termino = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
+            self.entrada_horario_termino.pack(side="left", padx=5, pady=5)
+        
             botao_adicionar_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
             botao_adicionar_ata.pack(side="left", padx=5, pady=5)
 
@@ -607,19 +631,26 @@ class MeetingManagerApp:
             self.atualizar_lista_atas()
 
     def adicionar_ata(self):
-        descricao = self.entrada_descricao_ata.get().strip()
-        data = self.entrada_data_ata.get().strip()
-        if not descricao or not data:
-            messagebox.showerror("Erro", "A descrição e a data não podem estar vazias.")
-            return
-        try:
-            adicionar_ata(self.conn, descricao, data)
+        descricao = self.entrada_descricao_ata.get()
+        data = self.entrada_data_ata.get()
+        horario_inicio = self.entrada_horario_inicio.get().strip()
+        horario_termino = self.entrada_horario_termino.get().strip()
+        
+        if not descricao or not data or not horario_inicio or not horario_termino:
+            messagebox.showerror("Erro", "Todos os campos devem ser preenchidos.")
+        if descricao and data:
+            adicionar_ata(self.conn, descricao, data, horario_inicio, horario_termino)
             self.entrada_descricao_ata.delete(0, ctk.END)
-            self.entrada_data_ata.delete(0, ctk.END)
+            self.entrada_horario_inicio.delete(0, ctk.END)
+            self.entrada_horario_termino.delete(0, ctk.END)
+
+            messagebox.showinfo("Sucesso", "Ata adicionada, com sucesso!")
+            #self.atualizar_comboboxes()
             self.atualizar_lista_atas()
-            messagebox.showinfo("Sucesso", "Ata adicionada com sucesso!")
-        except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao adicionar ata: {e}")
+
+
+        else:
+            messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
     def atualizar_lista_atas(self):
         for widget in self.lista_atas.winfo_children():
@@ -737,7 +768,7 @@ class MeetingManagerApp:
     def editar_ata(self, ata_id):
         janela_edicao = ctk.CTkToplevel(self.root)
         janela_edicao.title("Editar Ata")
-        janela_edicao.geometry("400x250")
+        janela_edicao.geometry("650x400")
         janela_edicao.grab_set()
 
         ata_atual = [ata for ata in listar_atas(self.conn) if ata[0] == ata_id]
@@ -747,7 +778,7 @@ class MeetingManagerApp:
             return
 
 
-        descricao_atual, data_atual = ata_atual[0][1], ata_atual[0][2]
+        descricao_atual, data_atual, horario_inicio, horario_fim = ata_atual[0][1], ata_atual[0][2], ata_atual[0][3], ata_atual[0][4]
 
         ctk.CTkLabel(janela_edicao, text="Descrição da Ata:").pack(pady=10)
         entrada_descricao = ctk.CTkEntry(janela_edicao, width=300)
@@ -759,14 +790,27 @@ class MeetingManagerApp:
         entrada_data.set_date(data_atual)
         entrada_data.pack(pady=5)
 
+
+        ctk.CTkLabel(janela_edicao, text="Horário de Início:").pack(side="left", padx=10)
+        self.entrada_horario_inicio = ctk.CTkEntry(janela_edicao, placeholder_text="HH:MM", width=100)
+        self.entrada_horario_inicio.insert(0, horario_inicio)
+        self.entrada_horario_inicio.pack(side="left", padx=5)
+
+        ctk.CTkLabel(janela_edicao, text="Horário de Término:").pack(side="left", padx=10)
+        self.entrada_horario_termino = ctk.CTkEntry(janela_edicao, placeholder_text="HH:MM", width=100)
+        self.entrada_horario_termino.insert(0, horario_fim)
+        self.entrada_horario_termino.pack(side="left", padx=5)
+
         def salvar_edicao():
             nova_descricao = entrada_descricao.get().strip()
             nova_data = entrada_data.get().strip()
+            novo_horario_inicio = self.entrada_horario_inicio.get().strip()
+            novo_horario_termino = self.entrada_horario_termino.get().strip()
             if not nova_descricao or not nova_data:
                 messagebox.showerror("Erro", "A descrição e a data não podem estar vazias.")
                 return
             try:
-                editar_ata(self.conn, ata_id, nova_descricao, nova_data)
+                editar_ata(self.conn, ata_id, nova_descricao, nova_data, novo_horario_inicio, novo_horario_termino)
                 self.atualizar_lista_atas()
                 messagebox.showinfo("Sucesso", "Ata atualizada com sucesso!")
                 janela_edicao.destroy()

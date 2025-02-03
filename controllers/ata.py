@@ -1,11 +1,14 @@
-def adicionar_ata(conn, descricao, data):
+def adicionar_ata(conn, descricao, data, horario_inicio, horario_termino):
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO atas (descricao, data) VALUES (?, ?)", (descricao, data))
+    cursor.execute(
+        "INSERT INTO atas (descricao, data, horario_inicio, horario_termino) VALUES (?, ?, ?, ?)",
+        (descricao, data, horario_inicio, horario_termino)
+    )
     conn.commit()
 
 def listar_atas(conn):
     cursor = conn.cursor()
-    return cursor.execute("SELECT id, descricao, data FROM atas").fetchall()
+    return cursor.execute("SELECT id, descricao, data, horario_inicio, horario_termino FROM atas").fetchall()
 
 def obter_dados_ata(conn, ata_id):
     """
@@ -59,8 +62,11 @@ def deletar_ata(conn, ata_id):
 
     conn.commit()
 
-def editar_ata(conn, ata_id, nova_descricao, nova_data):
-    """Edita a descrição e data de uma ata específica."""
+def editar_ata(conn, ata_id, nova_descricao, nova_data, novo_horario_inicio, novo_horario_termino):
+    """Edita a descrição, data, horário de início e horário de término de uma ata específica."""
     cursor = conn.cursor()
-    cursor.execute("UPDATE atas SET descricao = ?, data = ? WHERE id = ?", (nova_descricao, nova_data, ata_id))
+    cursor.execute(
+        "UPDATE atas SET descricao = ?, data = ?, horario_inicio = ?, horario_termino = ? WHERE id = ?",
+        (nova_descricao, nova_data, novo_horario_inicio, novo_horario_termino, ata_id)
+    )
     conn.commit()

@@ -19,7 +19,9 @@ def create_tables(conn):
     CREATE TABLE IF NOT EXISTS atas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         descricao TEXT NOT NULL,
-        data TEXT NOT NULL
+        data TEXT NOT NULL,
+        horario_inicio TEXT NOT NULL,
+        horario_termino TEXT NOT NULL
     )
     ''')
     cursor.execute('''
