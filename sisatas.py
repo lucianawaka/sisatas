@@ -4,6 +4,10 @@ import os  # Importação necessária para usar funções de sistema de arquivos
 from tkinter import messagebox
 from tkinter import filedialog
 from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+import textwrap
+from reportlab.lib import colors
 from reportlab.pdfgen import canvas
 import textwrap
 from tkinter import ttk
@@ -671,36 +675,21 @@ class MeetingManagerApp:
             botao_editar.pack(side="right", padx=5)
 
     def exportar_ata_ui(self, ata_id):
-        """
-        Função da camada de UI que gera o PDF da ata.
-        Chama a função do controller para obter os dados e,
-        em seguida, gera o PDF conforme a estrutura definida.
-
-        Estrutura do PDF:
-        - Título: Nome (descrição) da ata e data.
-        - Secretários participantes (em ordem alfabética).
-        - Falas: Cada fala com o nome do secretário antes.
-        """
-    # Obtém os dados da ata e as falas; se a ata não existir, uma exceção será lançada.
         try:
             descricao, data, falas, horario_inicio, horario_termino = obter_dados_ata(self.conn, ata_id)
         except ValueError as e:
             messagebox.showerror("Erro", str(e))
             return
 
-        # Pergunta ao usuário qual pasta deseja salvar o PDF.
         pasta_destino = filedialog.askdirectory(title="Selecione a pasta para salvar o PDF")
         if not pasta_destino:
-            # Se o usuário cancelar a seleção, encerra a função.
             return
 
-        # Define o caminho completo para o arquivo PDF
         filename = os.path.join(pasta_destino, f"ata_{descricao}.pdf")
-        
+
         # Agrupa as falas por secretário.
         secretarios_dict = {}
         for fala in falas:
-            # Cada registro: (id, secretario, fala)
             _, secretario, fala_texto = fala
             if secretario not in secretarios_dict:
                 secretarios_dict[secretario] = []
@@ -709,56 +698,76 @@ class MeetingManagerApp:
         # Ordena os secretários em ordem alfabética.
         secretarios_ordenados = sorted(secretarios_dict.items(), key=lambda x: x[0])
 
-        # Cria o PDF usando ReportLab.
-        c = canvas.Canvas(filename, pagesize=letter)
-        width, height = letter
-        margin = 50
-        y = height - margin
+        # Cria strings para mostrar na tabela
+        # 1) Lista de secretários (um por linha, ou separados por vírgula)
+        lista_secretarios_str = "<br/>".join([sec[0] for sec in secretarios_ordenados])
 
-        # --- Título ---
-        c.setFont("Helvetica-Bold", 16)
-        titulo = f"{descricao} - {data} - {horario_inicio} às {horario_termino}"
-        c.drawString(margin, y, titulo)
-        y -= 30
-
-        # --- Seção: Secretários participantes ---
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(margin, y, "Secretários participantes:")
-        y -= 20
-        c.setFont("Helvetica", 12)
-        for secretario, _ in secretarios_ordenados:
-            c.drawString(margin + 20, y, secretario)
-            y -= 15
-            if y < margin:
-                c.showPage()
-                y = height - margin
-                c.setFont("Helvetica", 12)
-        y -= 10
-
-        # --- Seção: Falas ---
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(margin, y, "Falas:")
-        y -= 20
-        c.setFont("Helvetica", 12)
+        # 2) Lista das falas (secretário + fala). Aqui, faremos um HTML básico
+        #    para que cada fala quebre a linha.
+        falas_str = ""
         for secretario, falas_list in secretarios_ordenados:
             for fala_texto in falas_list:
-                # Concatena o nome do secretário com o texto da fala.
-                fala_completa = f"{secretario}: {fala_texto}"
-                # Utiliza textwrap para quebrar o texto em linhas, se necessário.
-                linhas = textwrap.wrap(fala_completa, width=100)
-                for linha in linhas:
-                    c.drawString(margin, y, linha)
-                    y -= 15
-                    if y < margin:
-                        c.showPage()
-                        y = height - margin
-                        c.setFont("Helvetica", 12)
-                y -= 5  # Espaço extra entre as falas
+                falas_str += f"<b>{secretario}:</b> {fala_texto}<br/>"
+        
+        # Ajuste o caminho da imagem e o tamanho (largura x altura).
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        logo_path = os.path.join(base_dir, "assets", "img", "logo.png")
+        logo_largura = 176
+        logo_altura = 46
 
-        c.save()
+        # Vamos usar o SimpleDocTemplate, que aceita uma lista de “flowables” (Elementos).
+        doc = SimpleDocTemplate(filename, pagesize=letter, rightMargin=50, leftMargin=50, topMargin=50, bottomMargin=50)
+        styles = getSampleStyleSheet()
+        
+        # Crie um objeto Image para a logo
+        logo_img = Image(logo_path, width=logo_largura, height=logo_altura)
+        
+        # Parágrafos formatados para o título, subtítulos etc.
+        titulo_texto = f"<b>{descricao} - {data} - {horario_inicio} às {horario_termino}</b>"
+        titulo_paragrafo = Paragraph(titulo_texto, styles["Title"])  
+        
+        secretarios_title = Paragraph("<b>Secretários participantes:</b>", styles["Normal"])
+        secretarios_paragrafo = Paragraph(lista_secretarios_str, styles["Normal"])
+
+        falas_title = Paragraph("<b>Falas:</b>", styles["Normal"])
+        falas_paragrafo = Paragraph(falas_str, styles["Normal"])
+
+        # Agora montamos uma tabela com 3 linhas e 2 colunas:
+        #   [ [LOGO, TITULO],
+        #     [Secretários participantes, lista de secretários],
+        #     [Falas, falas em geral] ]
+        data_table = [
+            [logo_img, titulo_paragrafo],
+            [secretarios_title, secretarios_paragrafo],
+            [falas_title,       falas_paragrafo]
+        ]
+
+        # Ajuste as larguras de cada coluna (colWidths). Aqui, a 1ª coluna terá 200pt e a 2ª terá 300pt.
+        # Ajuste conforme seu layout desejado.
+        table = Table(data_table, colWidths=[200, 300])
+        
+        # Definimos um estilo para alinhar o topo de cada célula, cor de fundo etc. (opcional).
+        # Exemplo: deixamos tudo alinhado no topo e inserimos algum espaçamento interno (padding).
+        table.setStyle(TableStyle([
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('VALIGN', (0,0), (0,0), 'TOP'),
+            ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+            ('BOX',       (0,0), (-1,-1), 0.25, colors.black),
+            ('LEFTPADDING',(0,0),(-1,-1), 10),
+            ('RIGHTPADDING',(0,0),(-1,-1), 10),
+            ('TOPPADDING',(0,0),(-1,-1), 5),
+            ('BOTTOMPADDING',(0,0),(-1,-1), 5),
+        ]))
+
+        # Montamos a “story” (lista de flowables) e adicionamos a tabela.
+        story = []
+        story.append(table)
+        story.append(Spacer(1, 12))  # Espaço em branco se desejar
+
+        # Finalmente, construímos o PDF
+        doc.build(story)
+
         messagebox.showinfo("Sucesso", f"PDF exportado com sucesso:\n{filename}")
-    # Fim exportar ata
-
 
 
     def editar_ata(self, ata_id):
@@ -892,10 +901,6 @@ class MeetingManagerApp:
         botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=lambda: self.return_to_main_menu())
         botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
-        # Criar o botão "Limpar Falas"
-        # botao_limpar = ctk.CTkButton(self.root, text="Limpar Falas", command=lambda: self.limpar_todas_as_entidades(), fg_color="red", hover_color="orange")
-        # botao_limpar.pack(pady=10)
-
         # Campo de busca
         frame_busca = ctk.CTkFrame(self.root)
         frame_busca.pack(fill="x", padx=10, pady=10)
@@ -917,11 +922,10 @@ class MeetingManagerApp:
         frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Criar o Treeview
-        lista_atas = ttk.Treeview(frame_lista_atas, columns=( "Secretário", "Fala"))
+        lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
         lista_atas.heading("#0", text="Ata (Descrição - Data)")
         lista_atas.heading("Secretário", text="Secretário / Secretaria")
         lista_atas.heading("Fala", text="Fala")
-        #lista_atas.column("#0", width=250)
         lista_atas.column("Secretário", width=200)
         lista_atas.column("Fala", width=400)
 
@@ -945,29 +949,40 @@ class MeetingManagerApp:
             else:
                 atas = listar_atas(self.conn)
 
-            # Atualizar Treeview com atas filtradas
+            # Vamos criar um dicionário: { "desc completa": [(fala_id, secretário, fala_texto), ...], ... }
             dados_atas = {}
             for ata in atas:
                 numero_ata = ata[0]
                 descricao_ata = ata[1]
                 data_ata = ata[2]
                 descricao_completa = f"{descricao_ata} - {data_ata}"
+
+                # Se ainda não existe no dicionário, inicializa
                 dados_atas[descricao_completa] = []
 
                 # Obter falas vinculadas à ata
                 falas = listar_falas_por_ata(self.conn, numero_ata)
                 for fala in falas:
-                    #fala_id = fala[0]
-                    secretario_nome = fala[1]  # Nome do secretário
+                    fala_id = fala[0]            # ID da fala no BD
+                    secretario_nome = fala[1]   # Nome do secretário
+                    fala_texto = fala[2]        # Texto da fala
+
                     secretaria_nome = get_secretaria_by_secretario(self.conn, secretario_nome)
                     secretario_completo = f"{secretario_nome} ({secretaria_nome})"
-                    dados_atas[descricao_completa].append((secretario_completo, fala[2]))
+                    
+                    dados_atas[descricao_completa].append((fala_id, secretario_completo, fala_texto))
 
             # Inserir dados no Treeview
-            for descricao_completa, falas in dados_atas.items():
-                item_ata = lista_atas.insert("", "end", text=f"{descricao_completa}")
-                for secretario_completo, fala_texto in falas:
-                    lista_atas.insert(item_ata, "end", values=(secretario_completo, fala_texto))
+            for descricao_completa, lista_falas in dados_atas.items():
+                # Cria o item "pai" para a ata
+                item_ata = lista_atas.insert("", "end", text=descricao_completa)
+                
+                # Para cada fala, vamos inserir um item filho.
+                # Aqui, vamos armazenar o fala_id no "text" e os valores (secretário, fala) em "values"
+                for fala_id, secretario_completo, fala_texto in lista_falas:
+                    lista_atas.insert(item_ata, "end",
+                                      text=f"{fala_id}",
+                                      values=(secretario_completo, fala_texto))
 
         # Inicializar a lista de atas
         atualizar_lista("")
@@ -976,10 +991,21 @@ class MeetingManagerApp:
         def on_double_click(event):
             selected_item = lista_atas.selection()
             if selected_item:
-                fala_data = lista_atas.item(selected_item[0], "values")
-                if fala_data:
-                    fala_id = fala_data[0]  # ID da fala
-                    texto_atual = fala_data[2]  # Texto da fala
+                # Pegamos o item clicado
+                fala_id_str = lista_atas.item(selected_item[0], "text")     # text é onde guardamos o ID
+                fala_data = lista_atas.item(selected_item[0], "values")     # values é (secretario, fala)
+                
+                if fala_data and len(fala_data) == 2:
+                    # Convertendo fala_id_str para inteiro, se necessário
+                    # (desde que fala_id_str não seja vazio)
+                    fala_id = None
+                    if fala_id_str.isdigit():
+                        fala_id = int(fala_id_str)
+                    
+                    # O texto da fala fica no segundo índice (0=secretário, 1=fala)
+                    texto_atual = fala_data[1]
+                    
+                    # Exibe o popup de edição. Agora temos fala_id e texto.
                     self.show_fala_popup(fala_id, texto_atual)
 
         # Associar o evento de clique duplo ao Treeview
@@ -1003,7 +1029,12 @@ class MeetingManagerApp:
 
         # Botão para salvar a edição
         def salvar_fala():
-            novo_texto = texto_fala.get("1.0", "end").strip()  # Captura o texto editado
+            novo_texto = texto_fala.get("1.0", "end").strip()
+            if fala_id is None:
+                # Se não tivermos o ID, não podemos atualizar no BD
+                self.show_error_message("Não há ID para atualizar a fala.")
+                return
+
             try:
                 # Atualiza o banco de dados com o novo texto da fala
                 atualizar_fala(self.conn, fala_id, novo_texto)
@@ -1019,8 +1050,13 @@ class MeetingManagerApp:
             except Exception as e:
                 # Exibe uma mensagem de erro caso algo dê errado
                 self.show_error_message(f"Erro ao atualizar fala: {e}")
+
         # Botão para deletar a fala
         def deletar_fala_popup():
+            if fala_id is None:
+                self.show_error_message("Não há ID para deletar a fala.")
+                return
+
             try:
                 # Confirmação de exclusão
                 if messagebox.askyesno("Confirmar Exclusão", "Tem certeza que deseja deletar esta fala?"):
@@ -1037,7 +1073,6 @@ class MeetingManagerApp:
         # Botão para cancelar
         botao_cancelar = ctk.CTkButton(popup, text="Cancelar", command=popup.destroy)
         botao_cancelar.pack(pady=10)
-
 
         # Botão para deletar
         botao_deletar = ctk.CTkButton(popup, text="Deletar", command=deletar_fala_popup, fg_color="red", hover_color="orange")
