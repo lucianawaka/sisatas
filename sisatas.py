@@ -505,7 +505,7 @@ class MeetingManagerApp:
         
         if not descricao or not data or not horario_inicio or not horario_termino:
             messagebox.showerror("Erro", "Todos os campos devem ser preenchidos.")
-        if descricao and data:
+        if descricao and data and horario_inicio and horario_termino:
             adicionar_ata(self.conn, descricao, data, horario_inicio, horario_termino)
             self.descricao_ata.delete(0, ctk.END)
             self.entrada_data_ata.delete(0, ctk.END)
@@ -513,8 +513,7 @@ class MeetingManagerApp:
             self.entrada_horario_termino.delete(0, ctk.END)
             self.atualizar_comboboxes()
             messagebox.showinfo("Sucesso", "Ata adicionada!")
-        else:
-            messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
+
 
     def adicionar_fala(self):
         ata = self.combo_atas.get().split('-')[0].strip()  # Captura apenas a descrição da ata
@@ -608,12 +607,12 @@ class MeetingManagerApp:
             self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
             ctk.CTkLabel(frame_ata, text="Horário de Início:").pack(side="left", padx=5, pady=5)
-            self.entrada_horario_inicio = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
-            self.entrada_horario_inicio.pack(side="left", padx=5, pady=5)
+            self.entrada_horario_inicio_menu = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
+            self.entrada_horario_inicio_menu.pack(side="left", padx=5, pady=5)
 
             ctk.CTkLabel(frame_ata, text="Horário de Término:").pack(side="left", padx=5, pady=5)
-            self.entrada_horario_termino = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
-            self.entrada_horario_termino.pack(side="left", padx=5, pady=5)
+            self.entrada_horario_termino_menu = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
+            self.entrada_horario_termino_menu.pack(side="left", padx=5, pady=5)
         
             botao_adicionar_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
             botao_adicionar_ata.pack(side="left", padx=5, pady=5)
@@ -633,24 +632,21 @@ class MeetingManagerApp:
     def adicionar_ata(self):
         descricao = self.entrada_descricao_ata.get()
         data = self.entrada_data_ata.get()
-        horario_inicio = self.entrada_horario_inicio.get().strip()
-        horario_termino = self.entrada_horario_termino.get().strip()
+        horario_inicio = self.entrada_horario_inicio_menu.get().strip()
+        horario_termino = self.entrada_horario_termino_menu.get().strip()
         
         if not descricao or not data or not horario_inicio or not horario_termino:
             messagebox.showerror("Erro", "Todos os campos devem ser preenchidos.")
-        if descricao and data:
+        if descricao and data and horario_inicio and horario_termino:
             adicionar_ata(self.conn, descricao, data, horario_inicio, horario_termino)
             self.entrada_descricao_ata.delete(0, ctk.END)
-            self.entrada_horario_inicio.delete(0, ctk.END)
-            self.entrada_horario_termino.delete(0, ctk.END)
+            self.entrada_horario_inicio_menu.delete(0, ctk.END)
+            self.entrada_horario_termino_menu.delete(0, ctk.END)
 
             messagebox.showinfo("Sucesso", "Ata adicionada, com sucesso!")
-            #self.atualizar_comboboxes()
+            self.atualizar_comboboxes()
             self.atualizar_lista_atas()
 
-
-        else:
-            messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
 
     def atualizar_lista_atas(self):
         for widget in self.lista_atas.winfo_children():
@@ -721,7 +717,7 @@ class MeetingManagerApp:
 
         # --- Título ---
         c.setFont("Helvetica-Bold", 16)
-        titulo = f"{descricao} - {data} - {horario_inicio} - {horario_termino}"
+        titulo = f"{descricao} - {data} - {horario_inicio} às {horario_termino}"
         c.drawString(margin, y, titulo)
         y -= 30
 
