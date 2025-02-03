@@ -776,26 +776,55 @@ class MeetingManagerApp:
 
         descricao_atual, data_atual, horario_inicio, horario_fim = ata_atual[0][1], ata_atual[0][2], ata_atual[0][3], ata_atual[0][4]
 
-        ctk.CTkLabel(janela_edicao, text="Descrição da Ata:").pack(pady=10)
-        entrada_descricao = ctk.CTkEntry(janela_edicao, width=300)
+        # Frame principal que conterá os campos de edição
+        frame_campos = ctk.CTkFrame(janela_edicao)
+        frame_campos.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Configurando linhas e colunas do grid para melhor disposição
+        frame_campos.grid_columnconfigure(0, weight=1)
+        frame_campos.grid_columnconfigure(1, weight=1)
+        frame_campos.grid_columnconfigure(2, weight=1)
+        frame_campos.grid_columnconfigure(3, weight=1)
+
+        # --- Descrição da Ata ---
+        label_descricao = ctk.CTkLabel(frame_campos, text="Descrição da Ata:")
+        label_descricao.grid(row=0, column=0, sticky="e", padx=5, pady=5)
+
+        entrada_descricao = ctk.CTkEntry(frame_campos, width=300)
         entrada_descricao.insert(0, descricao_atual)
-        entrada_descricao.pack(pady=5)
+        entrada_descricao.grid(row=0, column=1, columnspan=3, sticky="w", padx=5, pady=5)
 
-        ctk.CTkLabel(janela_edicao, text="Data da Ata:").pack(pady=10)
-        entrada_data = DateEntry(janela_edicao, width=18, background="darkblue", foreground="white", borderwidth=2, date_pattern='dd/MM/yyyy')
+        # --- Data da Ata ---
+        label_data = ctk.CTkLabel(frame_campos, text="Data da Ata:")
+        label_data.grid(row=1, column=0, sticky="e", padx=5, pady=5)
+
+        entrada_data = DateEntry(
+            frame_campos,
+            width=18,
+            background="darkblue",
+            foreground="white",
+            borderwidth=2,
+            date_pattern='dd/MM/yyyy'
+        )
         entrada_data.set_date(data_atual)
-        entrada_data.pack(pady=5)
+        entrada_data.grid(row=1, column=1, sticky="w", padx=5, pady=5)
 
+        # --- Horário de Início ---
+        label_horario_inicio = ctk.CTkLabel(frame_campos, text="Horário de Início:")
+        label_horario_inicio.grid(row=2, column=0, sticky="e", padx=5, pady=5)
 
-        ctk.CTkLabel(janela_edicao, text="Horário de Início:").pack(side="left", padx=10)
-        self.entrada_horario_inicio = ctk.CTkEntry(janela_edicao, placeholder_text="HH:MM", width=100)
-        self.entrada_horario_inicio.insert(0, horario_inicio)
-        self.entrada_horario_inicio.pack(side="left", padx=5)
+        entrada_horario_inicio = ctk.CTkEntry(frame_campos, placeholder_text="HH:MM", width=100)
+        entrada_horario_inicio.insert(0, horario_inicio)
+        entrada_horario_inicio.grid(row=2, column=1, sticky="w", padx=5, pady=5)
 
-        ctk.CTkLabel(janela_edicao, text="Horário de Término:").pack(side="left", padx=10)
-        self.entrada_horario_termino = ctk.CTkEntry(janela_edicao, placeholder_text="HH:MM", width=100)
-        self.entrada_horario_termino.insert(0, horario_fim)
-        self.entrada_horario_termino.pack(side="left", padx=5)
+        # --- Horário de Término ---
+        label_horario_termino = ctk.CTkLabel(frame_campos, text="Horário de Término:")
+        label_horario_termino.grid(row=2, column=2, sticky="e", padx=5, pady=5)
+
+        entrada_horario_termino = ctk.CTkEntry(frame_campos, placeholder_text="HH:MM", width=100)
+        entrada_horario_termino.insert(0, horario_fim)
+        entrada_horario_termino.grid(row=2, column=3, sticky="w", padx=5, pady=5)
+
 
         def salvar_edicao():
             nova_descricao = entrada_descricao.get().strip()
