@@ -1,6 +1,11 @@
 import customtkinter as ctk
 import tkinter as tk
+import os  # Importação necessária para usar funções de sistema de arquivos
 from tkinter import messagebox
+from tkinter import filedialog
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import textwrap
 from tkinter import ttk
 from tkinter.filedialog import askdirectory, askopenfilename
 import shutil
@@ -12,7 +17,7 @@ from database.connection import get_connection
 from database.models import create_tables
 from controllers.secretaria import adicionar_secretaria, listar_secretarias, deletar_secretaria, get_secretaria_por_id, atualizar_secretaria
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
-from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao, deletar_ata, editar_ata
+from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao, deletar_ata, editar_ata, obter_dados_ata
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
 
 class MeetingManagerApp:
@@ -634,6 +639,100 @@ class MeetingManagerApp:
 
             botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda a_id=ata[0]: self.editar_ata(a_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
             botao_editar.pack(side="right", padx=5)
+
+            botao_editar = ctk.CTkButton(frame, text="Exportar", command=lambda a_id=ata[0]: self.exportar_ata_ui(a_id), fg_color="#6f42c1", hover_color="#4e2a8e", text_color="#FFFFFF")
+            botao_editar.pack(side="right", padx=5)
+
+    def exportar_ata_ui(self, ata_id):
+        """
+        Função da camada de UI que gera o PDF da ata.
+        Chama a função do controller para obter os dados e,
+        em seguida, gera o PDF conforme a estrutura definida.
+
+        Estrutura do PDF:
+        - Título: Nome (descrição) da ata e data.
+        - Secretários participantes (em ordem alfabética).
+        - Falas: Cada fala com o nome do secretário antes.
+        """
+    # Obtém os dados da ata e as falas; se a ata não existir, uma exceção será lançada.
+        try:
+            descricao, data, falas = obter_dados_ata(self.conn, ata_id)
+        except ValueError as e:
+            messagebox.showerror("Erro", str(e))
+            return
+
+        # Pergunta ao usuário qual pasta deseja salvar o PDF.
+        pasta_destino = filedialog.askdirectory(title="Selecione a pasta para salvar o PDF")
+        if not pasta_destino:
+            # Se o usuário cancelar a seleção, encerra a função.
+            return
+
+        # Define o caminho completo para o arquivo PDF
+        filename = os.path.join(pasta_destino, f"ata_{descricao}.pdf")
+        
+        # Agrupa as falas por secretário.
+        secretarios_dict = {}
+        for fala in falas:
+            # Cada registro: (id, secretario, fala)
+            _, secretario, fala_texto = fala
+            if secretario not in secretarios_dict:
+                secretarios_dict[secretario] = []
+            secretarios_dict[secretario].append(fala_texto)
+
+        # Ordena os secretários em ordem alfabética.
+        secretarios_ordenados = sorted(secretarios_dict.items(), key=lambda x: x[0])
+
+        # Cria o PDF usando ReportLab.
+        c = canvas.Canvas(filename, pagesize=letter)
+        width, height = letter
+        margin = 50
+        y = height - margin
+
+        # --- Título ---
+        c.setFont("Helvetica-Bold", 16)
+        titulo = f"{descricao} - {data}"
+        c.drawString(margin, y, titulo)
+        y -= 30
+
+        # --- Seção: Secretários participantes ---
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(margin, y, "Secretários participantes:")
+        y -= 20
+        c.setFont("Helvetica", 12)
+        for secretario, _ in secretarios_ordenados:
+            c.drawString(margin + 20, y, secretario)
+            y -= 15
+            if y < margin:
+                c.showPage()
+                y = height - margin
+                c.setFont("Helvetica", 12)
+        y -= 10
+
+        # --- Seção: Falas ---
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(margin, y, "Falas:")
+        y -= 20
+        c.setFont("Helvetica", 12)
+        for secretario, falas_list in secretarios_ordenados:
+            for fala_texto in falas_list:
+                # Concatena o nome do secretário com o texto da fala.
+                fala_completa = f"{secretario}: {fala_texto}"
+                # Utiliza textwrap para quebrar o texto em linhas, se necessário.
+                linhas = textwrap.wrap(fala_completa, width=100)
+                for linha in linhas:
+                    c.drawString(margin, y, linha)
+                    y -= 15
+                    if y < margin:
+                        c.showPage()
+                        y = height - margin
+                        c.setFont("Helvetica", 12)
+                y -= 5  # Espaço extra entre as falas
+
+        c.save()
+        messagebox.showinfo("Sucesso", f"PDF exportado com sucesso:\n{filename}")
+    # Fim exportar ata
+
+
 
     def editar_ata(self, ata_id):
         janela_edicao = ctk.CTkToplevel(self.root)

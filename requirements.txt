@@ -5,3 +5,4 @@ customtkinter
 tkinterhtml
 pyinstaller
 tkhtmlview
+reportlab 

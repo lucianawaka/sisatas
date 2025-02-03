@@ -6,6 +6,27 @@ def adicionar_ata(conn, descricao, data):
 def listar_atas(conn):
     cursor = conn.cursor()
     return cursor.execute("SELECT id, descricao, data FROM atas").fetchall()
+
+def obter_dados_ata(conn, ata_id):
+    """
+    Busca e retorna os dados da ata e as suas falas.
+
+    :param conn: Conexão com o banco de dados.
+    :param ata_id: ID da ata.
+    :return: uma tupla (descricao, data, falas), onde falas é uma lista de tuplas (id, secretario, fala).
+    :raises ValueError: se a ata não for encontrada.
+    """
+    cursor = conn.cursor()
+    cursor.execute("SELECT descricao, data FROM atas WHERE id = ?", (ata_id,))
+    ata = cursor.fetchone()
+    if not ata:
+        raise ValueError("Ata não encontrada.")
+    descricao, data = ata
+
+    falas = listar_falas_por_ata(conn, ata_id)
+    return descricao, data, falas
+
+
 def listar_falas_por_ata(conn, ata_id):
     cursor = conn.cursor()
     return cursor.execute(
