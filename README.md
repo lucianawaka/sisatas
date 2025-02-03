@@ -28,7 +28,7 @@ python sisatas.py
 **Gerar .exe da aplicação no terminal**
 
 ```
-pyinstaller --onefile -w sisatas.py
+pyinstaller -w --onefile --add-data "assets/img/logo.png;assets/img" sisatas.py
 
 ```
 
