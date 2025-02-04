@@ -25,6 +25,7 @@ from controllers.secretario import adicionar_secretario, listar_secretarios, get
 from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao, deletar_ata, editar_ata, obter_dados_ata
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
 from utils.images import load_icons
+from utils.CustomDatePicker import CustomDatePicker
 
 
 class MeetingManagerApp:
@@ -33,9 +34,9 @@ class MeetingManagerApp:
         #atualizar_banco(self.conn)
         self.root = root
         self.root.title("Gerenciador de Atas")
-        #self.root.geometry(f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0")
+        self.root.geometry(f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0")
         #self.root.update_idletasks()  # Garante que o tkinter atualize as dimensões da janela
-        self.root.geometry("1200x800")
+        #self.root.geometry("1200x800")
 
         ctk.set_appearance_mode("light")  # Tema: "light", "dark", "system"
         ctk.set_default_color_theme("green")  # Cor principal do tema
@@ -47,6 +48,8 @@ class MeetingManagerApp:
     def setup_ui(self):
 
         self.root.configure(bg="#FAFAFA")
+
+
         # Um frame para “centralizar” tudo no meio da tela
         # fill="both", expand=True faz este frame ocupar todo o espaço
         main_container = ctk.CTkFrame(self.root, fg_color="#FAFAFA")
@@ -67,7 +70,7 @@ class MeetingManagerApp:
             frame_titulo,
             text="Gerenciador de Atas",
             text_color="#019000",
-            font=("Arial", 32, "bold")
+            font=("Arial", 36, "bold")
         )
         label_titulo.pack()
 
@@ -186,8 +189,8 @@ class MeetingManagerApp:
         label_ata = ctk.CTkLabel(
             section_ata,
             text="Criação de Ata",
-            font=("Arial", 16, "bold"),
-            text_color="#333"
+            font=("Arial", 22, "bold"),
+            text_color="#007E37"
         )
         label_ata.pack(anchor="w", pady=(0, 5))
 
@@ -200,38 +203,80 @@ class MeetingManagerApp:
         self.descricao_ata = ctk.CTkEntry(
             row_ata, 
             placeholder_text="Nome da Ata", 
-            width=300
+            width=300,
+            height=48,
+            bg_color="#CACACA",
+            font=("Arial", 16)
+
         )
         self.descricao_ata.pack(side="left", padx=5, pady=5)
 
         # Campo Data
-        self.entrada_data_ata = DateEntry(
-            row_ata, 
-            width=12,
-            background="darkblue", 
-            foreground="white", 
-            borderwidth=2,  
-            date_pattern='dd/MM/yyyy'
+        # self.entrada_data_ata = DateEntry(
+        #     row_ata, 
+        #     width=16,
+        #     height=48,
+
+        #     background="#007E37", 
+        #     foreground="white", 
+        #     borderwidth=2,  
+        #     date_pattern='dd/MM/yyyy',
+        #     style="DateEntryStyle.TCombobox",  # Usa o estilo TCombobox para a parte 'combobox'
+
+        # )
+        # self.entrada_data_ata.pack(side="left", padx=5, pady=5)
+
+        root = ctk.CTk()
+        root.geometry("400x200")
+        root.title("Exemplo DatePicker CustomTkinter")
+
+        self.entrada_data_ata = CustomDatePicker(row_ata, width=200, fg_color="#FAFAFA")
+        self.entrada_data_ata.pack(pady=20, padx=20)
+
+
+        # ============= Campo horário início com CTkEntry (arredondado) =============
+        label_inicio = ctk.CTkLabel(row_ata, text="Horário de Início:")
+        label_inicio.pack(anchor="w", pady=(10,0))
+
+        self.entrada_horario_inicio = ctk.CTkEntry(
+            row_ata,
+            placeholder_text="HH:MM",
+            width=100,
+            corner_radius=10,      # Raio de canto arredondado
+            border_width=1,       
+            border_color="#CCCCCC", 
+            fg_color="white",     
+            text_color="#333333"
         )
-        self.entrada_data_ata.pack(side="left", padx=5, pady=5)
+        self.entrada_horario_inicio.pack(anchor="w", pady=5)
 
-        self.entrada_horario_inicio = ctk.CTkEntry(row_ata, placeholder_text="HH:MM", width=100)
-        self.entrada_horario_inicio.pack(side="left", padx=5, pady=5)
+        # ============= Campo horário término com CTkEntry (arredondado) =============
+        label_termino = ctk.CTkLabel(row_ata, text="Horário de Término:")
+        label_termino.pack(anchor="w", pady=(10,0))
 
-        ctk.CTkLabel(row_ata, text="Horário de Término:").pack(side="left", padx=5, pady=5)
-        self.entrada_horario_termino = ctk.CTkEntry(row_ata, placeholder_text="HH:MM", width=100)
-        self.entrada_horario_termino.pack(side="left", padx=5, pady=5)
+        self.entrada_horario_termino = ctk.CTkEntry(
+            row_ata,
+            placeholder_text="HH:MM",
+            width=100,
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            text_color="#333333"
+        )
+        self.entrada_horario_termino.pack(anchor="w", pady=5)
 
 
         # Botão "+ Nova Ata"
         botao_nova_ata = ctk.CTkButton(
             row_ata, 
             text="+ Nova Ata",
-            width=110,
-            fg_color="#007E37",
+            fg_color="#019000",
             text_color="#FFFFFF",
-            hover_color="#005C29",
-            font=("Arial", 14),
+            hover_color="#007E37",
+            width=155,
+            height=48,
+            font=("Arial", 16),
             command=self.adicionar_ata_principal
         )
         botao_nova_ata.pack(side="right", padx=5, pady=5)
@@ -244,8 +289,8 @@ class MeetingManagerApp:
         label_fala = ctk.CTkLabel(
             frame_fala,
             text="Criação de fala",
-            font=("Arial", 16, "bold"),
-            text_color="#333"
+            font=("Arial", 22, "bold"),
+            text_color="#007E37"
         )
         label_fala.pack(anchor="w", pady=(0, 5))
 
@@ -284,10 +329,12 @@ class MeetingManagerApp:
         botao_adicionar_fala = ctk.CTkButton(
             frame_fala, 
             text="+ Adicionar Fala",
-            fg_color="#007E37",
+            fg_color="#019000",
             text_color="#FFFFFF",
-            hover_color="#005C29",
-            font=("Arial", 14),
+            hover_color="#007E37",
+            font=("Arial", 16),
+            width=500,
+            height=48,
             command=self.adicionar_fala
         )
         botao_adicionar_fala.pack(anchor="center", pady=(10,0))
@@ -688,7 +735,6 @@ class MeetingManagerApp:
         if descricao and data and horario_inicio and horario_termino:
             adicionar_ata(self.conn, descricao, data, horario_inicio, horario_termino)
             self.descricao_ata.delete(0, ctk.END)
-            self.entrada_data_ata.delete(0, ctk.END)
             self.entrada_horario_inicio.delete(0, ctk.END)
             self.entrada_horario_termino.delete(0, ctk.END)
             self.atualizar_comboboxes()
@@ -786,11 +832,11 @@ class MeetingManagerApp:
             self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
             self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
-            ctk.CTkLabel(frame_ata, text="Horário de Início:").pack(side="left", padx=5, pady=5)
+            ctk.CTkLabel(frame_ata, text="Horário:").pack(side="left", padx=5, pady=5)
             self.entrada_horario_inicio_menu = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
             self.entrada_horario_inicio_menu.pack(side="left", padx=5, pady=5)
 
-            ctk.CTkLabel(frame_ata, text="Horário de Término:").pack(side="left", padx=5, pady=5)
+            ctk.CTkLabel(frame_ata, text="até:").pack(side="left", padx=5, pady=5)
             self.entrada_horario_termino_menu = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
             self.entrada_horario_termino_menu.pack(side="left", padx=5, pady=5)
         
@@ -1003,7 +1049,7 @@ class MeetingManagerApp:
         entrada_horario_inicio.grid(row=2, column=1, sticky="w", padx=5, pady=5)
 
         # --- Horário de Término ---
-        label_horario_termino = ctk.CTkLabel(frame_campos, text="Horário de Término:")
+        label_horario_termino = ctk.CTkLabel(frame_campos, text="até:")
         label_horario_termino.grid(row=2, column=2, sticky="e", padx=5, pady=5)
 
         entrada_horario_termino = ctk.CTkEntry(frame_campos, placeholder_text="HH:MM", width=100)
