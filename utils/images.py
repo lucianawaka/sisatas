@@ -68,6 +68,15 @@ def load_icons():
         size=(20, 20)
     )
 
+    caminho_logo_principal= os.path.join(base_path, "logo_principal.png")
+    imagem_logo_principal = Image.open(caminho_logo_principal)
+ 
+    icon_logo_principal = ctk.CTkImage(
+        dark_image=imagem_logo_principal,
+        light_image=imagem_logo_principal,
+        size=(265, 80)
+    )
+
     # Retorna tudo em um dicionário organizado.
     return {
         "buscar": icon_buscar,
@@ -75,5 +84,6 @@ def load_icons():
         "secretarias": icon_secretarias,
         "secretarios": icon_secretarios,
         "importar": icon_importar,
-        "exportar": icon_exportar
+        "exportar": icon_exportar,
+        "logo_principal": icon_logo_principal
     }
