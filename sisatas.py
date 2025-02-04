@@ -365,12 +365,14 @@ class MeetingManagerApp:
         botao_adicionar_fala = ctk.CTkButton(
             row_fala_text, 
             text="Adicionar Fala",
+            image=self.icons["adicionar"],
             fg_color="#019000",
             text_color="#FFFFFF",
             hover_color="#007E37",
-            width=200,
+            width=500,
             height=48,
             corner_radius=8,
+            font=("Arial", 16),
             command=self.adicionar_fala
         )
         botao_adicionar_fala.pack(side="right", pady=(0, 5))
