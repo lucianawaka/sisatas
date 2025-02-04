@@ -77,6 +77,16 @@ def load_icons():
         size=(265, 80)
     )
 
+    caminho_adicionar= os.path.join(base_path, "Adicionar.png")
+    imagem_adicionar = Image.open(caminho_adicionar)
+ 
+    icon_adicionar = ctk.CTkImage(
+        dark_image=imagem_adicionar,
+        light_image=imagem_adicionar,
+        size=(14, 14)
+    )
+
+
     # Retorna tudo em um dicionário organizado.
     return {
         "buscar": icon_buscar,
@@ -85,5 +95,6 @@ def load_icons():
         "secretarios": icon_secretarios,
         "importar": icon_importar,
         "exportar": icon_exportar,
-        "logo_principal": icon_logo_principal
+        "logo_principal": icon_logo_principal,
+        "adicionar": icon_adicionar
     }

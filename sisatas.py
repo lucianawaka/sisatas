@@ -26,6 +26,7 @@ from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descrica
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
 from utils.images import load_icons
 from utils.CustomDatePicker import CustomDatePicker
+from utils.CTkHTMLScrolledText import CTkHTMLScrolledText
 
 
 class MeetingManagerApp:
@@ -276,10 +277,12 @@ class MeetingManagerApp:
         # Botão "+ Nova Ata" (fica à extrema direita)
         botao_nova_ata = ctk.CTkButton(
             row_ata, 
-            text="+ Nova Ata",
+            image=self.icons["adicionar"],
+            text="Nova Ata",
             fg_color="#019000",
             text_color="#FFFFFF",
             hover_color="#007E37",
+            compound="left",
             width=155,
             height=48,
             font=("Arial", 16),
@@ -306,43 +309,73 @@ class MeetingManagerApp:
         self.combo_atas = ctk.CTkComboBox(
             row_fala_combos, 
             values=["Selecione uma Ata"], 
-            width=250
+            dropdown_fg_color="white",
+            button_color="#019000",
+            button_hover_color="#007E37",
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            text_color="#333333",
+            text_color_disabled="#333333",
+            width=480,
+            height=48
         )
         self.combo_atas.pack(side="left", padx=5, pady=5)
 
         self.combo_secretarios = ctk.CTkComboBox(
             row_fala_combos, 
             values=["Selecione um Secretário"], 
-            width=250
+            button_color="#019000",
+            button_hover_color="#007E37",
+            dropdown_fg_color="white",
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            text_color_disabled="#333333",
+            text_color="#333333",
+            width=520,
+            height=48,
+            
         )
         self.combo_secretarios.pack(side="left", padx=5, pady=5)
 
-        # Exemplo: campo multiline (HTMLScrolledText) – se não usar HTML, pode ser ctk.CTkTextbox
+
+        # Frame onde ficará a caixa de texto e o botão
         row_fala_text = ctk.CTkFrame(frame_fala, fg_color="white")
         row_fala_text.pack(fill="x", pady=5)
 
-        # Text area (pode ser um CTkTextbox, se você quiser algo simples)
-        self.html_editor_fala = HTMLScrolledText(
-            row_fala_text,
-            html="",
-            height=10,
-            width=80
-        )
-        self.html_editor_fala.pack(fill="x", padx=5, expand=True)
 
-        # Botão Adicionar Fala
+
+        # Text area (pode ser um CTkTextbox, se você quiser algo simples)
+        self.html_editor_fala = CTkHTMLScrolledText(
+            row_fala_text,
+            corner_radius=10,
+            border_color="#CCCCCC",
+            border_width=1,
+            fg_color="white",
+            html="",
+            width=80,
+            height=10
+        )
+        self.html_editor_fala.pack(fill="x", padx=10, expand=True)
+
+        # Botão Adicionar Fala, ancorado à direita
         botao_adicionar_fala = ctk.CTkButton(
-            frame_fala, 
-            text="+ Adicionar Fala",
+            row_fala_text, 
+            text="Adicionar Fala",
             fg_color="#019000",
             text_color="#FFFFFF",
             hover_color="#007E37",
-            font=("Arial", 16),
-            width=500,
+            width=200,
             height=48,
+            corner_radius=8,
             command=self.adicionar_fala
         )
-        botao_adicionar_fala.pack(anchor="center", pady=(10,0))
+        botao_adicionar_fala.pack(side="right", pady=(0, 5))
+        
+        #self.geometry("800x200")
 
         # ---------- (Logo da prefeitura no rodapé ----------
 
@@ -749,7 +782,7 @@ class MeetingManagerApp:
     def adicionar_fala(self):
         ata = self.combo_atas.get().split('-')[0].strip()  # Captura apenas a descrição da ata
         secretario = self.combo_secretarios.get().split(' (')[0].strip()  # Captura apenas o nome do secretário
-        fala = self.html_editor_fala.get("1.0", "end").strip()  # Captura o HTML do editor
+        fala = self.html_editor_fala.html_editor.get("1.0", "end").strip()  # Captura o HTML do editor
 
         if ata and secretario and fala:
             try:
