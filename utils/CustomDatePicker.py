@@ -3,17 +3,19 @@ import calendar
 from datetime import datetime
 
 class CustomDatePicker(ctk.CTkFrame):
-    def __init__(self, master=None, width=150, **kwargs):
+    def __init__(self, master=None, width=150, height=48, **kwargs):
+        """CustomDatePicker: um campo de entrada + botão para abrir um calendário."""
         super().__init__(master, **kwargs)
         
         # Definindo data selecionada como "hoje"
         today = datetime.today()
         self.selected_date = today.strftime("%d/%m/%Y")
 
-        # Criação do campo de texto (CTkEntry) já preenchido com a data de hoje
+        # Campo de texto (CTkEntry) - subtraímos 40 do width para acomodar o botão "📅"
         self.entry = ctk.CTkEntry(
-            self, 
-            width=width - 40,  # espaço pro botão do lado
+            self,
+            width=width - 40,
+            height=height,
             placeholder_text="DD/MM/AAAA",
             corner_radius=10,
             border_width=1,
@@ -21,7 +23,8 @@ class CustomDatePicker(ctk.CTkFrame):
             fg_color="white",
             text_color="#333"
         )
-        self.entry.pack(side="left", fill="y")
+        # Não usar fill="y" se queremos fixar height
+        self.entry.pack(side="left")
 
         # Exibe a data de hoje no entry
         self.entry.insert(0, self.selected_date)
@@ -30,17 +33,18 @@ class CustomDatePicker(ctk.CTkFrame):
         self.open_button = ctk.CTkButton(
             self,
             text="📅",
-            width=40,
+            width=40,          # Botão fica com largura fixa
+            height=height,     # Mesma altura do entry
             corner_radius=10,
+            fg_color="#019000",
             command=self.open_calendar
         )
-        self.open_button.pack(side="left", fill="y")
+        self.open_button.pack(side="left")
 
         # Variáveis de controle do mês/ano exibidos no calendário
         self.current_year = None
         self.current_month = None
-
-        self.top = None  # Referência ao popup que será aberto
+        self.top = None  # Referência ao popup
 
     def open_calendar(self):
         # Se a janela já estiver aberta, destrói para recriar
@@ -50,7 +54,7 @@ class CustomDatePicker(ctk.CTkFrame):
             except:
                 pass
 
-        # Descobre a posição do botão para abrir o calendário logo abaixo dele
+        # Posição para abrir o calendário logo abaixo do botão
         x = self.open_button.winfo_rootx()
         y = self.open_button.winfo_rooty() + self.open_button.winfo_height()
 
@@ -60,7 +64,7 @@ class CustomDatePicker(ctk.CTkFrame):
         self.top.geometry(f"+{x}+{y}")
         self.top.attributes("-topmost", True)
 
-        # Define o mês/ano atuais sempre que abrir
+        # Define o mês/ano atuais
         today = datetime.today()
         self.current_year = today.year
         self.current_month = today.month
@@ -79,23 +83,19 @@ class CustomDatePicker(ctk.CTkFrame):
         nav_frame = ctk.CTkFrame(self.calendar_frame)
         nav_frame.pack()
 
-        prev_button = ctk.CTkButton(
-            nav_frame, text="<", width=30,
-            command=self.go_prev_month
-        )
+        prev_button = ctk.CTkButton(nav_frame, text="<", width=30,
+                                    command=self.go_prev_month)
         prev_button.pack(side="left", padx=2)
 
         label_month = ctk.CTkLabel(
-            nav_frame, 
+            nav_frame,
             text=f"{self.current_month:02d}/{self.current_year}",
             font=("Arial", 14, "bold")
         )
         label_month.pack(side="left", padx=10)
 
-        next_button = ctk.CTkButton(
-            nav_frame, text=">", width=30,
-            command=self.go_next_month
-        )
+        next_button = ctk.CTkButton(nav_frame, text=">", width=30,
+                                    command=self.go_next_month)
         next_button.pack(side="left", padx=2)
 
         # ===== Cabeçalho dos dias da semana =====
@@ -155,6 +155,7 @@ class CustomDatePicker(ctk.CTkFrame):
             self.current_month = 1
             self.current_year += 1
         self.draw_calendar()
+
     def get(self):
         """ Retorna a data atualmente exibida no campo de texto. """
         return self.entry.get()
