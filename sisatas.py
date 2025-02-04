@@ -3,6 +3,7 @@ import tkinter as tk
 import os  # Importação necessária para usar funções de sistema de arquivos
 from tkinter import messagebox
 from tkinter import filedialog
+from PIL import Image
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
@@ -23,6 +24,8 @@ from controllers.secretaria import adicionar_secretaria, listar_secretarias, del
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
 from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao, deletar_ata, editar_ata, obter_dados_ata
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
+from utils.images import load_icons
+
 
 class MeetingManagerApp:
     def __init__(self, root):
@@ -34,9 +37,10 @@ class MeetingManagerApp:
         self.root.update_idletasks()  # Garante que o tkinter atualize as dimensões da janela
         ctk.set_appearance_mode("light")  # Tema: "light", "dark", "system"
         ctk.set_default_color_theme("green")  # Cor principal do tema
+
+        # Carregar icones
+        self.icons = load_icons()
         self.setup_ui()
-
-
 
     def setup_ui(self):
 
@@ -65,8 +69,15 @@ class MeetingManagerApp:
         botao_atas_menu.pack(side="right", padx=5, pady=5)
 
         # Botão de Listar Atas
-        botao_listar_atas = ctk.CTkButton(frame_menu, text="Listar Atas", command=self.listar_atas, width=150, fg_color="#007BFF", hover_color="#0056b3", text_color="#FFFFFF")
-        botao_listar_atas.pack(side="right", padx=5, pady=5)
+
+        botao_buscar = ctk.CTkButton(
+            self.root,
+            text="Buscar fala",
+            image=self.icons["buscar"],  # pega o ícone do dicionário
+            compound="left",
+            command=self.listar_atas
+        )
+        botao_buscar.pack(pady=5)
 
         # Label para o título do aplicativo
         label_titulo = ctk.CTkLabel(frame_menu, text="Gerenciador de Atas", font=("Arial", 18, "bold"))
