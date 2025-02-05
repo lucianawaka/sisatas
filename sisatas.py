@@ -27,7 +27,7 @@ from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_
 from utils.images import load_icons
 from utils.CustomDatePicker import CustomDatePicker
 from utils.CTkHTMLScrolledText import CTkHTMLScrolledText
-
+from utils.Fotter import Footer
 
 class MeetingManagerApp:
     def __init__(self, root):
@@ -388,19 +388,11 @@ class MeetingManagerApp:
             command=self.adicionar_fala
         )
         botao_adicionar_fala.pack(side="right", pady=(10, 5), padx=10)
-        
-        #self.geometry("800x200")
 
-        # ----------------------------------------------------------------
-        # LOGO NO RODAPÉ (pode ficar ao final, fora dos “cards”)
-        # ----------------------------------------------------------------
-        footer_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
-        footer_frame.pack(fill="x", pady=(30, 10))
-
-        label_logo = ctk.CTkLabel(footer_frame, text="", image=self.icons["logo_principal"], compound="top")
-        label_logo.pack()
+        Footer.footer_container(self, main_container, self.icons["logo_principal"])
 
         self.atualizar_comboboxes()
+
 
 
     def return_to_main_menu(self):
@@ -1264,6 +1256,7 @@ class MeetingManagerApp:
                                         )
         label_lista_atas.pack(fill="x", side='left', padx=5)
 
+        Footer.footer_container(self, main_container, self.icons["logo_principal"])
         # Criar o Treeview
         lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
         lista_atas.heading("#0", text="Ata (Descrição - Data)")
