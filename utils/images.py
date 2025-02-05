@@ -21,12 +21,6 @@ def load_icons():
     """
     # Subir um nível para acessar o diretório raiz (sisatas)
     base_path = get_base_path()
-
-
-    # Debug: imprimir o caminho e listar arquivos
-    print(f"Base path: {base_path}")
-    print("Arquivos disponíveis:", os.listdir(base_path) if os.path.exists(base_path) else "Pasta não encontrada")
-
     caminho_buscar = os.path.join(base_path, "Buscar_Fala.png")
 
     if not os.path.exists(caminho_buscar):
