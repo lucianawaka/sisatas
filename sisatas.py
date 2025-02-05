@@ -56,7 +56,7 @@ class MeetingManagerApp:
 
         # Frame para conter título e botões no topo
         header_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
-        header_frame.pack(fill="x", pady=(20, 10))
+        header_frame.pack(fill="x", pady=(20, 10), padx=60)
 
 
     # ---------- Título ----------
@@ -185,11 +185,11 @@ class MeetingManagerApp:
         # PRIMEIRO BLOCO EM BRANCO: “Criação de Ata”
         # ----------------------------------------------------------------
         card_ata = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
-        card_ata.pack(fill="x", padx=40, pady=(20, 20))
+        card_ata.pack(fill="x", padx=400, pady=(20, 20))
 
         # ---------- Seção: Criação de Ata ----------
         section_ata = ctk.CTkFrame(card_ata, fg_color="white")
-        section_ata.pack(fill="x", padx=20, pady=(10, 10))
+        section_ata.pack(fill="x", pady=(10, 10))
 
         label_ata = ctk.CTkLabel(
             section_ata,
@@ -197,7 +197,7 @@ class MeetingManagerApp:
             font=("Arial", 22, "bold"),
             text_color="#007E37"
         )
-        label_ata.pack(anchor="w", pady=(0, 5))
+        label_ata.pack(anchor="w", pady=(0, 5), padx=10)
 
         # Frame único para agrupar os campos em linha
         row_ata = ctk.CTkFrame(section_ata, fg_color="white")
@@ -207,7 +207,7 @@ class MeetingManagerApp:
         self.descricao_ata = ctk.CTkEntry(
             row_ata, 
             placeholder_text="Nome da Ata", 
-            width=420,
+            width=380,
             height=48,
             corner_radius=10,
             border_width=1,
@@ -215,13 +215,13 @@ class MeetingManagerApp:
             fg_color="white",
             font=("Arial", 16)
         )
-        self.descricao_ata.pack(side="left", padx=5, pady=5)
+        self.descricao_ata.pack(side="left", padx=15, pady=5)
 
         # Campo de data (DatePicker customizado)
         # -> Não crie outro root, use simplesmente 'row_ata' como parent
         self.entrada_data_ata = CustomDatePicker(
             row_ata, 
-            width=150, 
+            width=140, 
             height=48,
             corner_radius=10,
             border_width=1,
@@ -243,9 +243,10 @@ class MeetingManagerApp:
         self.entrada_horario_inicio = ctk.CTkEntry(
             row_ata,
             placeholder_text="HH:MM",
-            width=80,
+            width=70,
             height=48,
             corner_radius=10,
+            font=("Arial", 14),
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
@@ -266,9 +267,10 @@ class MeetingManagerApp:
         self.entrada_horario_termino = ctk.CTkEntry(
             row_ata,
             placeholder_text="HH:MM",
-            width=80,
+            width=70,
             height=48,
             corner_radius=10,
+            font=("Arial", 14),
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
@@ -290,16 +292,16 @@ class MeetingManagerApp:
             font=("Arial", 16),
             command=self.adicionar_ata_principal
         )
-        botao_nova_ata.pack(side="right", padx=5, pady=5)
+        botao_nova_ata.pack(side="right", padx=10, pady=5)
 
         # ----------------------------------------------------------------
         # SEGUNDO BLOCO EM BRANCO: “Criação de fala”
         # ----------------------------------------------------------------
         card_fala = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
-        card_fala.pack(fill="x", padx=40, pady=(0, 10))
+        card_fala.pack(fill="x", padx=400, pady=(0, 10))
 
         frame_fala = ctk.CTkFrame(card_fala, fg_color="white")
-        frame_fala.pack(fill="x", padx=20, pady=(20, 20))
+        frame_fala.pack(fill="x",pady=(20, 20))
 
         label_fala = ctk.CTkLabel(
             frame_fala,
@@ -307,7 +309,7 @@ class MeetingManagerApp:
             font=("Arial", 22, "bold"),
             text_color="#007E37"
         )
-        label_fala.pack(anchor="w", pady=(0, 5))
+        label_fala.pack(anchor="w", padx=10, pady=(0, 5))
 
         # Frame para comboboxes
         row_fala_combos = ctk.CTkFrame(frame_fala, fg_color="white")
@@ -325,10 +327,12 @@ class MeetingManagerApp:
             fg_color="white",
             text_color="#333333",
             text_color_disabled="#333333",
-            width=480,
+            font=("Arial", 14),
+            dropdown_font=("Arial", 14),
+            width=400,
             height=48
         )
-        self.combo_atas.pack(side="left", padx=5, pady=5)
+        self.combo_atas.pack(side="left", padx=10, pady=5)
 
         self.combo_secretarios = ctk.CTkComboBox(
             row_fala_combos, 
@@ -340,9 +344,11 @@ class MeetingManagerApp:
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
+            font=("Arial", 14),
+            dropdown_font=("Arial", 14),
             text_color_disabled="#333333",
             text_color="#333333",
-            width=520,
+            width=480,
             height=48,
             
         )
@@ -361,10 +367,11 @@ class MeetingManagerApp:
             border_width=1,
             fg_color="white",
             html="",
+            font=("Arial", 14),
             width=80,
             height=10
         )
-        self.html_editor_fala.pack(fill="x", padx=5, expand=True)
+        self.html_editor_fala.pack(fill="x", padx=10, expand=True)
 
         # Botão Adicionar Fala, ancorado à direita
         botao_adicionar_fala = ctk.CTkButton(
@@ -380,7 +387,7 @@ class MeetingManagerApp:
             font=("Arial", 16),
             command=self.adicionar_fala
         )
-        botao_adicionar_fala.pack(side="right", pady=(10, 5))
+        botao_adicionar_fala.pack(side="right", pady=(10, 5), padx=10)
         
         #self.geometry("800x200")
 
