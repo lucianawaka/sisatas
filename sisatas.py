@@ -1209,7 +1209,7 @@ class MeetingManagerApp:
                         font=("Arial", 22, "bold"),
                         text_color="#007E37"                               ,
         )
-        label_busca.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
+        label_busca.pack(fill="none", anchor="w", padx=5, pady=(5, 10))
 
         # Frame para campo e botão na segunda linha
         input_frame = ctk.CTkFrame(frame_busca, fg_color="white")
@@ -1243,20 +1243,32 @@ class MeetingManagerApp:
         # ----------------------------------------------------------------
         # SEGUNDO BLOCO EM BRANCO: Listar falas das Atas”
         # ----------------------------------------------------------------
+        
         card_fala_atas = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
         card_fala_atas.pack(fill="x", padx=400, pady=(0, 10))
 
-        frame_lista_atas = ctk.CTkFrame(card_fala_atas, fg_color="white")
-        frame_lista_atas.pack(fill="x",pady=(20, 20))
+        # Frame para o label da lista (primeira linha)
+        label_frame = ctk.CTkFrame(card_fala_atas, fg_color="white")
+        label_frame.pack(fill="x", pady=(10, 0), anchor="w")
 
-        label_lista_atas = ctk.CTkLabel(frame_lista_atas, 
+        label_lista_atas = ctk.CTkLabel(label_frame, 
                                         text="Lista de Atas",
                                         font=("Arial", 22, "bold"),
                                         text_color="#007E37"  
                                         )
-        label_lista_atas.pack(fill="x", side='left', padx=5)
+        label_lista_atas.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
 
-        Footer.footer_container(self, main_container, self.icons["logo_principal"])
+        # Frame para a lista e scrollbar (segunda linha)
+        frame_lista_atas = ctk.CTkFrame(
+                                        card_fala_atas, 
+                                        fg_color="white",          # Background color
+                                        border_color="#007E37",    # Border color (green)
+                                        border_width=2,            # Border thickness
+                                        corner_radius=10           # Rounded corners
+
+        )
+        frame_lista_atas.pack(fill="both", expand=True, pady=(0, 20), padx=10)
+       
         # Criar o Treeview
         lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
         lista_atas.heading("#0", text="Ata (Descrição - Data)")
@@ -1272,6 +1284,9 @@ class MeetingManagerApp:
         # Posicionar o Treeview e a Scrollbar
         lista_atas.pack(side="left", fill="both", expand=True)
         scrollbar_vertical.pack(side="right", fill="y")
+
+        # Footer
+        Footer.footer_container(self, main_container, self.icons["logo_principal"])
 
         # Função para atualizar a lista de atas
         def atualizar_lista(filtro):
