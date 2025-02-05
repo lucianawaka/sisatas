@@ -1175,7 +1175,7 @@ class MeetingManagerApp:
 
         # Frame para botão no topo
         header_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
-        header_frame.pack(fill="x", pady=(20, 10), padx=380)
+        header_frame.pack(fill="x", pady=(20, 10), padx=390)
 
         # Botão de voltar
         botao_voltar = ctk.CTkButton(
