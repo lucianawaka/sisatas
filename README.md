@@ -32,6 +32,30 @@ pyinstaller -w --onefile --add-data "assets/img/logo.png;assets/img" sisatas.py
 
 ```
 
+**Caso houver erro ao gerar o .exe**
+
+```
+pyinstaller sisatas.spec
+```
+Edite sisatas.spec para colocar as imagens
+
+```
+datas=[('assets/img/logo.png', 'assets/img'),
+    ('assets/img/Buscar_Fala.png', 'assets/img'),
+    ('assets/img/Adicionar.png', 'assets/img'),
+    ('assets/img/calendar.png', 'assets/img'),
+    ('assets/img/Exportar_Dados.png', 'assets/img'),
+    ('assets/img/Importar_Dados.png', 'assets/img'),
+    ('assets/img/Listar_Atas.png', 'assets/img'),
+    ('assets/img/logo_principal.png', 'assets/img'),
+    ('assets/img/Secretarias.png', 'assets/img'),
+    ('assets/img/Secretarios.png', 'assets/img'),
+    ('assets/img/seta_para_baixo.png', 'assets/img')],
+```
+Agora recompile o .exe
+
+```pyinstaller sisatas.spec```
+
 Na pasta dist cole a base de dados banco_de_dados_atas.db para a pasta caso já exista dados
 Pode excluir o arquivo main.spec e a pasta build
 

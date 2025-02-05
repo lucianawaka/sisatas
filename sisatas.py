@@ -3,6 +3,7 @@ import tkinter as tk
 import os  # Importação necessária para usar funções de sistema de arquivos
 from tkinter import messagebox
 from tkinter import filedialog
+from PIL import Image
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
@@ -23,6 +24,10 @@ from controllers.secretaria import adicionar_secretaria, listar_secretarias, del
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
 from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao, deletar_ata, editar_ata, obter_dados_ata
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
+from utils.images import load_icons
+from utils.CustomDatePicker import CustomDatePicker
+from utils.CTkHTMLScrolledText import CTkHTMLScrolledText
+
 
 class MeetingManagerApp:
     def __init__(self, root):
@@ -31,95 +36,369 @@ class MeetingManagerApp:
         self.root = root
         self.root.title("Gerenciador de Atas")
         self.root.geometry(f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0")
-        self.root.update_idletasks()  # Garante que o tkinter atualize as dimensões da janela
+        #self.root.update_idletasks()  # Garante que o tkinter atualize as dimensões da janela
+        #self.root.geometry("1200x800")
+
         ctk.set_appearance_mode("light")  # Tema: "light", "dark", "system"
         ctk.set_default_color_theme("green")  # Cor principal do tema
+
+        # Carregar icones
+        self.icons = load_icons()
         self.setup_ui()
-
-
 
     def setup_ui(self):
 
-        # Frame para o menu horizontal
-        frame_menu = ctk.CTkFrame(self.root, height=50)
-        frame_menu.pack(fill="x", padx=10, pady=5)
+        self.root.configure(bg="#FAFAFA")
 
-        # Botão de Backup
-        botao_backup = ctk.CTkButton(frame_menu, text="Exportar dados", command=self.realizar_backup, width=150,fg_color="#dc3545", hover_color="#a71d2a", text_color="#FFFFFF")
-        botao_backup.pack(side="right", padx=5, pady=5)
+        # Frame principal ocupando toda a janela
+        main_container = ctk.CTkFrame(self.root, fg_color="#FAFAFA")
+        main_container.pack(fill="both", expand=True)
 
-        # Botão de Importar dados
-        botao_carregar_backup = ctk.CTkButton(frame_menu, text="Importar dados", command=self.carregar_backup, width=150, fg_color="#6f42c1", hover_color="#4e2a8e", text_color="#FFFFFF")
-        botao_carregar_backup.pack(side="right", padx=5, pady=5)
+        # Frame para conter título e botões no topo
+        header_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
+        header_frame.pack(fill="x", pady=(20, 10), padx=60)
 
-        # Botão de Carregar Menu da Secretario
-        botao_secretario_menu = ctk.CTkButton(frame_menu, text="Secretarios", command=self.menu_secretario, width=150, fg_color="#fd7e14", hover_color="#e56406", text_color="#FFFFFF")
-        botao_secretario_menu.pack(side="right", padx=5, pady=5)
 
-        # Botão de Carregar Menu da Secretaria
-        botao_secretaria_menu = ctk.CTkButton(frame_menu, text="Secretarias", command=self.menu_secretaria, width=150, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
-        botao_secretaria_menu.pack(side="right", padx=5, pady=5)
+    # ---------- Título ----------
+        label_titulo = ctk.CTkLabel(
+            header_frame,
+            text="Gerenciador de Atas",
+            text_color="#019000",
+            font=("Arial", 36, "bold")
+        )
+        label_titulo.pack(pady=(0, 10))  # Pequeno espaçamento abaixo do título
 
-        # Botão de Carregar Menu da Atas
-        botao_atas_menu = ctk.CTkButton(frame_menu, text="Atas", command=self.menu_atas, width=150, fg_color="#17a2b8", hover_color="#117a8b", text_color="#FFFFFF")
-        botao_atas_menu.pack(side="right", padx=5, pady=5)
+
+
+        # ---------- Botões no topo ----------
+        container_botoes = ctk.CTkFrame(header_frame, fg_color="#FAFAFA")
+        container_botoes.pack(fill="x")  # Ocupa toda a largura, mas usaremos grid internamente
+
+        # Configura cada coluna do grid
+        #  - colunas 0 e 7 (as extremidades) terão weight=1 para empurrar os botões ao centro
+        #  - colunas 1..6 ficam sem weight (weight=0), pois os botões terão largura fixa
+        for i in range(8):
+            container_botoes.grid_columnconfigure(i, weight=0)
+        container_botoes.grid_columnconfigure(0, weight=1)
+        container_botoes.grid_columnconfigure(7, weight=1)
 
         # Botão de Listar Atas
-        botao_listar_atas = ctk.CTkButton(frame_menu, text="Listar Atas", command=self.listar_atas, width=150, fg_color="#007BFF", hover_color="#0056b3", text_color="#FFFFFF")
-        botao_listar_atas.pack(side="right", padx=5, pady=5)
+        botao_buscar = ctk.CTkButton(
+            container_botoes,
+            text="Buscar fala",
+            image=self.icons["buscar"],  # pega o ícone do dicionário
+            compound="left",
+            width=156,
+            height=48,
+            fg_color="#007E37",
+            hover_color="#005C29",
+            text_color="#FFFFFF",
+            font=("Arial", 16),
+            command=self.listar_atas
+        )
+        botao_buscar.grid(row=0, column=1, padx=5, pady=10)  # sem sticky="ew" para manter a largura fixa
 
-        # Label para o título do aplicativo
-        label_titulo = ctk.CTkLabel(frame_menu, text="Gerenciador de Atas", font=("Arial", 18, "bold"))
-        label_titulo.pack(side="left", padx=10, pady=5)
+        # Botão de Carregar Menu da Atas
+        botao_listar_atas = ctk.CTkButton(
+            container_botoes, 
+            text="Lista de atas",
+            image=self.icons["atas"],
+            compound="left",
+            width=156,
+            height=48,
+            fg_color="#007E37",
+            hover_color="#005C29",
+            text_color="#FFFFFF",
+            font=("Arial", 16),
+            command=self.menu_atas  # Exemplo de callback
+        )
+        botao_listar_atas.grid(row=0, column=2, padx=5, pady=10)
 
-        # Frame para cadastro de Ata
-        frame_ata = ctk.CTkFrame(self.root)
-        frame_ata.pack(fill="x", padx=10, pady=5)
+        # Botão de Carregar Menu da Secretaria
+        botao_secretarias = ctk.CTkButton(
+            container_botoes, 
+            text="Secretarias",
+            image=self.icons["secretarias"],
+            compound="left",
+            width=156,
+            height=48,
+            fg_color="#007E37",
+            hover_color="#005C29",
+            text_color="#FFFFFF",
+            font=("Arial", 16),
+            command=self.menu_secretaria  # Exemplo de callback
+        )
+        botao_secretarias.grid(row=0, column=3, padx=5, pady=10)
 
-        ctk.CTkLabel(frame_ata, text="Adicionar Ata").pack(side="left", padx=5, pady=5)
+        # Botão de Carregar Menu da Secretarios
+        botao_secretarios = ctk.CTkButton(
+            container_botoes,
+            text="Secretários",
+            image=self.icons["secretarios"],
+            compound="left",
+            width=156,
+            height=48,
+            fg_color="#007E37",
+            hover_color="#005C29",
+            text_color="#FFFFFF",
+            font=("Arial", 16),
+            command=self.menu_secretario  # Exemplo de callback
+        )
+        botao_secretarios.grid(row=0, column=4, padx=5, pady=10)
 
-        self.descricao_ata = ctk.CTkEntry(frame_ata, placeholder_text="Descrição da Ata", width=200)
-        self.descricao_ata.pack(side="left", padx=5, pady=5)
+        # --- Botões Importar/Exportar (195x48) com borda verde ---
+        botao_importar = ctk.CTkButton(
+            container_botoes,
+            text="Importar Dados",
+            image=self.icons["importar"],
+            compound="left",
+            width=195,
+            height=48,
+            fg_color="white",           # Fundo branco
+            border_width=2,            
+            border_color="#33A532",     # Cor da borda
+            text_color="#33A532",       # Texto verde
+            hover_color="#E8F6EE",      # Exemplo de cor de hover
+            font=("Arial", 16),
+            command=self.carregar_backup  # callback
+        )
+        botao_importar.grid(row=0, column=5, padx=5, pady=10)
 
-        self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
-        self.entrada_data_ata.pack(side="left", padx=5, pady=5)
-        
-        ctk.CTkLabel(frame_ata, text="Horário de Início:").pack(side="left", padx=5, pady=5)
-        self.entrada_horario_inicio = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
+        botao_exportar = ctk.CTkButton(
+            container_botoes,
+            text="Exportar Dados",
+            image=self.icons["exportar"],
+            compound="left",
+            width=195,
+            height=48,
+            fg_color="white",
+            border_width=2,
+            border_color="#33A532",
+            text_color="#33A532",
+            hover_color="#E8F6EE",
+            font=("Arial", 16),
+            command=self.realizar_backup  # callback
+        )
+        botao_exportar.grid(row=0, column=6, padx=5, pady=10)
+
+        # ----------------------------------------------------------------
+        # PRIMEIRO BLOCO EM BRANCO: “Criação de Ata”
+        # ----------------------------------------------------------------
+        card_ata = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_ata.pack(fill="x", padx=400, pady=(20, 20))
+
+        # ---------- Seção: Criação de Ata ----------
+        section_ata = ctk.CTkFrame(card_ata, fg_color="white")
+        section_ata.pack(fill="x", pady=(10, 10))
+
+        label_ata = ctk.CTkLabel(
+            section_ata,
+            text="Criação de Ata",
+            font=("Arial", 22, "bold"),
+            text_color="#007E37"
+        )
+        label_ata.pack(anchor="w", pady=(0, 5), padx=10)
+
+        # Frame único para agrupar os campos em linha
+        row_ata = ctk.CTkFrame(section_ata, fg_color="white")
+        row_ata.pack(fill="x")
+
+        # Campo "Nome da Ata"
+        self.descricao_ata = ctk.CTkEntry(
+            row_ata, 
+            placeholder_text="Nome da Ata", 
+            width=380,
+            height=48,
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            font=("Arial", 16)
+        )
+        self.descricao_ata.pack(side="left", padx=15, pady=5)
+
+        # Campo de data (DatePicker customizado)
+        # -> Não crie outro root, use simplesmente 'row_ata' como parent
+        self.entrada_data_ata = CustomDatePicker(
+            row_ata, 
+            width=140, 
+            height=48,
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white"
+        )
+        self.entrada_data_ata.pack(side="left", padx=10, pady=5)
+
+        # Label "Horário de Início"
+        label_inicio = ctk.CTkLabel(
+            row_ata, 
+            text="Horário de Início:", 
+            font=("Arial", 12, "bold"),
+            text_color="#007E37"
+        )
+        label_inicio.pack(side="left", padx=(20,5), pady=5)
+
+        # Campo "Horário de Início"
+        self.entrada_horario_inicio = ctk.CTkEntry(
+            row_ata,
+            placeholder_text="HH:MM",
+            width=70,
+            height=48,
+            corner_radius=10,
+            font=("Arial", 14),
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            text_color="#333333"
+        )
         self.entrada_horario_inicio.pack(side="left", padx=5, pady=5)
 
-        ctk.CTkLabel(frame_ata, text="Horário de Término:").pack(side="left", padx=5, pady=5)
-        self.entrada_horario_termino = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
+        # Label "Horário de Término"
+        label_termino = ctk.CTkLabel(
+            row_ata, 
+            text="Horário de Término:",
+            font=("Arial", 12, "bold"),
+            text_color="#007E37"
+        )
+        label_termino.pack(side="left", padx=(20,5), pady=5)
+
+        # Campo "Horário de Término"
+        self.entrada_horario_termino = ctk.CTkEntry(
+            row_ata,
+            placeholder_text="HH:MM",
+            width=70,
+            height=48,
+            corner_radius=10,
+            font=("Arial", 14),
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            text_color="#333333"
+        )
         self.entrada_horario_termino.pack(side="left", padx=5, pady=5)
 
-        botao_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata_principal)
-        botao_ata.pack(side="left", padx=5, pady=5)
+        # Botão "+ Nova Ata" (fica à extrema direita)
+        botao_nova_ata = ctk.CTkButton(
+            row_ata, 
+            image=self.icons["adicionar"],
+            text="Nova Ata",
+            fg_color="#019000",
+            text_color="#FFFFFF",
+            hover_color="#007E37",
+            compound="left",
+            width=155,
+            height=48,
+            font=("Arial", 16),
+            command=self.adicionar_ata_principal
+        )
+        botao_nova_ata.pack(side="right", padx=10, pady=5)
 
-        # Frame para registro de Falas
-        frame_fala = ctk.CTkFrame(self.root)
-        frame_fala.pack(fill="x", padx=10, pady=5)
+        # ----------------------------------------------------------------
+        # SEGUNDO BLOCO EM BRANCO: “Criação de fala”
+        # ----------------------------------------------------------------
+        card_fala = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_fala.pack(fill="x", padx=400, pady=(0, 10))
 
-        ctk.CTkLabel(frame_fala, text="Adicionar Fala", font=("Arial", 14, "bold")).pack(anchor="w", padx=5, pady=5)
+        frame_fala = ctk.CTkFrame(card_fala, fg_color="white")
+        frame_fala.pack(fill="x",pady=(20, 20))
 
-        # Frame interno para organizar os ComboBox lado a lado
-        frame_combos = ctk.CTkFrame(frame_fala)
-        frame_combos.pack(anchor="w", fill="x", padx=5, pady=5)
+        label_fala = ctk.CTkLabel(
+            frame_fala,
+            text="Criação de fala",
+            font=("Arial", 22, "bold"),
+            text_color="#007E37"
+        )
+        label_fala.pack(anchor="w", padx=10, pady=(0, 5))
 
-        self.combo_atas = ctk.CTkComboBox(frame_combos, values=['Selecione uma Ata'], width=250)
-        self.combo_atas.pack(side="left", padx=5, pady=5)
+        # Frame para comboboxes
+        row_fala_combos = ctk.CTkFrame(frame_fala, fg_color="white")
+        row_fala_combos.pack(fill="x")
 
-        self.combo_secretarios = ctk.CTkComboBox(frame_combos, values=['Selecione um Secretário'], width=250)
+        self.combo_atas = ctk.CTkComboBox(
+            row_fala_combos, 
+            values=["Selecione uma Ata"], 
+            dropdown_fg_color="white",
+            button_color="#019000",
+            button_hover_color="#007E37",
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            text_color="#333333",
+            text_color_disabled="#333333",
+            font=("Arial", 14),
+            dropdown_font=("Arial", 14),
+            width=400,
+            height=48
+        )
+        self.combo_atas.pack(side="left", padx=10, pady=5)
+
+        self.combo_secretarios = ctk.CTkComboBox(
+            row_fala_combos, 
+            values=["Selecione um Secretário"], 
+            button_color="#019000",
+            button_hover_color="#007E37",
+            dropdown_fg_color="white",
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            font=("Arial", 14),
+            dropdown_font=("Arial", 14),
+            text_color_disabled="#333333",
+            text_color="#333333",
+            width=480,
+            height=48,
+            
+        )
         self.combo_secretarios.pack(side="left", padx=5, pady=5)
 
-        # Editor HTML para a fala
-        self.html_editor_fala = HTMLScrolledText(frame_fala, html="", height=16, width=80)
-        self.html_editor_fala.pack(anchor="w", padx=5, pady=5,fill="both", expand=True)
 
-        # Botão de Adicionar Fala
-        botao_fala = ctk.CTkButton(frame_fala, text="Adicionar Fala", command=self.adicionar_fala, width=150)
-        botao_fala.pack(anchor="center", padx=5, pady=5)
+        # Frame onde ficará a caixa de texto e o botão
+        row_fala_text = ctk.CTkFrame(frame_fala, fg_color="white")
+        row_fala_text.pack(fill="x", pady=10)
 
+        # Text area (pode ser um CTkTextbox, se você quiser algo simples)
+        self.html_editor_fala = CTkHTMLScrolledText(
+            row_fala_text,
+            corner_radius=10,
+            border_color="#CCCCCC",
+            border_width=1,
+            fg_color="white",
+            html="",
+            font=("Arial", 14),
+            width=80,
+            height=10
+        )
+        self.html_editor_fala.pack(fill="x", padx=10, expand=True)
 
+        # Botão Adicionar Fala, ancorado à direita
+        botao_adicionar_fala = ctk.CTkButton(
+            row_fala_text, 
+            text="Adicionar Fala",
+            image=self.icons["adicionar"],
+            fg_color="#019000",
+            text_color="#FFFFFF",
+            hover_color="#007E37",
+            width=500,
+            height=48,
+            corner_radius=8,
+            font=("Arial", 16),
+            command=self.adicionar_fala
+        )
+        botao_adicionar_fala.pack(side="right", pady=(10, 5), padx=10)
+        
+        #self.geometry("800x200")
+
+        # ----------------------------------------------------------------
+        # LOGO NO RODAPÉ (pode ficar ao final, fora dos “cards”)
+        # ----------------------------------------------------------------
+        footer_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
+        footer_frame.pack(fill="x", pady=(30, 10))
+
+        label_logo = ctk.CTkLabel(footer_frame, text="", image=self.icons["logo_principal"], compound="top")
+        label_logo.pack()
 
         self.atualizar_comboboxes()
 
@@ -512,7 +791,6 @@ class MeetingManagerApp:
         if descricao and data and horario_inicio and horario_termino:
             adicionar_ata(self.conn, descricao, data, horario_inicio, horario_termino)
             self.descricao_ata.delete(0, ctk.END)
-            self.entrada_data_ata.delete(0, ctk.END)
             self.entrada_horario_inicio.delete(0, ctk.END)
             self.entrada_horario_termino.delete(0, ctk.END)
             self.atualizar_comboboxes()
@@ -522,7 +800,7 @@ class MeetingManagerApp:
     def adicionar_fala(self):
         ata = self.combo_atas.get().split('-')[0].strip()  # Captura apenas a descrição da ata
         secretario = self.combo_secretarios.get().split(' (')[0].strip()  # Captura apenas o nome do secretário
-        fala = self.html_editor_fala.get("1.0", "end").strip()  # Captura o HTML do editor
+        fala = self.html_editor_fala.html_editor.get("1.0", "end").strip()  # Captura o HTML do editor
 
         if ata and secretario and fala:
             try:
@@ -610,11 +888,11 @@ class MeetingManagerApp:
             self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
             self.entrada_data_ata.pack(side="left", padx=5, pady=5)
 
-            ctk.CTkLabel(frame_ata, text="Horário de Início:").pack(side="left", padx=5, pady=5)
+            ctk.CTkLabel(frame_ata, text="Horário:").pack(side="left", padx=5, pady=5)
             self.entrada_horario_inicio_menu = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
             self.entrada_horario_inicio_menu.pack(side="left", padx=5, pady=5)
 
-            ctk.CTkLabel(frame_ata, text="Horário de Término:").pack(side="left", padx=5, pady=5)
+            ctk.CTkLabel(frame_ata, text="até:").pack(side="left", padx=5, pady=5)
             self.entrada_horario_termino_menu = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
             self.entrada_horario_termino_menu.pack(side="left", padx=5, pady=5)
         
@@ -827,7 +1105,7 @@ class MeetingManagerApp:
         entrada_horario_inicio.grid(row=2, column=1, sticky="w", padx=5, pady=5)
 
         # --- Horário de Término ---
-        label_horario_termino = ctk.CTkLabel(frame_campos, text="Horário de Término:")
+        label_horario_termino = ctk.CTkLabel(frame_campos, text="até:")
         label_horario_termino.grid(row=2, column=2, sticky="e", padx=5, pady=5)
 
         entrada_horario_termino = ctk.CTkEntry(frame_campos, placeholder_text="HH:MM", width=100)
