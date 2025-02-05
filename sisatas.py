@@ -70,10 +70,17 @@ class MeetingManagerApp:
 
 
 
-    # ---------- Botões no topo ----------
+        # ---------- Botões no topo ----------
         container_botoes = ctk.CTkFrame(header_frame, fg_color="#FAFAFA")
-        container_botoes.pack(anchor="center")
+        container_botoes.pack(fill="x")  # Ocupa toda a largura, mas usaremos grid internamente
 
+        # Configura cada coluna do grid
+        #  - colunas 0 e 7 (as extremidades) terão weight=1 para empurrar os botões ao centro
+        #  - colunas 1..6 ficam sem weight (weight=0), pois os botões terão largura fixa
+        for i in range(8):
+            container_botoes.grid_columnconfigure(i, weight=0)
+        container_botoes.grid_columnconfigure(0, weight=1)
+        container_botoes.grid_columnconfigure(7, weight=1)
 
         # Botão de Listar Atas
         botao_buscar = ctk.CTkButton(
@@ -89,7 +96,7 @@ class MeetingManagerApp:
             font=("Arial", 16),
             command=self.listar_atas
         )
-        botao_buscar.pack(side="left", padx=5)
+        botao_buscar.grid(row=0, column=1, padx=5, pady=10)  # sem sticky="ew" para manter a largura fixa
 
         # Botão de Carregar Menu da Atas
         botao_listar_atas = ctk.CTkButton(
@@ -105,8 +112,7 @@ class MeetingManagerApp:
             font=("Arial", 16),
             command=self.menu_atas  # Exemplo de callback
         )
-        botao_listar_atas.pack(side="left", padx=5)
-
+        botao_listar_atas.grid(row=0, column=2, padx=5, pady=10)
 
         # Botão de Carregar Menu da Secretaria
         botao_secretarias = ctk.CTkButton(
@@ -122,7 +128,7 @@ class MeetingManagerApp:
             font=("Arial", 16),
             command=self.menu_secretaria  # Exemplo de callback
         )
-        botao_secretarias.pack(side="left", padx=5)
+        botao_secretarias.grid(row=0, column=3, padx=5, pady=10)
 
         # Botão de Carregar Menu da Secretarios
         botao_secretarios = ctk.CTkButton(
@@ -138,7 +144,7 @@ class MeetingManagerApp:
             font=("Arial", 16),
             command=self.menu_secretario  # Exemplo de callback
         )
-        botao_secretarios.pack(side="left", padx=5)
+        botao_secretarios.grid(row=0, column=4, padx=5, pady=10)
 
         # --- Botões Importar/Exportar (195x48) com borda verde ---
         botao_importar = ctk.CTkButton(
@@ -154,9 +160,9 @@ class MeetingManagerApp:
             text_color="#33A532",       # Texto verde
             hover_color="#E8F6EE",      # Exemplo de cor de hover
             font=("Arial", 16),
-            command=self.carregar_backup  # Exemplo de callback
+            command=self.carregar_backup  # callback
         )
-        botao_importar.pack(side="left", padx=(40, 5))  # Espaço extra à esquerda para separação
+        botao_importar.grid(row=0, column=5, padx=5, pady=10)
 
         botao_exportar = ctk.CTkButton(
             container_botoes,
@@ -171,19 +177,19 @@ class MeetingManagerApp:
             text_color="#33A532",
             hover_color="#E8F6EE",
             font=("Arial", 16),
-            command=self.realizar_backup  # Exemplo de callback
+            command=self.realizar_backup  # callback
         )
-        botao_exportar.pack(side="left", padx=5)
+        botao_exportar.grid(row=0, column=6, padx=5, pady=10)
 
         # ----------------------------------------------------------------
         # PRIMEIRO BLOCO EM BRANCO: “Criação de Ata”
         # ----------------------------------------------------------------
         card_ata = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
-        card_ata.pack(fill="x", padx=40, pady=(10, 10))
+        card_ata.pack(fill="x", padx=40, pady=(20, 20))
 
         # ---------- Seção: Criação de Ata ----------
         section_ata = ctk.CTkFrame(card_ata, fg_color="white")
-        section_ata.pack(fill="x", padx=20, pady=(20, 10))
+        section_ata.pack(fill="x", padx=20, pady=(10, 10))
 
         label_ata = ctk.CTkLabel(
             section_ata,
@@ -345,7 +351,7 @@ class MeetingManagerApp:
 
         # Frame onde ficará a caixa de texto e o botão
         row_fala_text = ctk.CTkFrame(frame_fala, fg_color="white")
-        row_fala_text.pack(fill="x", pady=5)
+        row_fala_text.pack(fill="x", pady=10)
 
         # Text area (pode ser um CTkTextbox, se você quiser algo simples)
         self.html_editor_fala = CTkHTMLScrolledText(
@@ -358,7 +364,7 @@ class MeetingManagerApp:
             width=80,
             height=10
         )
-        self.html_editor_fala.pack(fill="x", padx=10, expand=True)
+        self.html_editor_fala.pack(fill="x", padx=5, expand=True)
 
         # Botão Adicionar Fala, ancorado à direita
         botao_adicionar_fala = ctk.CTkButton(
