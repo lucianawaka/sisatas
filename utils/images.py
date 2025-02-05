@@ -122,6 +122,23 @@ def load_icons():
         size=(14, 14)
     )
 
+    caminho_voltar = os.path.join(base_path,"voltar.png")
+    imagem_voltar = Image.open(caminho_voltar)
+
+    icon_voltar = ctk.CTkImage(
+        dark_image=imagem_voltar,
+        light_image=imagem_voltar,
+        size=(16, 16)
+    )
+
+    caminho_pesquisar = os.path.join(base_path,"pesquisar.png")
+    imagem_pesquisar = Image.open(caminho_pesquisar)
+
+    icon_pesquisar = ctk.CTkImage(
+        dark_image=imagem_pesquisar,
+        light_image=imagem_pesquisar,
+        size=(20, 20)
+    )
     # Retorna tudo em um dicionário organizado.
     return {
         "buscar": icon_buscar,
@@ -133,5 +150,7 @@ def load_icons():
         "logo_principal": icon_logo_principal,
         "adicionar": icon_adicionar,
         "calendar": icon_calendar,
-        "seta_para_baixo": icon_seta_para_baixo
+        "seta_para_baixo": icon_seta_para_baixo,
+        "voltar": icon_voltar,
+        "pesquisar": icon_pesquisar
     }
