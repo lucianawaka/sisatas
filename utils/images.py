@@ -95,6 +95,15 @@ def load_icons():
         size=(14, 14)
     )
 
+    caminho_seta_para_baixo = os.path.join(base_path, "seta_para_baixo.png")
+    imagem_seta_para_baixo = Image.open(caminho_seta_para_baixo)
+
+    icon_seta_para_baixo = ctk.CTkImage(
+        dark_image=imagem_seta_para_baixo,
+        light_image=imagem_seta_para_baixo,
+        size=(14, 14)
+    )
+
     # Retorna tudo em um dicionário organizado.
     return {
         "buscar": icon_buscar,
@@ -105,5 +114,6 @@ def load_icons():
         "exportar": icon_exportar,
         "logo_principal": icon_logo_principal,
         "adicionar": icon_adicionar,
-        "calendar": icon_calendar
+        "calendar": icon_calendar,
+        "seta_para_baixo": icon_seta_para_baixo
     }
