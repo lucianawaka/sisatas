@@ -1183,7 +1183,7 @@ class MeetingManagerApp:
 
         # Frame para botão no topo
         header_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
-        header_frame.pack(fill="x", pady=(20, 10), padx=60)
+        header_frame.pack(fill="x", pady=(20, 10), padx=380)
 
         # Botão de voltar
         botao_voltar = ctk.CTkButton(
@@ -1191,11 +1191,12 @@ class MeetingManagerApp:
             text="Voltar", 
             image=self.icons["voltar"],  # pega o ícone do dicionário
             compound="left",
-            width=156,
+            width=114,
             height=48,
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
+            corner_radius=8,
             font=("Arial", 16),
             command=lambda: self.return_to_main_menu())
         botao_voltar.pack(anchor="nw", padx=10, pady=10)
@@ -1207,18 +1208,34 @@ class MeetingManagerApp:
         card_buscar = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
         card_buscar.pack(fill="x", padx=400, pady=(20, 20))
 
-        # ---------- Seção: Criação de Ata ----------
+        # ---------- Seção: Busca ----------
         frame_busca = ctk.CTkFrame(card_buscar, fg_color="white")
-        frame_busca.pack(fill="x", pady=(10, 10))
-   
-   
-        label_busca = ctk.CTkLabel(frame_busca, text="Buscar Ata:")
-        label_busca.pack(side="left", padx=5)
+        frame_busca.pack(fill="x", pady=(10, 10), anchor="w")  # Alinha todo o frame à esquerda
+        
+        label_busca = ctk.CTkLabel(frame_busca, 
+                        text="Buscar fala",
+                        font=("Arial", 22, "bold"),
+                        text_color="#007E37"                               ,
+        )
+        label_busca.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
 
-        campo_busca = ctk.CTkEntry(frame_busca)
-        campo_busca.pack(side="left", fill="x", expand=True, padx=5)
+        # Frame para campo e botão na segunda linha
+        input_frame = ctk.CTkFrame(frame_busca, fg_color="white")
+        input_frame.pack(fill="x", expand=True)
 
-        botao_busca = ctk.CTkButton(frame_busca, 
+        campo_busca = ctk.CTkEntry(input_frame,            
+                            placeholder_text="Busca", 
+                            width=280,
+                            height=48,
+                            corner_radius=10,
+                            border_width=1,
+                            border_color="#CCCCCC",
+                            fg_color="white",
+                            font=("Arial", 16)
+        )
+        campo_busca.pack(side="left", fill="x", expand=True, padx=15, pady=10)
+
+        botao_busca = ctk.CTkButton(input_frame, 
                         text="Pesquisar", 
                         image=self.icons["pesquisar"],
                         fg_color="#019000",
@@ -1229,7 +1246,7 @@ class MeetingManagerApp:
                         height=48,
                         font=("Arial", 16),
                         command=lambda: atualizar_lista(campo_busca.get()))
-        botao_busca.pack(side="left", padx=5)
+        botao_busca.pack(side="left", padx=5, pady=5)
 
         # ----------------------------------------------------------------
         # SEGUNDO BLOCO EM BRANCO: Listar falas das Atas”
@@ -1239,7 +1256,13 @@ class MeetingManagerApp:
 
         frame_lista_atas = ctk.CTkFrame(card_fala_atas, fg_color="white")
         frame_lista_atas.pack(fill="x",pady=(20, 20))
-        ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
+
+        label_lista_atas = ctk.CTkLabel(frame_lista_atas, 
+                                        text="Lista de Atas",
+                                        font=("Arial", 22, "bold"),
+                                        text_color="#007E37"  
+                                        )
+        label_lista_atas.pack(fill="x", side='left', padx=5)
 
         # Criar o Treeview
         lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
