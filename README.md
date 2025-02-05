@@ -60,4 +60,4 @@ Na pasta dist cole a base de dados banco_de_dados_atas.db para a pasta caso já 
 Pode excluir o arquivo main.spec e a pasta build
 
 **Pasta com as versões do sistema Disponibilizadas**
-H:\Projetos\Sistemas\Sisatas\Executável com banco de dados\Versões
+```H:\Projetos\Sistemas\Sisatas\Executável com banco de dados\Versões```
