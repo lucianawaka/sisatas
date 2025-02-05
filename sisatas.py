@@ -50,38 +50,30 @@ class MeetingManagerApp:
 
         self.root.configure(bg="#FAFAFA")
 
-
-        # Um frame para “centralizar” tudo no meio da tela
-        # fill="both", expand=True faz este frame ocupar todo o espaço
+        # Frame principal ocupando toda a janela
         main_container = ctk.CTkFrame(self.root, fg_color="#FAFAFA")
         main_container.pack(fill="both", expand=True)
 
-
-        # ---------- “Card” central com fundo branco ----------
-        # corner_radius dá cantos levemente arredondados
-        card = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
-        card.pack(padx=40, pady=30, fill="both", expand=False)
+        # Frame para conter título e botões no topo
+        header_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
+        header_frame.pack(fill="x", pady=(20, 10))
 
 
-        # ---------- Título na parte superior do card ----------
-        frame_titulo = ctk.CTkFrame(card, fg_color="white")
-        frame_titulo.pack(fill="x", pady=(20, 10))  # espaço extra no topo
-
+    # ---------- Título ----------
         label_titulo = ctk.CTkLabel(
-            frame_titulo,
+            header_frame,
             text="Gerenciador de Atas",
             text_color="#019000",
             font=("Arial", 36, "bold")
         )
-        label_titulo.pack()
+        label_titulo.pack(pady=(0, 10))  # Pequeno espaçamento abaixo do título
 
-        # ---------- Frame para os botões no topo ----------
-        frame_botoes = ctk.CTkFrame(card, fg_color="white")
-        frame_botoes.pack(pady=10)
 
-        # Sub-frame para centralizar os botões
-        container_botoes = ctk.CTkFrame(frame_botoes, fg_color="white")
+
+    # ---------- Botões no topo ----------
+        container_botoes = ctk.CTkFrame(header_frame, fg_color="#FAFAFA")
         container_botoes.pack(anchor="center")
+
 
         # Botão de Listar Atas
         botao_buscar = ctk.CTkButton(
@@ -183,11 +175,15 @@ class MeetingManagerApp:
         )
         botao_exportar.pack(side="left", padx=5)
 
-     # ---------- Seção: Criação de Ata ----------
+        # ----------------------------------------------------------------
+        # PRIMEIRO BLOCO EM BRANCO: “Criação de Ata”
+        # ----------------------------------------------------------------
+        card_ata = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_ata.pack(fill="x", padx=40, pady=(10, 10))
 
-
-        section_ata = ctk.CTkFrame(card, fg_color="white")
-        section_ata.pack(fill="x", padx=20, pady=(10, 10))
+        # ---------- Seção: Criação de Ata ----------
+        section_ata = ctk.CTkFrame(card_ata, fg_color="white")
+        section_ata.pack(fill="x", padx=20, pady=(20, 10))
 
         label_ata = ctk.CTkLabel(
             section_ata,
@@ -290,9 +286,14 @@ class MeetingManagerApp:
         )
         botao_nova_ata.pack(side="right", padx=5, pady=5)
 
-    # ---------- Seção: Criação de Fala ----------
-        frame_fala = ctk.CTkFrame(card, fg_color="white")
-        frame_fala.pack(fill="x", padx=20, pady=(10, 20))
+        # ----------------------------------------------------------------
+        # SEGUNDO BLOCO EM BRANCO: “Criação de fala”
+        # ----------------------------------------------------------------
+        card_fala = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_fala.pack(fill="x", padx=40, pady=(0, 10))
+
+        frame_fala = ctk.CTkFrame(card_fala, fg_color="white")
+        frame_fala.pack(fill="x", padx=20, pady=(20, 20))
 
         label_fala = ctk.CTkLabel(
             frame_fala,
@@ -346,8 +347,6 @@ class MeetingManagerApp:
         row_fala_text = ctk.CTkFrame(frame_fala, fg_color="white")
         row_fala_text.pack(fill="x", pady=5)
 
-
-
         # Text area (pode ser um CTkTextbox, se você quiser algo simples)
         self.html_editor_fala = CTkHTMLScrolledText(
             row_fala_text,
@@ -375,14 +374,18 @@ class MeetingManagerApp:
             font=("Arial", 16),
             command=self.adicionar_fala
         )
-        botao_adicionar_fala.pack(side="right", pady=(0, 5))
+        botao_adicionar_fala.pack(side="right", pady=(10, 5))
         
         #self.geometry("800x200")
 
-        # ---------- (Logo da prefeitura no rodapé ----------
+        # ----------------------------------------------------------------
+        # LOGO NO RODAPÉ (pode ficar ao final, fora dos “cards”)
+        # ----------------------------------------------------------------
+        footer_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
+        footer_frame.pack(fill="x", pady=(30, 10))
 
-        label_logo = ctk.CTkLabel(card, text="", image=self.icons["logo_principal"], compound="top")
-        label_logo.pack(pady=(50, 20))
+        label_logo = ctk.CTkLabel(footer_frame, text="", image=self.icons["logo_principal"], compound="top")
+        label_logo.pack()
 
         self.atualizar_comboboxes()
 
