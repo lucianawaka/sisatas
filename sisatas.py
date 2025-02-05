@@ -1175,29 +1175,71 @@ class MeetingManagerApp:
     def listar_atas(self):
         self.clear_content_frame()
 
+        self.root.configure(bg="#FAFAFA")
+
+        # Frame principal ocupando toda a janela
+        main_container = ctk.CTkFrame(self.root, fg_color="#FAFAFA")
+        main_container.pack(fill="both", expand=True)
+
+        # Frame para botão no topo
+        header_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
+        header_frame.pack(fill="x", pady=(20, 10), padx=60)
+
         # Botão de voltar
-        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=lambda: self.return_to_main_menu())
+        botao_voltar = ctk.CTkButton(
+            header_frame, 
+            text="Voltar", 
+            image=self.icons["voltar"],  # pega o ícone do dicionário
+            compound="left",
+            width=156,
+            height=48,
+            fg_color="#007E37",
+            hover_color="#005C29",
+            text_color="#FFFFFF",
+            font=("Arial", 16),
+            command=lambda: self.return_to_main_menu())
         botao_voltar.pack(anchor="nw", padx=10, pady=10)
 
-        # Campo de busca
-        frame_busca = ctk.CTkFrame(self.root)
-        frame_busca.pack(fill="x", padx=10, pady=10)
 
+        # ----------------------------------------------------------------
+        # PRIMEIRO BLOCO EM BRANCO: “Buscar de Ata”
+        # ----------------------------------------------------------------
+        card_buscar = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_buscar.pack(fill="x", padx=400, pady=(20, 20))
+
+        # ---------- Seção: Criação de Ata ----------
+        frame_busca = ctk.CTkFrame(card_buscar, fg_color="white")
+        frame_busca.pack(fill="x", pady=(10, 10))
+   
+   
         label_busca = ctk.CTkLabel(frame_busca, text="Buscar Ata:")
         label_busca.pack(side="left", padx=5)
 
         campo_busca = ctk.CTkEntry(frame_busca)
         campo_busca.pack(side="left", fill="x", expand=True, padx=5)
 
-        botao_busca = ctk.CTkButton(frame_busca, text="Buscar", command=lambda: atualizar_lista(campo_busca.get()))
+        botao_busca = ctk.CTkButton(frame_busca, 
+                        text="Pesquisar", 
+                        image=self.icons["pesquisar"],
+                        fg_color="#019000",
+                        text_color="#FFFFFF",
+                        hover_color="#007E37",
+                        compound="left",
+                        width=155,
+                        height=48,
+                        font=("Arial", 16),
+                        command=lambda: atualizar_lista(campo_busca.get()))
         botao_busca.pack(side="left", padx=5)
 
-        # Título
-        ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
+        # ----------------------------------------------------------------
+        # SEGUNDO BLOCO EM BRANCO: Listar falas das Atas”
+        # ----------------------------------------------------------------
+        card_fala_atas = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_fala_atas.pack(fill="x", padx=400, pady=(0, 10))
 
-        # Frame para encapsular o Treeview e a Scrollbar
-        frame_lista_atas = ctk.CTkFrame(self.root)
-        frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=10)
+        frame_lista_atas = ctk.CTkFrame(card_fala_atas, fg_color="white")
+        frame_lista_atas.pack(fill="x",pady=(20, 20))
+        ctk.CTkLabel(self.root, text="Lista de Atas", font=("Arial", 16, "bold")).pack(pady=10)
 
         # Criar o Treeview
         lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
