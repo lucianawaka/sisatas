@@ -1,12 +1,13 @@
 import customtkinter as ctk
 import calendar
 from datetime import datetime
+from utils.images import load_icons
 
 class CustomDatePicker(ctk.CTkFrame):
     def __init__(self, master=None, width=150, height=48, **kwargs):
         """CustomDatePicker: um campo de entrada + botão para abrir um calendário."""
         super().__init__(master, **kwargs)
-        
+        self.icons = load_icons()
         # Definindo data selecionada como "hoje"
         today = datetime.today()
         self.selected_date = today.strftime("%d/%m/%Y")
@@ -32,7 +33,8 @@ class CustomDatePicker(ctk.CTkFrame):
         # Botão para abrir o calendário
         self.open_button = ctk.CTkButton(
             self,
-            text="📅",
+            image=self.icons["calendar"],
+            text="",
             width=40,          # Botão fica com largura fixa
             height=height,     # Mesma altura do entry
             corner_radius=10,

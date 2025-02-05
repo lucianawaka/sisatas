@@ -86,6 +86,14 @@ def load_icons():
         size=(14, 14)
     )
 
+    caminho_calendar = os.path.join(base_path, "calendar.png")
+    imagem_calendar = Image.open(caminho_calendar)
+
+    icon_calendar = ctk.CTkImage(
+        dark_image=imagem_calendar,
+        light_image=imagem_calendar,
+        size=(14, 14)
+    )
 
     # Retorna tudo em um dicionário organizado.
     return {
@@ -96,5 +104,6 @@ def load_icons():
         "importar": icon_importar,
         "exportar": icon_exportar,
         "logo_principal": icon_logo_principal,
-        "adicionar": icon_adicionar
+        "adicionar": icon_adicionar,
+        "calendar": icon_calendar
     }
