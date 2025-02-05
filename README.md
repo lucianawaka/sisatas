@@ -61,7 +61,7 @@ pyinstaller sisatas.spec
 Na pasta dist cole a base de dados banco_de_dados_atas.db para a pasta caso já exista dados
 Pode excluir o arquivo main.spec e a pasta build
 
-### Versões disponíveis do sistema:
+## Versões disponíveis do sistema
 ```
 H:\Projetos\Sistemas\Sisatas\Executável com banco de dados\Versões
 ```
