@@ -507,12 +507,8 @@ class MeetingManagerApp:
         frame_lista_secretarias = ctk.CTkFrame(  
                                         card_secretarias, 
                                         bg_color="white",
-                                        fg_color="white",          # Background color
-                                        border_color="#007E37",    # Border color (green)
-                                        border_width=2,            # Border thickness
-                                        corner_radius=10,           # Rounded corners)
-
-        )
+                                        fg_color="white"
+                                        )
         frame_lista_secretarias.pack(fill="both", expand=True, pady=(0, 20), padx=10)
 
         self.lista_secretarias = ctk.CTkScrollableFrame(
@@ -873,7 +869,7 @@ class MeetingManagerApp:
             # ----------------------------------------------------------------
             # SEGUNDO BLOCO EM BRANCO: Listar Atas
             # ----------------------------------------------------------------
-            
+
             card_atas = ctk.CTkFrame(main_container, 
                                             fg_color="white",
                                             corner_radius=10,
@@ -892,15 +888,12 @@ class MeetingManagerApp:
             label_lista_atas.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
 
 
-           # Frame para listagem de Secretarias
+           # Frame para listagem de Atas
             frame_lista_atas = ctk.CTkFrame(  
                                         card_atas, 
                                         bg_color="white",
-                                        fg_color="white",          # Background color
-                                        border_color="#007E37",    # Border color (green)
-                                        border_width=2,            # Border thickness
-                                        corner_radius=10,           # Rounded corners)
-
+                                        fg_color="white",       
+     
             )
             frame_lista_atas.pack(fill="both", expand=True, pady=(0, 20), padx=10)
 
@@ -921,6 +914,7 @@ class MeetingManagerApp:
                                     label_font=("Arial", 16, "bold"),
                                     
                                     )
+        
             self.lista_atas.pack(fill="both", expand=True)
 
             self.atualizar_comboboxes()
@@ -937,7 +931,7 @@ class MeetingManagerApp:
         atas = listar_atas(self.conn)
 
         for ata in atas:
-            frame = ctk.CTkFrame(self.lista_atas)
+            frame = ctk.CTkFrame(self.lista_atas, bg_color="white", fg_color="white" )
             frame.pack(fill="x", padx=5, pady=5)
 
             descricao = f"{ata[1]} ({ata[2]})"
