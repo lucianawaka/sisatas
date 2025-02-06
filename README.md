@@ -40,17 +40,22 @@ pyinstaller sisatas.spec
 Edite sisatas.spec para colocar as imagens
 
 ```
-datas=[('assets/img/logo.png', 'assets/img'),
-    ('assets/img/Buscar_Fala.png', 'assets/img'),
-    ('assets/img/Adicionar.png', 'assets/img'),
-    ('assets/img/calendar.png', 'assets/img'),
-    ('assets/img/Exportar_Dados.png', 'assets/img'),
-    ('assets/img/Importar_Dados.png', 'assets/img'),
-    ('assets/img/Listar_Atas.png', 'assets/img'),
-    ('assets/img/logo_principal.png', 'assets/img'),
-    ('assets/img/Secretarias.png', 'assets/img'),
-    ('assets/img/Secretarios.png', 'assets/img'),
-    ('assets/img/seta_para_baixo.png', 'assets/img')],
+   datas=[('assets/img/logo.png', 'assets/img'),
+        ('assets/img/Buscar_Fala.png', 'assets/img'),
+        ('assets/img/Adicionar.png', 'assets/img'),
+        ('assets/img/calendar.png', 'assets/img'),
+        ('assets/img/Exportar_Dados.png', 'assets/img'),
+        ('assets/img/Importar_Dados.png', 'assets/img'),
+        ('assets/img/Listar_Atas.png', 'assets/img'),
+        ('assets/img/logo_principal.png', 'assets/img'),
+        ('assets/img/Secretarias.png', 'assets/img'),
+        ('assets/img/Secretarios.png', 'assets/img'),
+        ('assets/img/seta_para_baixo.png', 'assets/img'),
+        ('assets/img/voltar.png', 'assets/img'),
+        ('assets/img/editar.png', 'assets/img'),
+        ('assets/img/deletar.png', 'assets/img'),
+        ('assets/img/pesquisar.png', 'assets/img'),
+        ('assets/img/calendar.png', 'assets/img')],
 ```
 Agora recompile o .exe
 
