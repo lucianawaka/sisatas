@@ -594,7 +594,10 @@ class MeetingManagerApp:
         # SEGUNDO BLOCO EM BRANCO: Listar Secretarias
         # ----------------------------------------------------------------
         
-        card_secretarias = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_secretarias = ctk.CTkFrame(main_container, 
+                                        fg_color="white",
+                                        corner_radius=10,
+                                        )
         card_secretarias.pack(fill="x", padx=400, pady=(0, 10))
 
         # Frame para o label da lista (primeira linha)
@@ -622,8 +625,8 @@ class MeetingManagerApp:
 
         self.lista_secretarias = ctk.CTkScrollableFrame(
                                     frame_lista_secretarias, 
-                                    width=400, 
-                                    height=200, 
+                                    width=800, 
+                                    height=400, 
                                     fg_color="white",
                                     border_color="#007E37", 
                                     border_width=2, 
