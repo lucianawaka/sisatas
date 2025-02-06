@@ -935,7 +935,9 @@ class MeetingManagerApp:
             frame.pack(fill="x", padx=5, pady=5)
 
             descricao = f"{ata[1]} ({ata[2]})"
-            ctk.CTkLabel(frame, text=descricao).pack(side="left", padx=5)
+            ctk.CTkLabel(frame, text=descricao, 
+                         font=("Arial", 16), 
+                         text_color="#333333").pack(side="left", padx=5)
 
             botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda a_id=ata[0]: self.deletar_ata(a_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
             botao_deletar.pack(side="right", padx=5)
