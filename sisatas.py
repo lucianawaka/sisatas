@@ -28,6 +28,8 @@ from utils.images import load_icons
 from utils.CustomDatePicker import CustomDatePicker
 from utils.CTkHTMLScrolledText import CTkHTMLScrolledText
 from components.Fotter import Footer
+from components.Botoes import Botoes
+from components.Containers import Containers
 
 class MeetingManagerApp:
     def __init__(self, root):
@@ -126,7 +128,7 @@ class MeetingManagerApp:
             hover_color="#005C29",
             text_color="#FFFFFF",
             font=("Arial", 16),
-            command=self.menu_secretaria  # Exemplo de callback
+            command=self.menu_secretaria  # callback
         )
         botao_secretarias.grid(row=0, column=3, padx=5, pady=10)
 
@@ -142,7 +144,7 @@ class MeetingManagerApp:
             hover_color="#005C29",
             text_color="#FFFFFF",
             font=("Arial", 16),
-            command=self.menu_secretario  # Exemplo de callback
+            command=self.menu_secretario  # callback
         )
         botao_secretarios.grid(row=0, column=4, padx=5, pady=10)
 
@@ -527,26 +529,66 @@ class MeetingManagerApp:
 
 
     def menu_secretaria(self):
-        self.clear_content_frame()
+        
+        # Frame para o cabeçalho
+        main_container, header_frame = Containers.container_pages(self)
 
         # Botão de voltar
-        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu)
-        botao_voltar.pack(anchor="nw", padx=10, pady=10)
+        Botoes.btn_voltar(self, header_frame)
 
-        # Título do menu
-        ctk.CTkLabel(self.root, text="Adicionar Secretaria", font=("Arial", 16, "bold")).pack(pady=10)
+        # ----------------------------------------------------------------
+        # PRIMEIRO BLOCO EM BRANCO: “Criação de Secretaria”
+        # ----------------------------------------------------------------
+        card_ata = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_ata.pack(fill="x", padx=400, pady=(20, 20))
 
-        # Frame para cadastro de Secretaria
-        frame_secretaria = ctk.CTkFrame(self.root)
-        frame_secretaria.pack(fill="x", padx=10, pady=5)
+        # ---------- Seção: Criação de Secretaria ----------
+        section_ata = ctk.CTkFrame(card_ata, fg_color="white")
+        section_ata.pack(fill="x", pady=(10, 10))
 
-        ctk.CTkLabel(frame_secretaria, text="Nome da Secretaria:").pack(side="left", padx=5, pady=5)
+        label_ata = ctk.CTkLabel(
+            section_ata,
+            text="Adicionar Secretaria",
+            font=("Arial", 22, "bold"),
+            text_color="#007E37"
+        )
+        label_ata.pack(anchor="w", pady=(0, 5), padx=10)
 
-        self.entrada_secretaria = ctk.CTkEntry(frame_secretaria, placeholder_text="Digite o nome", width=300)
-        self.entrada_secretaria.pack(side="left", padx=5, pady=5)
 
-        botao_adicionar_secretaria = ctk.CTkButton(frame_secretaria, text="Adicionar", command=self.adicionar_secretaria, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
-        botao_adicionar_secretaria.pack(side="left", padx=5, pady=5)
+        # Frame único para agrupar os campos em linha
+        row_secretaria = ctk.CTkFrame(section_ata, fg_color="white")
+        row_secretaria.pack(fill="x")
+
+        # Campo "Cadastro da Secretaria"
+        self.entrada_secretaria  = ctk.CTkEntry(
+            row_secretaria, 
+            placeholder_text="Nome da Secretaria", 
+            width=380,
+            height=48,
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            font=("Arial", 16)
+        )
+        self.entrada_secretaria.pack(side="left", padx=15, pady=5)
+
+        # Botão "+ Nova Ata" (fica à extrema direita)
+        botao_adicionar_secretaria = ctk.CTkButton(
+            row_secretaria, 
+            image=self.icons["adicionar"],
+            text="Nova Ata",
+            fg_color="#019000",
+            text_color="#FFFFFF",
+            hover_color="#007E37",
+            compound="left",
+            width=155,
+            height=48,
+            font=("Arial", 16),
+            command=self.adicionar_secretaria
+        )
+        botao_adicionar_secretaria.pack(side="right", padx=10, pady=5)
+
 
         # Título da listagem de secretarias
         ctk.CTkLabel(self.root, text="Secretarias", font=("Arial", 16, "bold")).pack(pady=10)
@@ -1165,34 +1207,12 @@ class MeetingManagerApp:
 
 
     def listar_atas(self):
-        self.clear_content_frame()
 
-        self.root.configure(bg="#FAFAFA")
-
-        # Frame principal ocupando toda a janela
-        main_container = ctk.CTkFrame(self.root, fg_color="#FAFAFA")
-        main_container.pack(fill="both", expand=True)
-
-        # Frame para botão no topo
-        header_frame = ctk.CTkFrame(main_container, fg_color="#FAFAFA")
-        header_frame.pack(fill="x", pady=(20, 10), padx=390)
+        # Frame principal paginas
+        main_container, header_frame = Containers.container_pages(self)
 
         # Botão de voltar
-        botao_voltar = ctk.CTkButton(
-            header_frame, 
-            text="Voltar", 
-            image=self.icons["voltar"],  # pega o ícone do dicionário
-            compound="left",
-            width=114,
-            height=48,
-            fg_color="#007E37",
-            hover_color="#005C29",
-            text_color="#FFFFFF",
-            corner_radius=8,
-            font=("Arial", 16),
-            command=lambda: self.return_to_main_menu())
-        botao_voltar.pack(anchor="nw", padx=10, pady=10)
-
+        Botoes.btn_voltar(self, header_frame)
 
         # ----------------------------------------------------------------
         # PRIMEIRO BLOCO EM BRANCO: “Buscar de Ata”
