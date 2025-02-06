@@ -680,7 +680,7 @@ class MeetingManagerApp:
                                           fg_color="#E7000B", 
                                           image=self.icons["deletar"], 
                                           text="Deletar", 
-                                          hover_color="#b02a37", 
+                                          hover_color="#B7070F", 
                                           text_color="#FFFFFF",
                                           font=("Arial", 16),
                                           command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id)
@@ -691,7 +691,7 @@ class MeetingManagerApp:
                                          fg_color="#00AAA7", 
                                          image=self.icons["editar"], 
                                          text="Editar", 
-                                         hover_color="#0056b3", 
+                                         hover_color="#009693", 
                                          text_color="#FFFFFF",
                                          font=("Arial", 16),
                                          command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id)
