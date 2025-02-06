@@ -573,11 +573,11 @@ class MeetingManagerApp:
         )
         self.entrada_secretaria.pack(side="left", padx=15, pady=5)
 
-        # Botão "+ Nova Ata" (fica à extrema direita)
+        # Botão "+ Nova Secretaria" (fica à extrema direita)
         botao_adicionar_secretaria = ctk.CTkButton(
             row_secretaria, 
             image=self.icons["adicionar"],
-            text="Nova Ata",
+            text="Adicionar",
             fg_color="#019000",
             text_color="#FFFFFF",
             hover_color="#007E37",
@@ -590,16 +590,39 @@ class MeetingManagerApp:
         botao_adicionar_secretaria.pack(side="right", padx=10, pady=5)
 
 
-        # Título da listagem de secretarias
-        ctk.CTkLabel(self.root, text="Secretarias", font=("Arial", 16, "bold")).pack(pady=10)
+ # ----------------------------------------------------------------
+        # SEGUNDO BLOCO EM BRANCO: Listar falas das Atas”
+        # ----------------------------------------------------------------
+        
+        card_secretarias = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_secretarias.pack(fill="x", padx=400, pady=(0, 10))
 
+        # Frame para o label da lista (primeira linha)
+        label_frame_secretarias = ctk.CTkFrame(card_secretarias, fg_color="white")
+        label_frame_secretarias.pack(fill="x", pady=(10, 0), anchor="w")
+
+        label_lista_secretarias = ctk.CTkLabel(label_frame_secretarias, 
+                                        text="Secretarias",
+                                        font=("Arial", 22, "bold"),
+                                        text_color="#007E37"  
+                                        )
+        label_lista_secretarias.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
+       
         # Frame para listagem de Secretarias
-        frame_lista_secretarias = ctk.CTkFrame(self.root)
-        frame_lista_secretarias.pack(fill="both", expand=True, padx=10, pady=5)
+        frame_lista_secretarias = ctk.CTkFrame(  
+                                        card_secretarias, 
+                                        fg_color="white",          # Background color
+                                        border_color="#007E37",    # Border color (green)
+                                        border_width=2,            # Border thickness
+                                        corner_radius=10           # Rounded corners)
+        )
+        frame_lista_secretarias.pack(fill="both", expand=True, pady=(0, 20), padx=10)
 
         self.lista_secretarias = ctk.CTkScrollableFrame(frame_lista_secretarias, width=400, height=200)
         self.lista_secretarias.pack(fill="both", expand=True)
 
+        # Footer
+        Footer.footer_container(self, main_container, self.icons["logo_principal"])
         self.atualizar_lista_secretarias()
 
     def adicionar_secretaria(self):
