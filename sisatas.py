@@ -671,12 +671,31 @@ class MeetingManagerApp:
 
             nome = f"{secretaria[1]}"
 
-            ctk.CTkLabel(frame, text=nome, font=("Arial", 16), text_color="#333333").pack(side="left", padx=5)
+            ctk.CTkLabel(frame, 
+                         text=nome, 
+                         font=("Arial", 16), 
+                         text_color="#333333").pack(side="left", padx=5)
 
-            botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
+            botao_deletar = ctk.CTkButton(frame,  
+                                          fg_color="#E7000B", 
+                                          image=self.icons["deletar"], 
+                                          text="Deletar", 
+                                          hover_color="#b02a37", 
+                                          text_color="#FFFFFF",
+                                          font=("Arial", 16),
+                                          command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id)
+            )
             botao_deletar.pack(side="right", padx=5)
 
-            botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
+            botao_editar = ctk.CTkButton(frame,
+                                         fg_color="#00AAA7", 
+                                         image=self.icons["editar"], 
+                                         text="Editar", 
+                                         hover_color="#0056b3", 
+                                         text_color="#FFFFFF",
+                                         font=("Arial", 16),
+                                         command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id)
+            )
             botao_editar.pack(side="right", padx=5)
 
     def editar_secretaria(self, secretaria_id):
