@@ -27,7 +27,7 @@ from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_
 from utils.images import load_icons
 from utils.CustomDatePicker import CustomDatePicker
 from utils.CTkHTMLScrolledText import CTkHTMLScrolledText
-from utils.Fotter import Footer
+from components.Fotter import Footer
 
 class MeetingManagerApp:
     def __init__(self, root):
