@@ -590,8 +590,8 @@ class MeetingManagerApp:
         botao_adicionar_secretaria.pack(side="right", padx=10, pady=5)
 
 
- # ----------------------------------------------------------------
-        # SEGUNDO BLOCO EM BRANCO: Listar falas das Atas”
+        # ----------------------------------------------------------------
+        # SEGUNDO BLOCO EM BRANCO: Listar Secretarias
         # ----------------------------------------------------------------
         
         card_secretarias = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
@@ -611,14 +611,32 @@ class MeetingManagerApp:
         # Frame para listagem de Secretarias
         frame_lista_secretarias = ctk.CTkFrame(  
                                         card_secretarias, 
+                                        bg_color="white",
                                         fg_color="white",          # Background color
                                         border_color="#007E37",    # Border color (green)
                                         border_width=2,            # Border thickness
-                                        corner_radius=10           # Rounded corners)
+                                        corner_radius=10,           # Rounded corners)
+
         )
         frame_lista_secretarias.pack(fill="both", expand=True, pady=(0, 20), padx=10)
 
-        self.lista_secretarias = ctk.CTkScrollableFrame(frame_lista_secretarias, width=400, height=200)
+        self.lista_secretarias = ctk.CTkScrollableFrame(
+                                    frame_lista_secretarias, 
+                                    width=400, 
+                                    height=200, 
+                                    fg_color="white",
+                                    border_color="#007E37", 
+                                    border_width=2, 
+                                    corner_radius=10,
+                                    scrollbar_button_color="#007E37",
+                                    scrollbar_fg_color="white",
+                                    scrollbar_button_hover_color="#007E37",
+                                    bg_color="white",
+                                    label_fg_color="white",
+                                    label_text_color="#007E37",
+                                    label_font=("Arial", 16, "bold"),
+                                    
+                                    )
         self.lista_secretarias.pack(fill="both", expand=True)
 
         # Footer
@@ -645,12 +663,15 @@ class MeetingManagerApp:
         secretarias = listar_secretarias(self.conn)
 
         for secretaria in secretarias:
-            frame = ctk.CTkFrame(self.lista_secretarias)
+            frame = ctk.CTkFrame(self.lista_secretarias,
+                                    bg_color="white",
+                                    fg_color="white",          # Background color
+            )
             frame.pack(fill="x", padx=5, pady=5)
 
             nome = f"{secretaria[1]}"
 
-            ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
+            ctk.CTkLabel(frame, text=nome, font=("Arial", 16), text_color="#333333").pack(side="left", padx=5)
 
             botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
             botao_deletar.pack(side="right", padx=5)
