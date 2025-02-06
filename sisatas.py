@@ -25,11 +25,12 @@ from controllers.secretario import adicionar_secretario, listar_secretarios, get
 from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao, deletar_ata, editar_ata, obter_dados_ata
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
 from utils.images import load_icons
-from utils.CustomDatePicker import CustomDatePicker
+
 from utils.CTkHTMLScrolledText import CTkHTMLScrolledText
 from components.Fotter import Footer
 from components.Botoes import Botoes
 from components.Containers import Containers
+from components.CriarAta import CriarAta
 
 class MeetingManagerApp:
     def __init__(self, root):
@@ -112,7 +113,7 @@ class MeetingManagerApp:
             hover_color="#005C29",
             text_color="#FFFFFF",
             font=("Arial", 16),
-            command=self.menu_atas  # Exemplo de callback
+            command=self.menu_atas  # callback
         )
         botao_listar_atas.grid(row=0, column=2, padx=5, pady=10)
 
@@ -183,119 +184,10 @@ class MeetingManagerApp:
         )
         botao_exportar.grid(row=0, column=6, padx=5, pady=10)
 
-        # ----------------------------------------------------------------
-        # PRIMEIRO BLOCO EM BRANCO: “Criação de Ata”
-        # ----------------------------------------------------------------
-        card_ata = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
-        card_ata.pack(fill="x", padx=400, pady=(20, 20))
+        # Primeiro BLOCO EM BRANCO: “Criação de Ata”
+        CriarAta.criar_ata(self, main_container)
 
-        # ---------- Seção: Criação de Ata ----------
-        section_ata = ctk.CTkFrame(card_ata, fg_color="white")
-        section_ata.pack(fill="x", pady=(10, 10))
-
-        label_ata = ctk.CTkLabel(
-            section_ata,
-            text="Criação de Ata",
-            font=("Arial", 22, "bold"),
-            text_color="#007E37"
-        )
-        label_ata.pack(anchor="w", pady=(0, 5), padx=10)
-
-        # Frame único para agrupar os campos em linha
-        row_ata = ctk.CTkFrame(section_ata, fg_color="white")
-        row_ata.pack(fill="x")
-
-        # Campo "Nome da Ata"
-        self.descricao_ata = ctk.CTkEntry(
-            row_ata, 
-            placeholder_text="Nome da Ata", 
-            width=380,
-            height=48,
-            corner_radius=10,
-            border_width=1,
-            border_color="#CCCCCC",
-            fg_color="white",
-            font=("Arial", 16)
-        )
-        self.descricao_ata.pack(side="left", padx=15, pady=5)
-
-        # Campo de data (DatePicker customizado)
-        # -> Não crie outro root, use simplesmente 'row_ata' como parent
-        self.entrada_data_ata = CustomDatePicker(
-            row_ata, 
-            width=140, 
-            height=48,
-            corner_radius=10,
-            border_width=1,
-            border_color="#CCCCCC",
-            fg_color="white"
-        )
-        self.entrada_data_ata.pack(side="left", padx=10, pady=5)
-
-        # Label "Horário de Início"
-        label_inicio = ctk.CTkLabel(
-            row_ata, 
-            text="Horário de Início:", 
-            font=("Arial", 12, "bold"),
-            text_color="#007E37"
-        )
-        label_inicio.pack(side="left", padx=(20,5), pady=5)
-
-        # Campo "Horário de Início"
-        self.entrada_horario_inicio = ctk.CTkEntry(
-            row_ata,
-            placeholder_text="HH:MM",
-            width=70,
-            height=48,
-            corner_radius=10,
-            font=("Arial", 14),
-            border_width=1,
-            border_color="#CCCCCC",
-            fg_color="white",
-            text_color="#333333"
-        )
-        self.entrada_horario_inicio.pack(side="left", padx=5, pady=5)
-
-        # Label "Horário de Término"
-        label_termino = ctk.CTkLabel(
-            row_ata, 
-            text="Horário de Término:",
-            font=("Arial", 12, "bold"),
-            text_color="#007E37"
-        )
-        label_termino.pack(side="left", padx=(20,5), pady=5)
-
-        # Campo "Horário de Término"
-        self.entrada_horario_termino = ctk.CTkEntry(
-            row_ata,
-            placeholder_text="HH:MM",
-            width=70,
-            height=48,
-            corner_radius=10,
-            font=("Arial", 14),
-            border_width=1,
-            border_color="#CCCCCC",
-            fg_color="white",
-            text_color="#333333"
-        )
-        self.entrada_horario_termino.pack(side="left", padx=5, pady=5)
-
-        # Botão "+ Nova Ata" (fica à extrema direita)
-        botao_nova_ata = ctk.CTkButton(
-            row_ata, 
-            image=self.icons["adicionar"],
-            text="Nova Ata",
-            fg_color="#019000",
-            text_color="#FFFFFF",
-            hover_color="#007E37",
-            compound="left",
-            width=155,
-            height=48,
-            font=("Arial", 16),
-            command=self.adicionar_ata_principal
-        )
-        botao_nova_ata.pack(side="right", padx=10, pady=5)
-
+      
         # ----------------------------------------------------------------
         # SEGUNDO BLOCO EM BRANCO: “Criação de fala”
         # ----------------------------------------------------------------
@@ -894,6 +786,7 @@ class MeetingManagerApp:
             self.entrada_horario_inicio.delete(0, ctk.END)
             self.entrada_horario_termino.delete(0, ctk.END)
             self.atualizar_comboboxes()
+            self.atualizar_lista_atas()
             messagebox.showinfo("Sucesso", "Ata adicionada!")
 
 
@@ -967,67 +860,74 @@ class MeetingManagerApp:
 
         # Menu ata inicio
     def menu_atas(self):
-            self.clear_content_frame()
+            # Frame principal paginas
+            main_container, header_frame = Containers.container_pages(self)
 
             # Botão de voltar
-            botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu)
-            botao_voltar.pack(anchor="nw", padx=10, pady=10)
+            Botoes.btn_voltar(self, header_frame)
 
             # Título do menu
-            ctk.CTkLabel(self.root, text="Adicionar Ata", font=("Arial", 16, "bold")).pack(pady=10)
+            CriarAta.criar_ata(self, main_container)
 
-            # Frame para cadastro de Ata
-            frame_ata = ctk.CTkFrame(self.root)
-            frame_ata.pack(fill="x", padx=10, pady=5)
 
-            ctk.CTkLabel(frame_ata, text="Descrição da Ata:").pack(side="left", padx=5, pady=5)
-            self.entrada_descricao_ata = ctk.CTkEntry(frame_ata, placeholder_text="Digite a descrição", width=300)
-            self.entrada_descricao_ata.pack(side="left", padx=5, pady=5)
+            # ----------------------------------------------------------------
+            # SEGUNDO BLOCO EM BRANCO: Listar Atas
+            # ----------------------------------------------------------------
+            
+            card_atas = ctk.CTkFrame(main_container, 
+                                            fg_color="white",
+                                            corner_radius=10,
+                                            )
+            card_atas.pack(fill="x", padx=400, pady=(0, 10))
 
-            ctk.CTkLabel(frame_ata, text="Data da Ata:").pack(side="left", padx=5, pady=5)
-            self.entrada_data_ata = DateEntry(frame_ata, width=18, background="darkblue", foreground="white", borderwidth=2,  date_pattern='dd/MM/yyyy')
-            self.entrada_data_ata.pack(side="left", padx=5, pady=5)
+            # Frame para o label da lista (primeira linha)
+            label_frame_atas = ctk.CTkFrame(card_atas, fg_color="white")
+            label_frame_atas.pack(fill="x", pady=(10, 0), anchor="w")
 
-            ctk.CTkLabel(frame_ata, text="Horário:").pack(side="left", padx=5, pady=5)
-            self.entrada_horario_inicio_menu = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
-            self.entrada_horario_inicio_menu.pack(side="left", padx=5, pady=5)
+            label_lista_atas = ctk.CTkLabel(label_frame_atas, 
+                                            text="Atas",
+                                            font=("Arial", 22, "bold"),
+                                            text_color="#007E37"  
+                                            )
+            label_lista_atas.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
 
-            ctk.CTkLabel(frame_ata, text="até:").pack(side="left", padx=5, pady=5)
-            self.entrada_horario_termino_menu = ctk.CTkEntry(frame_ata, placeholder_text="HH:MM", width=100)
-            self.entrada_horario_termino_menu.pack(side="left", padx=5, pady=5)
-        
-            botao_adicionar_ata = ctk.CTkButton(frame_ata, text="Adicionar", command=self.adicionar_ata, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
-            botao_adicionar_ata.pack(side="left", padx=5, pady=5)
 
-            # Título da listagem de atas
-            ctk.CTkLabel(self.root, text="Atas", font=("Arial", 16, "bold")).pack(pady=10)
+           # Frame para listagem de Secretarias
+            frame_lista_atas = ctk.CTkFrame(  
+                                        card_atas, 
+                                        bg_color="white",
+                                        fg_color="white",          # Background color
+                                        border_color="#007E37",    # Border color (green)
+                                        border_width=2,            # Border thickness
+                                        corner_radius=10,           # Rounded corners)
 
-            # Frame para listagem de Atas
-            frame_lista_atas = ctk.CTkFrame(self.root)
-            frame_lista_atas.pack(fill="both", expand=True, padx=10, pady=5)
+            )
+            frame_lista_atas.pack(fill="both", expand=True, pady=(0, 20), padx=10)
 
-            self.lista_atas = ctk.CTkScrollableFrame(frame_lista_atas, width=500, height=200)
+            self.lista_atas = ctk.CTkScrollableFrame(
+                                    frame_lista_atas, 
+                                    width=800, 
+                                    height=400, 
+                                    fg_color="white",
+                                    border_color="#FFFFFF", 
+                                    border_width=2, 
+                                    corner_radius=10,
+                                    scrollbar_button_color="#CACACA",
+                                    scrollbar_fg_color="white",
+                                    scrollbar_button_hover_color="#007E37",
+                                    bg_color="white",
+                                    label_fg_color="white",
+                                    label_text_color="#007E37",
+                                    label_font=("Arial", 16, "bold"),
+                                    
+                                    )
             self.lista_atas.pack(fill="both", expand=True)
 
-            self.atualizar_lista_atas()
-
-    def adicionar_ata(self):
-        descricao = self.entrada_descricao_ata.get()
-        data = self.entrada_data_ata.get()
-        horario_inicio = self.entrada_horario_inicio_menu.get().strip()
-        horario_termino = self.entrada_horario_termino_menu.get().strip()
-        
-        if not descricao or not data or not horario_inicio or not horario_termino:
-            messagebox.showerror("Erro", "Todos os campos devem ser preenchidos.")
-        if descricao and data and horario_inicio and horario_termino:
-            adicionar_ata(self.conn, descricao, data, horario_inicio, horario_termino)
-            self.entrada_descricao_ata.delete(0, ctk.END)
-            self.entrada_horario_inicio_menu.delete(0, ctk.END)
-            self.entrada_horario_termino_menu.delete(0, ctk.END)
-
-            messagebox.showinfo("Sucesso", "Ata adicionada, com sucesso!")
             self.atualizar_comboboxes()
             self.atualizar_lista_atas()
+
+            # Footer
+            Footer.footer_container(self, main_container, self.icons["logo_principal"])
 
 
     def atualizar_lista_atas(self):

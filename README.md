@@ -43,7 +43,6 @@ Edite sisatas.spec para colocar as imagens
    datas=[('assets/img/logo.png', 'assets/img'),
         ('assets/img/Buscar_Fala.png', 'assets/img'),
         ('assets/img/Adicionar.png', 'assets/img'),
-        ('assets/img/calendar.png', 'assets/img'),
         ('assets/img/Exportar_Dados.png', 'assets/img'),
         ('assets/img/Importar_Dados.png', 'assets/img'),
         ('assets/img/Listar_Atas.png', 'assets/img'),
