@@ -133,6 +133,25 @@ def load_icons():
         light_image=imagem_pesquisar,
         size=(20, 20)
     )
+
+    caminho_editar = os.path.join(base_path,"editar.png")
+    imagem_editar = Image.open(caminho_editar)
+
+    icon_editar = ctk.CTkImage(
+        dark_image=imagem_editar,
+        light_image=imagem_editar,
+        size=(18, 20)
+    )
+
+    caminho_deletar = os.path.join(base_path,"deletar.png")
+    imagem_deletar = Image.open(caminho_deletar)
+
+    icon_deletar = ctk.CTkImage(
+        dark_image=imagem_deletar,
+        light_image=imagem_deletar,
+        size=(20, 20)
+    )
+
     # Retorna tudo em um dicionário organizado.
     return {
         "buscar": icon_buscar,
@@ -146,5 +165,7 @@ def load_icons():
         "calendar": icon_calendar,
         "seta_para_baixo": icon_seta_para_baixo,
         "voltar": icon_voltar,
-        "pesquisar": icon_pesquisar
+        "pesquisar": icon_pesquisar,
+        "editar": icon_editar,
+        "deletar": icon_deletar
     }
