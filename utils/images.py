@@ -152,6 +152,15 @@ def load_icons():
         size=(20, 20)
     )
 
+    caminho_exportar = os.path.join(base_path,"exportar.png")
+    imagem_exportar = Image.open(caminho_exportar)
+
+    icon_exportar = ctk.CTkImage(
+        dark_image=imagem_exportar,
+        light_image=imagem_exportar,
+        size=(18, 19)
+    )
+
     # Retorna tudo em um dicionário organizado.
     return {
         "buscar": icon_buscar,

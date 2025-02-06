@@ -939,13 +939,38 @@ class MeetingManagerApp:
                          font=("Arial", 16), 
                          text_color="#333333").pack(side="left", padx=5)
 
-            botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda a_id=ata[0]: self.deletar_ata(a_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
+
+            botao_deletar = ctk.CTkButton(frame,                                          
+                                          fg_color="#E7000B", 
+                                          image=self.icons["deletar"], 
+                                          text="Deletar", 
+                                          hover_color="#B7070F", 
+                                          text_color="#FFFFFF",
+                                          font=("Arial", 16),
+                                          command=lambda a_id=ata[0]: self.deletar_ata(a_id), 
+                                          )
             botao_deletar.pack(side="right", padx=5)
 
-            botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda a_id=ata[0]: self.editar_ata(a_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
+            botao_editar = ctk.CTkButton(frame, 
+                                         fg_color="#00AAA7", 
+                                         image=self.icons["editar"], 
+                                         text="Editar", 
+                                         hover_color="#009693", 
+                                         text_color="#FFFFFF",
+                                         font=("Arial", 16),
+                                         command=lambda a_id=ata[0]: self.editar_ata(a_id), 
+                                         )
             botao_editar.pack(side="right", padx=5)
 
-            botao_editar = ctk.CTkButton(frame, text="Exportar", command=lambda a_id=ata[0]: self.exportar_ata_ui(a_id), fg_color="#6f42c1", hover_color="#4e2a8e", text_color="#FFFFFF")
+            botao_editar = ctk.CTkButton(frame, 
+                                         text="Exportar",                      
+                                         fg_color="#FFA500", 
+                                         image=self.icons["exportar"], 
+                                         hover_color="#E49400", 
+                                         text_color="#FFFFFF",
+                                         font=("Arial", 16),
+                                         command=lambda a_id=ata[0]: self.exportar_ata_ui(a_id), 
+                                         )
             botao_editar.pack(side="right", padx=5)
 
     def exportar_ata_ui(self, ata_id):
