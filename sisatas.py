@@ -886,7 +886,21 @@ class MeetingManagerApp:
         self.entrada_secretario.pack(side="left", padx=15, pady=5)
     
         # Combo secretarias
-        self.combo_secretarias = ctk.CTkComboBox(row_secretario, values=['Selecione uma Secretaria'], width=300)
+        self.combo_secretarias = ctk.CTkComboBox(row_secretario,
+                                                values=['Selecione uma Secretaria'],
+                                                button_color="#019000",
+                                                button_hover_color="#007E37",
+                                                dropdown_fg_color="white",
+                                                corner_radius=10,
+                                                border_width=1,
+                                                border_color="#CCCCCC",
+                                                fg_color="white",
+                                                font=("Arial", 14),
+                                                dropdown_font=("Arial", 14),
+                                                text_color_disabled="#333333",
+                                                text_color="#333333",
+                                                width=480,
+                                                height=48)
         self.combo_secretarias.pack(side="left", padx=5, pady=5)
         # Botão "+ Nova Secretaria" (fica à extrema direita)
         botao_adicionar_secretario = ctk.CTkButton(
