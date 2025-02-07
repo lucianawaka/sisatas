@@ -815,43 +815,124 @@ class MeetingManagerApp:
     # Menu secretário Início
     def menu_secretario(self):
         self.clear_content_frame()
+        # Frame para o cabeçalho
+        main_container, header_frame = Containers.container_pages(self)
 
         # Botão de voltar
-        botao_voltar = ctk.CTkButton(self.root, text="Voltar", command=self.return_to_main_menu)
-        botao_voltar.pack(anchor="nw", padx=10, pady=10)
+        Botoes.btn_voltar(self, header_frame)
 
-        # Título do menu
-        ctk.CTkLabel(self.root, text="Adicionar Secretário", font=("Arial", 16, "bold")).pack(pady=10)
+        # ----------------------------------------------------------------
+        # PRIMEIRO BLOCO EM BRANCO: “Criação de Secretario”
+        # ----------------------------------------------------------------
+        frame_secretario = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        frame_secretario.pack(fill="x", padx=400, pady=(20, 20))
 
-        # Frame para cadastro de Secretário
-        frame_secretario = ctk.CTkFrame(self.root)
-        frame_secretario.pack(fill="x", padx=10, pady=5)
+        # ---------- Seção: Criação de Secretaria ----------
+        section_secretario = ctk.CTkFrame(frame_secretario, fg_color="white")
+        section_secretario.pack(fill="x", pady=(10, 10))
 
-        ctk.CTkLabel(frame_secretario, text="Nome do Secretário:").pack(side="left", padx=5, pady=5)
+        label_secretario = ctk.CTkLabel(
+            section_secretario,
+            text="Adicionar Secretário",
+            font=("Arial", 22, "bold"),
+            text_color="#007E37"
+        )
+        label_secretario.pack(anchor="w", pady=(0, 5), padx=10)
 
-        self.entrada_secretario = ctk.CTkEntry(frame_secretario, placeholder_text="Digite o nome", width=300)
-        self.entrada_secretario.pack(side="left", padx=5, pady=5)
 
-        self.combo_secretarias = ctk.CTkComboBox(frame_secretario, values=['Selecione uma Secretaria'], width=300)
+        # Frame único para agrupar os campos em linha
+        row_secretario = ctk.CTkFrame(section_secretario, fg_color="white")
+        row_secretario.pack(fill="x")
+
+        # Campo "Cadastro da Secretario"
+        self.entrada_secretario  = ctk.CTkEntry(
+            row_secretario, 
+            placeholder_text="Nome da Secretario", 
+            width=380,
+            height=48,
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            font=("Arial", 16)
+        )
+        self.entrada_secretario.pack(side="left", padx=15, pady=5)
+    
+        # Combo secretarias
+        self.combo_secretarias = ctk.CTkComboBox(row_secretario, values=['Selecione uma Secretaria'], width=300)
         self.combo_secretarias.pack(side="left", padx=5, pady=5)
+        # Botão "+ Nova Secretaria" (fica à extrema direita)
+        botao_adicionar_secretario = ctk.CTkButton(
+            row_secretario, 
+            image=self.icons["adicionar"],
+            text="Adicionar",
+            fg_color="#019000",
+            text_color="#FFFFFF",
+            hover_color="#007E37",
+            compound="left",
+            width=155,
+            height=48,
+            font=("Arial", 16),
+            command=self.adicionar_secretario
+        )
+        botao_adicionar_secretario.pack(side="right", padx=10, pady=5)
 
-        botao_adicionar_secretario = ctk.CTkButton(frame_secretario, text="Adicionar", command=self.adicionar_secretario, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
-        botao_adicionar_secretario.pack(side="left", padx=5, pady=5)
-        
-        # Título da listagem de secretários
-        ctk.CTkLabel(self.root, text="Secretarios", font=("Arial", 16, "bold")).pack(pady=10)
 
+        # ----------------------------------------------------------------
+        # SEGUNDO BLOCO EM BRANCO: Listar Secretarios
+        # ----------------------------------------------------------------
+
+        card_secretarios = ctk.CTkFrame(main_container, 
+                                        fg_color="white",
+                                        corner_radius=10,
+                                        )
+        card_secretarios.pack(fill="x", padx=400, pady=(0, 10))
+
+        # Frame para o label da lista (primeira linha)
+        label_frame_secretarios = ctk.CTkFrame(card_secretarios, fg_color="white")
+        label_frame_secretarios.pack(fill="x", pady=(10, 0), anchor="w")
+
+        label_lista_secretarios = ctk.CTkLabel(label_frame_secretarios, 
+                                        text="Secretários",
+                                        font=("Arial", 22, "bold"),
+                                        text_color="#007E37"  
+                                        )
+        label_lista_secretarios.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
+       
         # Atualiza o combobox com as secretarias disponíveis
         self.atualizar_comboboxes()
 
-        # Frame para listagem de secretários
-        frame_lista_secretarios = ctk.CTkFrame(self.root)
-        frame_lista_secretarios.pack(fill="both", expand=True, padx=10, pady=5)
+        # Frame para listagem de Secretarios
+        frame_lista_secretarios = ctk.CTkFrame(  
+                                        card_secretarios, 
+                                        bg_color="white",
+                                        fg_color="white"
+                                        )
+        frame_lista_secretarios.pack(fill="both", expand=True, pady=(0, 20), padx=10)
 
-        self.lista_secretarios = ctk.CTkScrollableFrame(frame_lista_secretarios, width=400, height=200)
+        self.lista_secretarios = ctk.CTkScrollableFrame(
+                                    frame_lista_secretarios, 
+                                    width=800, 
+                                    height=400, 
+                                    fg_color="white",
+                                    border_color="#FFFFFF", 
+                                    border_width=2, 
+                                    corner_radius=10,
+                                    scrollbar_button_color="#CACACA",
+                                    scrollbar_fg_color="white",
+                                    scrollbar_button_hover_color="#007E37",
+                                    bg_color="white",
+                                    label_fg_color="white",
+                                    label_text_color="#007E37",
+                                    label_font=("Arial", 16, "bold"),
+                                    
+                                    )
         self.lista_secretarios.pack(fill="both", expand=True)
 
+        # Footer
+        Footer.footer_container(self, main_container, self.icons["logo_principal"])
         self.atualizar_lista_secretarios()
+
         # Menu secretario fim
 
         # Menu ata inicio
