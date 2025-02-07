@@ -55,6 +55,7 @@ Edite sisatas.spec para colocar as imagens
         ('assets/img/editar.png', 'assets/img'),
         ('assets/img/deletar.png', 'assets/img'),
         ('assets/img/pesquisar.png', 'assets/img'),
+        ('assets/img/desativar.png', 'assets/img'),
         ('assets/img/calendar.png', 'assets/img')],
 ```
 Agora recompile o .exe

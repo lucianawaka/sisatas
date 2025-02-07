@@ -399,25 +399,25 @@ class MeetingManagerApp:
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao adicionar secretaria: {e}")
 
-    def atualizar_lista_secretarias(self):
-        for widget in self.lista_secretarias.winfo_children():
-            widget.destroy()
+    # def atualizar_lista_secretarias(self):
+    #     for widget in self.lista_secretarias.winfo_children():
+    #         widget.destroy()
 
-        secretarias = listar_secretarias(self.conn)
+    #     secretarias = listar_secretarias(self.conn)
 
-        for secretaria in secretarias:
-            frame = ctk.CTkFrame(self.lista_secretarias)
-            frame.pack(fill="x", padx=5, pady=5)
+    #     for secretaria in secretarias:
+    #         frame = ctk.CTkFrame(self.lista_secretarias)
+    #         frame.pack(fill="x", padx=5, pady=5)
 
-            nome = f"{secretaria[1]}"
+    #         nome = f"{secretaria[1]}"
 
-            ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
+    #         ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
 
-            botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
-            botao_editar.pack(side="right", padx=5)
+    #         botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
+    #         botao_editar.pack(side="right", padx=5)
 
-            botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
-            botao_deletar.pack(side="right", padx=5)
+    #         botao_deletar = ctk.CTkButton(frame, text="Deletar", command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id), fg_color="#dc3545", hover_color="#b02a37", text_color="#FFFFFF")
+    #         botao_deletar.pack(side="right", padx=5)
 
 
     def menu_secretaria(self):
@@ -660,22 +660,49 @@ class MeetingManagerApp:
         secretarios = listar_secretarios(self.conn, incluir_inativos=True)
 
         for secretario in secretarios:
-            frame = ctk.CTkFrame(self.lista_secretarios)
+            frame = ctk.CTkFrame(self.lista_secretarios,
+                                    bg_color="white",
+                                    fg_color="white",          # Background color
+                                )
             frame.pack(fill="x", padx=5, pady=5)
 
             nome = f"{secretario[1]} ({secretario[2]})"
             status = "Ativo" if secretario[3] == 1 else "Inativo"
 
-            ctk.CTkLabel(frame, text=nome).pack(side="left", padx=5)
-            ctk.CTkLabel(frame, text=status).pack(side="left", padx=5)
+            ctk.CTkLabel(frame, text=nome,
+                         font=("Arial", 16), 
+                         text_color="#333333").pack(side="left", padx=5)
+            ctk.CTkLabel(frame, text=status,
+                         font=("Arial", 14, "bold"), 
+                         text_color="#333333").pack(side="left", padx=5)
 
-            botao_editar = ctk.CTkButton(frame, text="Editar", command=lambda s_id=secretario[0]: self.editar_secretario(s_id), fg_color="#007bff", hover_color="#0056b3", text_color="#FFFFFF")
+            botao_editar = ctk.CTkButton(frame, 
+                                        fg_color="#00AAA7", 
+                                        image=self.icons["editar"], 
+                                        text="Editar", 
+                                        hover_color="#009693", 
+                                        text_color="#FFFFFF",
+                                        font=("Arial", 16),
+                                        command=lambda s_id=secretario[0]: self.editar_secretario(s_id))
             botao_editar.pack(side="right", padx=5)
 
             if secretario[3] == 1:
-                botao = ctk.CTkButton(frame, text="Desativar", command=lambda s_id=secretario[0]: self.desativar_secretario(s_id), fg_color="#ffa500", hover_color="#cc8400", text_color="#FFFFFF")
+                botao = ctk.CTkButton(frame, text="Desativar", 
+                                      image=self.icons["desativar"],
+                                      fg_color="#ffa500", 
+                                      hover_color="#cc8400", 
+                                      text_color="#FFFFFF",
+                                      font=("Arial", 16),
+                                      command=lambda s_id=secretario[0]: self.desativar_secretario(s_id)
+                                      )
             else:
-                botao = ctk.CTkButton(frame, text="Ativar", command=lambda s_id=secretario[0]: self.ativar_secretario(s_id), fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF")
+                botao = ctk.CTkButton(frame, text="Ativar", 
+                                      command=lambda s_id=secretario[0]: self.ativar_secretario(s_id), 
+                                      image=self.icons["desativar"],
+                                      fg_color="#28a745", 
+                                      hover_color="#1e7e34", 
+                                      font=("Arial", 16),
+                                      text_color="#FFFFFF")
 
             botao.pack(side="right", padx=5)
 
