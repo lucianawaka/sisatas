@@ -1000,7 +1000,7 @@ class MeetingManagerApp:
             frame_lista_atas = ctk.CTkFrame(  
                                         card_atas, 
                                         bg_color="white",
-                                        fg_color="white",       
+                                        fg_color="white",  
      
             )
             frame_lista_atas.pack(fill="both", expand=True, pady=(0, 20), padx=10)
@@ -1019,7 +1019,7 @@ class MeetingManagerApp:
                                     bg_color="white",
                                     label_fg_color="white",
                                     label_text_color="#007E37",
-                                    label_font=("Arial", 16, "bold"),
+                                    label_font=("Arial", 20, "bold"),
                                     
                                     )
         
@@ -1359,7 +1359,7 @@ class MeetingManagerApp:
         # SEGUNDO BLOCO EM BRANCO: Listar falas das Atas”
         # ----------------------------------------------------------------
         
-        card_fala_atas = ctk.CTkFrame(main_container, fg_color="white", corner_radius=10)
+        card_fala_atas = ctk.CTkFrame(main_container, fg_color="white",  corner_radius=10)
         card_fala_atas.pack(fill="x", padx=400, pady=(0, 10))
 
         # Frame para o label da lista (primeira linha)
@@ -1377,28 +1377,44 @@ class MeetingManagerApp:
         frame_lista_atas = ctk.CTkFrame(
                                         card_fala_atas, 
                                         fg_color="white",          # Background color
-                                        border_color="#007E37",    # Border color (green)
-                                        border_width=2,            # Border thickness
-                                        corner_radius=10           # Rounded corners
+                                        border_width=0,        # Remove a borda preta
+                                        corner_radius=10       # Mantém as bordas arredondadas
+
 
         )
         frame_lista_atas.pack(fill="both", expand=True, pady=(0, 20), padx=10)
        
         # Criar o Treeview
-        lista_atas = ttk.Treeview(frame_lista_atas, columns=("Secretário", "Fala"))
+        lista_atas = ttk.Treeview(frame_lista_atas, style="Treeview", columns=("Secretário", "Fala"), show="tree headings", height=10)
+
+        # Configurar o tamanho da fonte
+        style = ttk.Style()
+        style.configure("Treeview", font=("Arial", 14), borderwidth=0, relief="flat")  # Remover qualquer contorno
+        style.configure("Treeview.Heading", font=("Arial", 14), borderwidth=0, relief="flat")  # Remover borda dos cabeçalhos
+        style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])  # Remover padding interno que cria borda visual
+
+        # Definir o cabeçalho
         lista_atas.heading("#0", text="Ata (Descrição - Data)")
         lista_atas.heading("Secretário", text="Secretário / Secretaria")
         lista_atas.heading("Fala", text="Fala")
         lista_atas.column("Secretário", width=200)
         lista_atas.column("Fala", width=400)
+        
+        # Definir largura das colunas para garantir que o scroll horizontal tenha efeito
+        lista_atas.column("#0", width=600, stretch=True)
+        lista_atas.column("Secretário", width=350, stretch=True)
+        lista_atas.column("Fala", width=600, stretch=True)
 
-        # Adicionar Scrollbar vertical
+        # Criar e configurar Scrollbars
         scrollbar_vertical = ttk.Scrollbar(frame_lista_atas, orient="vertical", command=lista_atas.yview)
-        lista_atas.configure(yscrollcommand=scrollbar_vertical.set)
+        scrollbar_horizontal = ttk.Scrollbar(frame_lista_atas, orient="horizontal", command=lista_atas.xview)
+        lista_atas.configure(yscrollcommand=scrollbar_vertical.set, xscrollcommand=scrollbar_horizontal.set)
 
-        # Posicionar o Treeview e a Scrollbar
-        lista_atas.pack(side="left", fill="both", expand=True)
+        
+        # Posicionar os componentes na tela
+        lista_atas.pack(side="top", fill="both", expand=True)
         scrollbar_vertical.pack(side="right", fill="y")
+        scrollbar_horizontal.pack(side="bottom", fill="x")
 
         # Footer
         Footer.footer_container(self, main_container, self.icons["logo_principal"])

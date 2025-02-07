@@ -48,6 +48,7 @@ def buscar_atas_por_descricao(conn, descricao_parcial):
         SELECT id, descricao, data
         FROM atas
         WHERE descricao LIKE ?
+        ORDER BY data DESC
     """
     return cursor.execute(query, (f"%{descricao_parcial}%",)).fetchall()
 def deletar_ata(conn, ata_id):
