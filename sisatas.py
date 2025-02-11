@@ -750,7 +750,16 @@ class MeetingManagerApp:
         janela_edicao.title("Editar Secretário")
         janela_edicao.geometry("400x300")
         janela_edicao.grab_set()
+        # Centraliza a janela na tela
+        largura_janela = 400
+        altura_janela = 300
+        largura_tela = janela_edicao.winfo_screenwidth()
+        altura_tela = janela_edicao.winfo_screenheight()
 
+        x = (largura_tela - largura_janela) // 2
+        y = (altura_tela - altura_janela) // 2
+
+        janela_edicao.geometry(f"{largura_janela}x{altura_janela}+{x}+{y}")
         # Obtém os dados atuais do secretário
         secretario_atual = get_secretario_por_id(self.conn, secretario_id)
         if not secretario_atual:
