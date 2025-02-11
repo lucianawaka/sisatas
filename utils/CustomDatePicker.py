@@ -47,7 +47,9 @@ class CustomDatePicker(ctk.CTkFrame):
         self.current_year = None
         self.current_month = None
         self.top = None  # Referência ao popup
-
+    def set_selected_date(self, date_str):
+        """Atualiza a data selecionada."""
+        self.selected_date = date_str
     def open_calendar(self):
         # Se a janela já estiver aberta, destrói para recriar
         if self.top is not None and self.top.winfo_exists():

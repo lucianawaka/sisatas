@@ -1197,7 +1197,7 @@ class MeetingManagerApp:
         janela_edicao.geometry("650x400")
         
         # Aguarda a janela estar visível antes de calcular a posição correta
-        janela_edicao.wait_visibility()
+        janela_edicao.grab_set()
 
         largura_janela = 650
         altura_janela = 400
@@ -1211,7 +1211,9 @@ class MeetingManagerApp:
         # Aplica a nova posição centralizada
         janela_edicao.geometry(f"{largura_janela}x{altura_janela}+{x}+{y}")
 
-        janela_edicao.grab_set()
+        # Aplica as cores padrão
+        janela_edicao.configure(bg="#FAFAFA")    
+
         
         ata_atual = [ata for ata in listar_atas(self.conn) if ata[0] == ata_id]
         if not ata_atual:
@@ -1223,7 +1225,7 @@ class MeetingManagerApp:
         descricao_atual, data_atual, horario_inicio, horario_fim = ata_atual[0][1], ata_atual[0][2], ata_atual[0][3], ata_atual[0][4]
 
         # Frame principal que conterá os campos de edição
-        frame_campos = ctk.CTkFrame(janela_edicao)
+        frame_campos = ctk.CTkFrame(janela_edicao, fg_color="#FFFFFF", corner_radius=10)
         frame_campos.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Configurando linhas e colunas do grid para melhor disposição
@@ -1231,18 +1233,25 @@ class MeetingManagerApp:
         frame_campos.grid_columnconfigure(1, weight=1)
         frame_campos.grid_columnconfigure(2, weight=1)
         frame_campos.grid_columnconfigure(3, weight=1)
+        frame_campos.grid_columnconfigure(4, weight=1)
+
+        # Label alinhado à esquerda
+        label = ctk.CTkLabel(frame_campos, text="Edite a ata:", 
+                            font=("Arial", 22, "bold"), 
+                            text_color="#007E37")
+        label.grid(row=0, column=0, sticky="e", padx=5, pady=5)
 
         # --- Descrição da Ata ---
-        label_descricao = ctk.CTkLabel(frame_campos, text="Descrição da Ata:")
-        label_descricao.grid(row=0, column=0, sticky="e", padx=5, pady=5)
+        label_descricao = ctk.CTkLabel(frame_campos, text="Nome da Ata:")
+        label_descricao.grid(row=1, column=0, sticky="e", padx=5, pady=5)
 
         entrada_descricao = ctk.CTkEntry(frame_campos, width=300)
         entrada_descricao.insert(0, descricao_atual)
-        entrada_descricao.grid(row=0, column=1, columnspan=3, sticky="w", padx=5, pady=5)
+        entrada_descricao.grid(row=1, column=1, columnspan=3, sticky="w", padx=5, pady=5)
 
         # --- Data da Ata ---
         label_data = ctk.CTkLabel(frame_campos, text="Data da Ata:")
-        label_data.grid(row=1, column=0, sticky="e", padx=5, pady=5)
+        label_data.grid(row=2, column=0, sticky="e", padx=5, pady=5)
 
         entrada_data = DateEntry(
             frame_campos,
@@ -1253,24 +1262,22 @@ class MeetingManagerApp:
             date_pattern='dd/MM/yyyy'
         )
         entrada_data.set_date(data_atual)
-        entrada_data.grid(row=1, column=1, sticky="w", padx=5, pady=5)
+        entrada_data.grid(row=2, column=1, sticky="w", padx=5, pady=5)
 
-        # --- Horário de Início ---
+        # --- Horário de Início e Horário de Término na mesma linha ---
         label_horario_inicio = ctk.CTkLabel(frame_campos, text="Horário de Início:")
-        label_horario_inicio.grid(row=2, column=0, sticky="e", padx=5, pady=5)
+        label_horario_inicio.grid(row=3, column=0, sticky="e", padx=5, pady=5)
 
         entrada_horario_inicio = ctk.CTkEntry(frame_campos, placeholder_text="HH:MM", width=100)
         entrada_horario_inicio.insert(0, horario_inicio)
-        entrada_horario_inicio.grid(row=2, column=1, sticky="w", padx=5, pady=5)
+        entrada_horario_inicio.grid(row=3, column=1, sticky="w", padx=5, pady=5)
 
-        # --- Horário de Término ---
-        label_horario_termino = ctk.CTkLabel(frame_campos, text="até:")
-        label_horario_termino.grid(row=2, column=2, sticky="e", padx=5, pady=5)
+        label_horario_termino = ctk.CTkLabel(frame_campos, text="Horário de Término:")
+        label_horario_termino.grid(row=3, column=2, sticky="e", padx=5, pady=5)
 
         entrada_horario_termino = ctk.CTkEntry(frame_campos, placeholder_text="HH:MM", width=100)
         entrada_horario_termino.insert(0, horario_fim)
-        entrada_horario_termino.grid(row=2, column=3, sticky="w", padx=5, pady=5)
-
+        entrada_horario_termino.grid(row=3, column=3, sticky="w", padx=5, pady=5)
 
         def salvar_edicao():
             nova_descricao = entrada_descricao.get().strip()
