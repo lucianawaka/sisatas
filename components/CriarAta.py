@@ -103,7 +103,7 @@ class CriarAta():
         # Botão "+ Nova Ata" (fica à extrema direita)
         botao_nova_ata = ctk.CTkButton(
             row_ata, 
-            image=self.icons["adicionar"],
+            image=self.icons["nova_ata"],
             text="Nova Ata",
             fg_color="#019000",
             text_color="#FFFFFF",
