@@ -1195,8 +1195,24 @@ class MeetingManagerApp:
         janela_edicao = ctk.CTkToplevel(self.root)
         janela_edicao.title("Editar Ata")
         janela_edicao.geometry("650x400")
-        janela_edicao.grab_set()
+        
+        # Aguarda a janela estar visível antes de calcular a posição correta
+        janela_edicao.wait_visibility()
 
+        largura_janela = 650
+        altura_janela = 400
+        largura_tela = janela_edicao.winfo_screenwidth()
+        altura_tela = janela_edicao.winfo_screenheight()
+
+        # Calcula as coordenadas para centralizar a janela
+        x = (largura_tela - largura_janela) // 2
+        y = (altura_tela - altura_janela) // 2
+
+        # Aplica a nova posição centralizada
+        janela_edicao.geometry(f"{largura_janela}x{altura_janela}+{x}+{y}")
+
+        janela_edicao.grab_set()
+        
         ata_atual = [ata for ata in listar_atas(self.conn) if ata[0] == ata_id]
         if not ata_atual:
             messagebox.showerror("Erro", "Ata não encontrada.")
@@ -1505,7 +1521,7 @@ class MeetingManagerApp:
         container.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Título do pop-up
-        label = ctk.CTkLabel(container, text="Edite a fala:", font=("Arial", 16), text_color="#333333")
+        label = ctk.CTkLabel(container, text="Edite a fala:", text_color="#019000",  font=("Arial", 22, "bold"))
         label.pack(pady=10)
 
         # Campo de texto
