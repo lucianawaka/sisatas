@@ -595,7 +595,17 @@ class MeetingManagerApp:
         janela_edicao.title("Editar Secretaria")
         janela_edicao.geometry("400x200")
         janela_edicao.grab_set()
+        
+        # Centraliza a janela na tela
+        largura_janela = 400
+        altura_janela = 200
+        largura_tela = janela_edicao.winfo_screenwidth()
+        altura_tela = janela_edicao.winfo_screenheight()
 
+        x = (largura_tela - largura_janela) // 2
+        y = (altura_tela - altura_janela) // 2
+
+        janela_edicao.geometry(f"{largura_janela}x{altura_janela}+{x}+{y}")
         # Obtém o nome atual da secretaria do controller
         secretaria_atual = get_secretaria_por_id(self.conn, secretaria_id)
 
