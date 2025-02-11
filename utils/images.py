@@ -170,6 +170,15 @@ def load_icons():
         size=(18, 21)
     )
 
+    caminho_ativar = os.path.join(base_path,"ativar.png")
+    imagem_ativar = Image.open(caminho_ativar)
+
+    icon_ativar = ctk.CTkImage(
+        dark_image=imagem_ativar,
+        light_image=imagem_ativar,
+        size=(18, 21)
+    )   
+
     # Retorna tudo em um dicionário organizado.
     return {
         "buscar": icon_buscar,
@@ -186,5 +195,6 @@ def load_icons():
         "pesquisar": icon_pesquisar,
         "editar": icon_editar,
         "deletar": icon_deletar,
-        "desativar": icon_desativar
+        "desativar": icon_desativar,
+        "ativar": icon_ativar
     }

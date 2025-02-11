@@ -698,9 +698,9 @@ class MeetingManagerApp:
             else:
                 botao = ctk.CTkButton(frame, text="Ativar", 
                                       command=lambda s_id=secretario[0]: self.ativar_secretario(s_id), 
-                                      image=self.icons["desativar"],
-                                      fg_color="#28a745", 
-                                      hover_color="#1e7e34", 
+                                      image=self.icons["ativar"],
+                                      fg_color="#999999", 
+                                      hover_color="#999999", 
                                       font=("Arial", 16),
                                       text_color="#FFFFFF")
 
