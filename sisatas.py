@@ -1286,33 +1286,6 @@ class MeetingManagerApp:
 
         # Menu ata fim
  
-    def show_success_message(self, message):
-        """
-        Exibe uma mensagem de sucesso em uma janela de pop-up.
-        :param message: Texto da mensagem.
-        """
-        popup = ctk.CTkToplevel(self.root)
-        popup.title("Sucesso")
-        popup.geometry("300x150")
-        label = ctk.CTkLabel(popup, text=message, wraplength=280, justify="center")
-        label.pack(pady=20)
-        botao_ok = ctk.CTkButton(popup, text="OK", command=popup.destroy)
-        botao_ok.pack(pady=10)
-
-
-    def show_error_message(self, message):
-        """
-        Exibe uma mensagem de erro em uma janela de pop-up.
-        :param message: Texto da mensagem.
-        """
-        popup = ctk.CTkToplevel(self.root)
-        popup.title("Erro")
-        popup.geometry("300x150")
-        label = ctk.CTkLabel(popup, text=message, wraplength=280, justify="center", fg_color="red")
-        label.pack(pady=20)
-        botao_ok = ctk.CTkButton(popup, text="OK", command=popup.destroy)
-        botao_ok.pack(pady=10)
-
 
 
     def listar_atas(self):
@@ -1512,15 +1485,32 @@ class MeetingManagerApp:
     def show_fala_popup(self, fala_id, texto_atual):
         popup = ctk.CTkToplevel(self.root)
         popup.title("Editar Fala")
-        popup.geometry("400x300")
+        popup.geometry("600x400")
+        
+        # Centralizar na tela
+        popup.update_idletasks()
+        largura_janela = 600
+        altura_janela = 400
+        largura_tela = popup.winfo_screenwidth()
+        altura_tela = popup.winfo_screenheight()
+        x = (largura_tela - largura_janela) // 2
+        y = (altura_tela - altura_janela) // 2
+        popup.geometry(f"{largura_janela}x{altura_janela}+{x}+{y}")
 
-        # Label para instrução
-        label = ctk.CTkLabel(popup, text="Edite a fala:")
+        # Cor de fundo e estrutura
+        popup.configure(bg="#FAFAFA")
+
+        # Frame principal
+        container = ctk.CTkFrame(popup, fg_color="#FFFFFF", corner_radius=10)
+        container.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Título do pop-up
+        label = ctk.CTkLabel(container, text="Edite a fala:", font=("Arial", 16), text_color="#333333")
         label.pack(pady=10)
 
-        # Campo de texto para edição
-        texto_fala = ctk.CTkTextbox(popup, wrap="word", height=10)
-        texto_fala.insert("1.0", texto_atual)  # Pré-popular com o texto atual
+        # Campo de texto
+        texto_fala = ctk.CTkTextbox(container, wrap="word",  font=("Arial", 14), height=6, corner_radius=5)
+        texto_fala.insert("1.0", texto_atual)
         texto_fala.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Botão para salvar a edição
@@ -1541,11 +1531,11 @@ class MeetingManagerApp:
                 # Atualiza a lista de atas no Treeview para refletir as mudanças
                 self.listar_atas()
                 # Exibe uma mensagem de sucesso
-                self.show_success_message("Fala atualizada com sucesso!")    
+                messagebox.showinfo("Sucesso", "Fala atualizada com sucesso!")
 
             except Exception as e:
                 # Exibe uma mensagem de erro caso algo dê errado
-                self.show_error_message(f"Erro ao atualizar fala: {e}")
+                messagebox.showerror("Erro", f"Erro ao atualizar fala: {e}")
 
         # Botão para deletar a fala
         def deletar_fala_popup():
@@ -1561,18 +1551,36 @@ class MeetingManagerApp:
                     self.listar_atas()  # Atualiza a lista de atas
             except Exception as e:
                 self.show_error_message(f"Erro ao deletar fala: {e}")
-
+        # Botões de ação
+        button_frame = ctk.CTkFrame(container, fg_color="transparent")
+        button_frame.pack(fill="x", pady=10)
         # Botão para salvar
-        botao_salvar = ctk.CTkButton(popup, text="Salvar", command=salvar_fala)
-        botao_salvar.pack(pady=10)
+        botao_salvar = ctk.CTkButton(button_frame, text="Salvar", 
+                                    image=self.icons["adicionar"],
+                                    fg_color="#019000",
+                                    text_color="#FFFFFF",
+                                    hover_color="#007E37",
+                                    compound="left",
+                                    width=155,
+                                    height=48,
+                                    font=("Arial", 16),
+                                    command=salvar_fala)
+        botao_salvar.pack(side="right", expand=True, padx=5)
 
-        # Botão para cancelar
-        botao_cancelar = ctk.CTkButton(popup, text="Cancelar", command=popup.destroy)
-        botao_cancelar.pack(pady=10)
 
         # Botão para deletar
-        botao_deletar = ctk.CTkButton(popup, text="Deletar", command=deletar_fala_popup, fg_color="red", hover_color="orange")
-        botao_deletar.pack(pady=10)
+        botao_deletar = ctk.CTkButton(button_frame, text="Deletar",        
+                                        fg_color="#E7000B", 
+                                        image=self.icons["deletar"], 
+                                        hover_color="#B7070F", 
+                                        text_color="#FFFFFF",
+                                        width=155,
+                                        height=48,
+                                        font=("Arial", 16),
+                                        command=deletar_fala_popup
+        )
+        botao_deletar.pack(side="left", expand=True, padx=5)
+        popup.grab_set()  # Impede interações na janela principal enquanto o pop-up está aberto
 
 
     # Função para limpar todas as atas e falas

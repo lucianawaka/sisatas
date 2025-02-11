@@ -179,6 +179,15 @@ def load_icons():
         size=(18, 21)
     )   
 
+    caminho_nova_ata = os.path.join(base_path,"nova_ata.png")
+    imagem_nova_ata = Image.open(caminho_nova_ata)
+
+    icon_nova_ata = ctk.CTkImage(
+        dark_image=imagem_nova_ata,
+        light_image=imagem_nova_ata,
+        size=(18, 20)
+    )
+
     # Retorna tudo em um dicionário organizado.
     return {
         "buscar": icon_buscar,
@@ -196,5 +205,6 @@ def load_icons():
         "editar": icon_editar,
         "deletar": icon_deletar,
         "desativar": icon_desativar,
-        "ativar": icon_ativar
+        "ativar": icon_ativar,
+        "nova_ata": icon_nova_ata
     }
