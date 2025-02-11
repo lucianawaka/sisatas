@@ -86,7 +86,7 @@ def load_icons():
     icon_logo_principal = ctk.CTkImage(
         dark_image=imagem_logo_principal,
         light_image=imagem_logo_principal,
-        size=(265, 80)
+        size=(222, 90)
     )
 
     caminho_adicionar= os.path.join(base_path,"Adicionar.png")
