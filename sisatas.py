@@ -950,7 +950,7 @@ class MeetingManagerApp:
             self.descricao_ata.delete(0, ctk.END)
             self.entrada_horario_inicio.delete(0, ctk.END)
             self.entrada_horario_termino.delete(0, ctk.END)
-            self.atualizar_comboboxes()
+            #self.atualizar_comboboxes()
             self.atualizar_lista_atas()
             messagebox.showinfo("Sucesso", "Ata adicionada!")
 
@@ -1083,7 +1083,7 @@ class MeetingManagerApp:
         label_lista_secretarios.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
        
         # Atualiza o combobox com as secretarias disponíveis
-        self.atualizar_comboboxes()
+        #self.atualizar_comboboxes()
 
         # Frame para listagem de Secretarios
         frame_lista_secretarios = ctk.CTkFrame(  
@@ -1181,7 +1181,7 @@ class MeetingManagerApp:
         
             self.lista_atas.pack(fill="both", expand=True)
 
-            self.atualizar_comboboxes()
+            #self.atualizar_comboboxes()
             self.atualizar_lista_atas()
 
             # Footer
@@ -1226,7 +1226,7 @@ class MeetingManagerApp:
                                          )
             botao_editar.pack(side="right", padx=5)
 
-            botao_editar = ctk.CTkButton(frame, 
+            botao_exportar = ctk.CTkButton(frame, 
                                          text="Exportar",                      
                                          fg_color="#FFA500", 
                                          image=self.icons["exportar"], 
@@ -1235,7 +1235,7 @@ class MeetingManagerApp:
                                          font=("Montserrat", 16),
                                          command=lambda a_id=ata[0]: self.exportar_ata_ui(a_id), 
                                          )
-            botao_editar.pack(side="right", padx=5)
+            botao_exportar.pack(side="right", padx=5)
 
     def exportar_ata_ui(self, ata_id):
         try:
