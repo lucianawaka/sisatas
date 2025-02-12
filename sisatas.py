@@ -1715,7 +1715,7 @@ class MeetingManagerApp:
         label.pack(pady=10)
 
         # Campo de texto
-        texto_fala = ctk.CTkTextbox(container, wrap="word",  font=("Montserrat", 14), height=6, corner_radius=5)
+        texto_fala = ctk.CTkTextbox(container, wrap="word",  font=("Montserrat", 16), height=6, corner_radius=5)
         texto_fala.insert("1.0", texto_atual)
         texto_fala.pack(fill="both", expand=True, padx=10, pady=10)
 
