@@ -24,6 +24,7 @@ from controllers.secretaria import adicionar_secretaria, listar_secretarias, del
 from controllers.secretario import adicionar_secretario, listar_secretarios, get_secretaria_by_secretario, ativar_secretario, desativar_secretario, editar_secretario, get_secretario_por_id
 from controllers.ata import adicionar_ata, listar_atas, buscar_atas_por_descricao, deletar_ata, editar_ata, obter_dados_ata
 from controllers.fala import adicionar_fala, listar_falas_por_ata, limpar_todas_as_entidades, atualizar_fala, deletar_fala
+from utils.CustomDatePicker import CustomDatePicker
 from utils.images import load_icons
 
 from utils.CTkHTMLScrolledText import CTkHTMLScrolledText
@@ -1281,14 +1282,25 @@ class MeetingManagerApp:
         label_data = ctk.CTkLabel(frame_campos, text="Data da Ata:", font=("Arial", 14, "bold"), text_color="#007E37")
         label_data.grid(row=2, column=0, sticky="e", padx=5, pady=5)
 
-        entrada_data = DateEntry(
-            frame_campos,
-            width=18,
-            background="darkblue",
-            foreground="white",
-            borderwidth=2,
-            date_pattern='dd/MM/yyyy'
+        # entrada_data = DateEntry(
+        #     frame_campos,
+        #     width=18,
+        #     background="darkblue",
+        #     foreground="white",
+        #     borderwidth=2,
+        #     date_pattern='dd/MM/yyyy'
+        # )
+
+        entrada_data = CustomDatePicker(
+            frame_campos, 
+            width=140, 
+            height=48,
+            corner_radius=10,
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white"
         )
+
         entrada_data.set_date(data_atual)
         entrada_data.grid(row=2, column=1, sticky="w", padx=10, pady=5)
 

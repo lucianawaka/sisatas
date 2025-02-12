@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import calendar
-from datetime import datetime
+from datetime import datetime, date
 from utils.images import load_icons
 
 class CustomDatePicker(ctk.CTkFrame):
@@ -160,6 +160,33 @@ class CustomDatePicker(ctk.CTkFrame):
             self.current_year += 1
         self.draw_calendar()
 
+
+    def set_date(self, value):
+        """
+        Define o valor de data.
+        value pode ser 'YYYY-MM-DD' (string), datetime.date, datetime.datetime, etc.
+        """
+        if isinstance(value, (date, datetime)):
+            # Se for objeto date/datetime, só formatamos
+            self.selected_date = value.strftime("%d/%m/%Y")
+        else:
+            # Se vier como string '2025-04-17', convertemos
+            if isinstance(value, str):
+                try:
+                    dt = datetime.strptime(value, "%Y-%m-%d")
+                    self.selected_date = dt.strftime("%d/%m/%Y")
+                except ValueError:
+                    # Se não for no formato YYYY-MM-DD, guardamos a string “como está”
+                    self.selected_date = value
+            else:
+                self.selected_date = str(value)
+
+        # ATUALIZA O ENTRY AQUI:
+        self.entry.delete(0, "end")
+        self.entry.insert(0, self.selected_date)
+
+
+             
     def get(self):
         """ Retorna a data atualmente exibida no campo de texto. """
         return self.entry.get()
