@@ -594,12 +594,12 @@ class MeetingManagerApp:
         # Cria uma nova janela para edição
         janela_edicao = ctk.CTkToplevel(self.root)
         janela_edicao.title("Editar Secretaria")
-        janela_edicao.geometry("400x200")
+        janela_edicao.geometry("800x300")
         janela_edicao.grab_set()
         
         # Centraliza a janela na tela
-        largura_janela = 400
-        altura_janela = 200
+        largura_janela = 800
+        altura_janela = 300
         largura_tela = janela_edicao.winfo_screenwidth()
         altura_tela = janela_edicao.winfo_screenheight()
 
@@ -616,11 +616,47 @@ class MeetingManagerApp:
             return
 
         nome_atual = secretaria_atual["nome"]
-
-        ctk.CTkLabel(janela_edicao, text="Nome da Secretaria:").pack(pady=10)
-        entrada_nome = ctk.CTkEntry(janela_edicao, width=300)
+        
+        # Frame principal
+        frame_campos = ctk.CTkFrame(janela_edicao, fg_color="#FFFFFF", corner_radius=10)
+        frame_campos.pack(fill="both", expand=True, padx=20, pady=20)
+        
+            # Configuração de colunas e linhas no grid (para layout responsivo)
+        for i in range(5):
+            frame_campos.grid_columnconfigure(i, weight=1)
+        frame_campos.grid_rowconfigure(0, weight=0)
+           # Título
+        label_titulo = ctk.CTkLabel(
+            frame_campos,
+            text="Edite a Secretaria:",
+            font=("Arial", 22, "bold"),
+            text_color="#007E37"
+        )
+        label_titulo.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="ew")
+ 
+        # Label e Entry para nome da Secretaria
+        label_nome = ctk.CTkLabel(
+            frame_campos,
+            text="Nome da Secretaria:",
+            font=("Arial", 14, "bold"),
+            text_color="#007E37"
+        )
+        label_nome.grid(row=1, column=0, sticky="e", padx=10, pady=(5, 5))
+        
+        entrada_nome = ctk.CTkEntry(
+                frame_campos,
+                width=410,
+                height=48,
+                corner_radius=10,
+                font=("Arial", 14),
+                border_width=1,
+                border_color="#CCCCCC",
+                fg_color="white",
+                text_color="#333333"
+            )
         entrada_nome.insert(0, nome_atual)
-        entrada_nome.pack(pady=10)
+        entrada_nome.grid(row=1, column=1, columnspan=3, sticky="ew", padx=10, pady=5)
+
 
         def salvar_edicao():
             novo_nome = entrada_nome.get().strip()
@@ -635,7 +671,20 @@ class MeetingManagerApp:
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao editar secretaria: {e}")
 
-        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=20)
+        # Botão "Salvar" no canto inferior direito
+        ctk.CTkButton(
+            janela_edicao,
+            text="Salvar",
+            image=self.icons["editar"],  # Descomente esta linha se você tiver um ícone
+            fg_color="#019000",
+            text_color="#FFFFFF",
+            hover_color="#007E37",
+            compound="left",
+            width=155,
+            height=48,
+            font=("Arial", 16),
+            command=salvar_edicao
+        ).pack(pady=15, side="right", expand=True, padx=25)
 
     def deletar_secretaria(self, secretaria_id):
         resposta = messagebox.askyesno("Confirmação", "Tem certeza de que deseja deletar esta secretaria?")
@@ -1281,15 +1330,6 @@ class MeetingManagerApp:
         # --- Data da Ata ---
         label_data = ctk.CTkLabel(frame_campos, text="Data da Ata:", font=("Arial", 14, "bold"), text_color="#007E37")
         label_data.grid(row=2, column=0, sticky="e", padx=5, pady=5)
-
-        # entrada_data = DateEntry(
-        #     frame_campos,
-        #     width=18,
-        #     background="darkblue",
-        #     foreground="white",
-        #     borderwidth=2,
-        #     date_pattern='dd/MM/yyyy'
-        # )
 
         entrada_data = CustomDatePicker(
             frame_campos, 
