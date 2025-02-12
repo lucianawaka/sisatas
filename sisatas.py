@@ -798,10 +798,10 @@ class MeetingManagerApp:
         # Cria uma nova janela para edição
         janela_edicao = ctk.CTkToplevel(self.root)
         janela_edicao.title("Editar Secretário")
-        janela_edicao.geometry("650x400")
+        janela_edicao.geometry("700x400")
         janela_edicao.grab_set()
         # Centraliza a janela na tela
-        largura_janela = 650
+        largura_janela = 700
         altura_janela = 400
         largura_tela = janela_edicao.winfo_screenwidth()
         altura_tela = janela_edicao.winfo_screenheight()
