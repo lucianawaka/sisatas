@@ -1345,7 +1345,7 @@ class MeetingManagerApp:
 
         ctk.CTkButton(janela_edicao, 
                                 text="Salvar", 
-                                image=self.icons["adicionar"],
+                                image=self.icons["editar"],
                                 fg_color="#019000",
                                 text_color="#FFFFFF",
                                 hover_color="#007E37",
@@ -1637,7 +1637,7 @@ class MeetingManagerApp:
         button_frame.pack(fill="x", pady=10)
         # Botão para salvar
         botao_salvar = ctk.CTkButton(button_frame, text="Salvar", 
-                                    image=self.icons["adicionar"],
+                                    image=self.icons["editar"],
                                     fg_color="#019000",
                                     text_color="#FFFFFF",
                                     hover_color="#007E37",
