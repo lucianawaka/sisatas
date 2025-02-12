@@ -798,11 +798,11 @@ class MeetingManagerApp:
         # Cria uma nova janela para edição
         janela_edicao = ctk.CTkToplevel(self.root)
         janela_edicao.title("Editar Secretário")
-        janela_edicao.geometry("400x300")
+        janela_edicao.geometry("650x400")
         janela_edicao.grab_set()
         # Centraliza a janela na tela
-        largura_janela = 400
-        altura_janela = 300
+        largura_janela = 650
+        altura_janela = 400
         largura_tela = janela_edicao.winfo_screenwidth()
         altura_tela = janela_edicao.winfo_screenheight()
 
@@ -810,6 +810,10 @@ class MeetingManagerApp:
         y = (altura_tela - altura_janela) // 2
 
         janela_edicao.geometry(f"{largura_janela}x{altura_janela}+{x}+{y}")
+
+        # Cor de fundo da janela
+        janela_edicao.configure(bg="#FAFAFA")
+
         # Obtém os dados atuais do secretário
         secretario_atual = get_secretario_por_id(self.conn, secretario_id)
         if not secretario_atual:
@@ -819,15 +823,75 @@ class MeetingManagerApp:
 
         nome_atual, secretaria_atual = secretario_atual
 
-        ctk.CTkLabel(janela_edicao, text="Nome do Secretário:").pack(pady=10)
-        entrada_nome = ctk.CTkEntry(janela_edicao, width=300)
+
+        # Frame principal (campos de edição)
+        frame_campos = ctk.CTkFrame(janela_edicao, fg_color="#FFFFFF", corner_radius=10)
+        frame_campos.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Configurações de grid para layout responsivo
+        for i in range(5):
+            frame_campos.grid_columnconfigure(i, weight=1)
+        frame_campos.grid_rowconfigure(0, weight=0)
+
+        # Título
+        label_titulo = ctk.CTkLabel(
+            frame_campos,
+            text="Edite o Secretário:",
+            font=("Arial", 22, "bold"),
+            text_color="#007E37"
+        )
+        label_titulo.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="ew")
+
+            # --- Nome do Secretário ---
+        label_nome = ctk.CTkLabel(
+            frame_campos,
+            text="Nome do Secretário:",
+            font=("Arial", 14, "bold"),
+            text_color="#007E37"
+        )
+        label_nome.grid(row=1, column=0, sticky="e", padx=10, pady=(5, 5))
+
+        entrada_nome = ctk.CTkEntry(
+            frame_campos,
+            width=410,
+            height=48,
+            corner_radius=10,
+            font=("Arial", 14),
+            border_width=1,
+            border_color="#CCCCCC",
+            fg_color="white",
+            text_color="#333333"
+        )
         entrada_nome.insert(0, nome_atual)
-        entrada_nome.pack(pady=10)
+        entrada_nome.grid(row=1, column=1, columnspan=3, sticky="ew", padx=10, pady=5)
 
-        ctk.CTkLabel(janela_edicao, text="Secretaria:").pack(pady=10)
-        combo_secretarias = ctk.CTkComboBox(janela_edicao, values=self.get_lista_secretarias(), width=300)
+
+        # --- Secretaria ---
+        label_secretaria = ctk.CTkLabel(
+            frame_campos,
+            text="Secretaria:",
+            font=("Arial", 14, "bold"),
+            text_color="#007E37"
+        )
+        label_secretaria.grid(row=2, column=0, sticky="e", padx=10, pady=(5, 5))
+
+        combo_secretarias = ctk.CTkComboBox(frame_campos,
+                                        button_color="#019000",
+                                        button_hover_color="#007E37",
+                                        dropdown_fg_color="white",
+                                        corner_radius=10,
+                                        border_width=1,
+                                        border_color="#CCCCCC",
+                                        fg_color="white",
+                                        font=("Arial", 14),
+                                        dropdown_font=("Arial", 14),
+                                        text_color_disabled="#333333",
+                                        text_color="#333333",
+                                        width=480,
+                                        height=48,
+                                        values=self.get_lista_secretarias())
         combo_secretarias.set(secretaria_atual)
-        combo_secretarias.pack(pady=10)
+        combo_secretarias.grid(row=2, column=1, columnspan=3, sticky="ew", padx=10, pady=5)
 
         def salvar_edicao():
             novo_nome = entrada_nome.get().strip()
@@ -843,7 +907,17 @@ class MeetingManagerApp:
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao editar secretário: {e}")
 
-        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=20)
+        ctk.CTkButton(janela_edicao, 
+                            text="Salvar",
+                            image=self.icons["editar"],  # Descomente esta linha caso tenha um ícone
+                            fg_color="#019000",
+                            text_color="#FFFFFF",
+                            hover_color="#007E37",
+                            compound="left",
+                            width=155,
+                            height=48,
+                            font=("Arial", 16),
+                            command=salvar_edicao).pack(pady=20)
 
 
         def salvar_edicao():
@@ -860,7 +934,6 @@ class MeetingManagerApp:
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao editar secretário: {e}")
 
-        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=20)
 
 # Secretário fim
 
