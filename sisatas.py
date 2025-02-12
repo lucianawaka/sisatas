@@ -1257,7 +1257,7 @@ class MeetingManagerApp:
         label = ctk.CTkLabel(frame_campos, text="Edite a ata:", 
                             font=("Arial", 22, "bold"), 
                             text_color="#007E37")
-        label.grid(row=0, column=0, columnspan=5, padx=10, pady=(5, 10), sticky="ew")
+        label.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="ew")
 
 
 
@@ -1343,7 +1343,17 @@ class MeetingManagerApp:
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao editar ata: {e}")
 
-        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=15)
+        ctk.CTkButton(janela_edicao, 
+                                text="Salvar", 
+                                image=self.icons["adicionar"],
+                                fg_color="#019000",
+                                text_color="#FFFFFF",
+                                hover_color="#007E37",
+                                compound="left",
+                                width=155,
+                                height=48,
+                                font=("Arial", 16),
+                                command=salvar_edicao).pack(pady=15, side="right", expand=True, padx=25)
 
     def deletar_ata(self, ata_id):
         resposta = messagebox.askyesno("Confirmação", "Tem certeza de que deseja deletar esta ata?")
