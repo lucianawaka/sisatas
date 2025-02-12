@@ -1342,8 +1342,8 @@ class MeetingManagerApp:
         def salvar_edicao():
             nova_descricao = entrada_descricao.get().strip()
             nova_data = entrada_data.get().strip()
-            novo_horario_inicio = self.entrada_horario_inicio.get().strip()
-            novo_horario_termino = self.entrada_horario_termino.get().strip()
+            novo_horario_inicio = entrada_horario_inicio.get().strip()
+            novo_horario_termino = entrada_horario_termino.get().strip()
             if not nova_descricao or not nova_data:
                 messagebox.showerror("Erro", "A descrição e a data não podem estar vazias.")
                 return
