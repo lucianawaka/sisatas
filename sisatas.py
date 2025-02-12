@@ -1248,28 +1248,37 @@ class MeetingManagerApp:
         frame_campos.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Configurando linhas e colunas do grid para melhor disposição
-        frame_campos.grid_columnconfigure(0, weight=1)
-        frame_campos.grid_columnconfigure(1, weight=1)
-        frame_campos.grid_columnconfigure(2, weight=1)
-        frame_campos.grid_columnconfigure(3, weight=1)
-        frame_campos.grid_columnconfigure(4, weight=1)
+        for i in range(5):  # Ajuste conforme o número total de colunas
+            frame_campos.grid_columnconfigure(i, weight=1)
+
+        frame_campos.grid_rowconfigure(0, weight=0)  # Impede expansão do título
 
         # Label alinhado à esquerda
         label = ctk.CTkLabel(frame_campos, text="Edite a ata:", 
                             font=("Arial", 22, "bold"), 
                             text_color="#007E37")
-        label.grid(row=0, column=0, sticky="e", padx=5, pady=5)
+        label.grid(row=0, column=0, columnspan=5, padx=10, pady=(5, 10), sticky="ew")
+
+
 
         # --- Descrição da Ata ---
-        label_descricao = ctk.CTkLabel(frame_campos, text="Nome da Ata:")
-        label_descricao.grid(row=1, column=0, sticky="e", padx=5, pady=5)
+        label_descricao = ctk.CTkLabel(frame_campos, text="Nome da Ata:",font=("Arial", 14, "bold"), text_color="#007E37")
+        label_descricao.grid(row=1, column=0, sticky="e", padx=10, pady=(5, 5)) 
 
-        entrada_descricao = ctk.CTkEntry(frame_campos, width=300)
+        entrada_descricao = ctk.CTkEntry(frame_campos,      
+                                            width=410,
+                                            height=48,
+                                            corner_radius=10,
+                                            font=("Arial", 14),
+                                            border_width=1,
+                                            border_color="#CCCCCC",
+                                            fg_color="white",
+                                            text_color="#333333")
         entrada_descricao.insert(0, descricao_atual)
-        entrada_descricao.grid(row=1, column=1, columnspan=3, sticky="w", padx=5, pady=5)
+        entrada_descricao.grid(row=1, column=1, columnspan=3, sticky="ew", padx=10, pady=5)
 
         # --- Data da Ata ---
-        label_data = ctk.CTkLabel(frame_campos, text="Data da Ata:")
+        label_data = ctk.CTkLabel(frame_campos, text="Data da Ata:", font=("Arial", 14, "bold"), text_color="#007E37")
         label_data.grid(row=2, column=0, sticky="e", padx=5, pady=5)
 
         entrada_data = DateEntry(
@@ -1281,22 +1290,42 @@ class MeetingManagerApp:
             date_pattern='dd/MM/yyyy'
         )
         entrada_data.set_date(data_atual)
-        entrada_data.grid(row=2, column=1, sticky="w", padx=5, pady=5)
+        entrada_data.grid(row=2, column=1, sticky="w", padx=10, pady=5)
 
         # --- Horário de Início e Horário de Término na mesma linha ---
-        label_horario_inicio = ctk.CTkLabel(frame_campos, text="Horário de Início:")
-        label_horario_inicio.grid(row=3, column=0, sticky="e", padx=5, pady=5)
+        label_horario_inicio = ctk.CTkLabel(frame_campos, text="Horário de Início:"          
+                                           ,font=("Arial", 14, "bold"), text_color="#007E37")
+        label_horario_inicio.grid(row=3, column=0, sticky="e", padx=10, pady=5)
 
-        entrada_horario_inicio = ctk.CTkEntry(frame_campos, placeholder_text="HH:MM", width=100)
+        entrada_horario_inicio = ctk.CTkEntry(frame_campos,
+                                            placeholder_text="HH:MM",
+                                            width=70,
+                                            height=48,
+                                            corner_radius=10,
+                                            font=("Arial", 14),
+                                            border_width=1,
+                                            border_color="#CCCCCC",
+                                            fg_color="white",
+                                            text_color="#333333")
         entrada_horario_inicio.insert(0, horario_inicio)
-        entrada_horario_inicio.grid(row=3, column=1, sticky="w", padx=5, pady=5)
+        entrada_horario_inicio.grid(row=3, column=1, sticky="w", padx=10, pady=5)
 
-        label_horario_termino = ctk.CTkLabel(frame_campos, text="Horário de Término:")
-        label_horario_termino.grid(row=3, column=2, sticky="e", padx=5, pady=5)
+        label_horario_termino = ctk.CTkLabel(frame_campos, 
+                                                        text="Horário de Término:",font=("Arial", 14, "bold"), text_color="#007E37")
+        label_horario_termino.grid(row=3, column=2, sticky="e", padx=10, pady=5)
 
-        entrada_horario_termino = ctk.CTkEntry(frame_campos, placeholder_text="HH:MM", width=100)
+        entrada_horario_termino = ctk.CTkEntry(frame_campos,                                       
+                                            placeholder_text="HH:MM",
+                                            width=70,
+                                            height=48,
+                                            corner_radius=10,
+                                            font=("Arial", 14),
+                                            border_width=1,
+                                            border_color="#CCCCCC",
+                                            fg_color="white",
+                                            text_color="#333333")
         entrada_horario_termino.insert(0, horario_fim)
-        entrada_horario_termino.grid(row=3, column=3, sticky="w", padx=5, pady=5)
+        entrada_horario_termino.grid(row=3, column=3, sticky="w", padx=10, pady=5)
 
         def salvar_edicao():
             nova_descricao = entrada_descricao.get().strip()
@@ -1314,7 +1343,7 @@ class MeetingManagerApp:
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao editar ata: {e}")
 
-        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=20)
+        ctk.CTkButton(janela_edicao, text="Salvar", command=salvar_edicao, fg_color="#28a745", hover_color="#1e7e34", text_color="#FFFFFF").pack(pady=15)
 
     def deletar_ata(self, ata_id):
         resposta = messagebox.askyesno("Confirmação", "Tem certeza de que deseja deletar esta ata?")
