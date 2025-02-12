@@ -68,7 +68,7 @@ class MeetingManagerApp:
             header_frame,
             text="Gerenciador de Atas",
             text_color="#019000",
-            font=("Arial", 36, "bold")
+            font=("Montserrat", 36, "bold")
         )
         label_titulo.pack(pady=(0, 10))  # Pequeno espaçamento abaixo do título
 
@@ -97,7 +97,7 @@ class MeetingManagerApp:
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.listar_atas
         )
         botao_buscar.grid(row=0, column=1, padx=5, pady=10)  # sem sticky="ew" para manter a largura fixa
@@ -113,7 +113,7 @@ class MeetingManagerApp:
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.menu_atas  # callback
         )
         botao_listar_atas.grid(row=0, column=2, padx=5, pady=10)
@@ -129,7 +129,7 @@ class MeetingManagerApp:
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.menu_secretaria  # callback
         )
         botao_secretarias.grid(row=0, column=3, padx=5, pady=10)
@@ -145,7 +145,7 @@ class MeetingManagerApp:
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.menu_secretario  # callback
         )
         botao_secretarios.grid(row=0, column=4, padx=5, pady=10)
@@ -163,7 +163,7 @@ class MeetingManagerApp:
             border_color="#33A532",     # Cor da borda
             text_color="#33A532",       # Texto verde
             hover_color="#E8F6EE",      # Exemplo de cor de hover
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.carregar_backup  # callback
         )
         botao_importar.grid(row=0, column=5, padx=5, pady=10)
@@ -180,7 +180,7 @@ class MeetingManagerApp:
             border_color="#33A532",
             text_color="#33A532",
             hover_color="#E8F6EE",
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.realizar_backup  # callback
         )
         botao_exportar.grid(row=0, column=6, padx=5, pady=10)
@@ -201,7 +201,7 @@ class MeetingManagerApp:
         label_fala = ctk.CTkLabel(
             frame_fala,
             text="Criação de fala",
-            font=("Arial", 22, "bold"),
+            font=("Montserrat", 22, "bold"),
             text_color="#007E37"
         )
         label_fala.pack(anchor="w", padx=10, pady=(0, 5))
@@ -222,8 +222,8 @@ class MeetingManagerApp:
             fg_color="white",
             text_color="#333333",
             text_color_disabled="#333333",
-            font=("Arial", 14),
-            dropdown_font=("Arial", 14),
+            font=("Montserrat", 14),
+            dropdown_font=("Montserrat", 14),
             width=400,
             height=48
         )
@@ -239,8 +239,8 @@ class MeetingManagerApp:
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
-            font=("Arial", 14),
-            dropdown_font=("Arial", 14),
+            font=("Montserrat", 14),
+            dropdown_font=("Montserrat", 14),
             text_color_disabled="#333333",
             text_color="#333333",
             width=480,
@@ -262,7 +262,7 @@ class MeetingManagerApp:
             border_width=1,
             fg_color="white",
             html="",
-            font=("Arial", 14),
+            font=("Montserrat", 14),
             width=80,
             height=10
         )
@@ -279,7 +279,7 @@ class MeetingManagerApp:
             width=500,
             height=48,
             corner_radius=8,
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.adicionar_fala
         )
         botao_adicionar_fala.pack(side="right", pady=(10, 5), padx=10)
@@ -442,7 +442,7 @@ class MeetingManagerApp:
         label_ata = ctk.CTkLabel(
             section_ata,
             text="Adicionar Secretaria",
-            font=("Arial", 22, "bold"),
+            font=("Montserrat", 22, "bold"),
             text_color="#007E37"
         )
         label_ata.pack(anchor="w", pady=(0, 5), padx=10)
@@ -462,7 +462,7 @@ class MeetingManagerApp:
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
-            font=("Arial", 16)
+            font=("Montserrat", 16)
         )
         self.entrada_secretaria.pack(side="left", padx=15, pady=5)
 
@@ -477,7 +477,7 @@ class MeetingManagerApp:
             compound="left",
             width=155,
             height=48,
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.adicionar_secretaria
         )
         botao_adicionar_secretaria.pack(side="right", padx=10, pady=5)
@@ -499,7 +499,7 @@ class MeetingManagerApp:
 
         label_lista_secretarias = ctk.CTkLabel(label_frame_secretarias, 
                                         text="Secretarias",
-                                        font=("Arial", 22, "bold"),
+                                        font=("Montserrat", 22, "bold"),
                                         text_color="#007E37"  
                                         )
         label_lista_secretarias.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
@@ -526,7 +526,7 @@ class MeetingManagerApp:
                                     bg_color="white",
                                     label_fg_color="white",
                                     label_text_color="#007E37",
-                                    label_font=("Arial", 16, "bold"),
+                                    label_font=("Montserrat", 16, "bold"),
                                     
                                     )
         self.lista_secretarias.pack(fill="both", expand=True)
@@ -565,7 +565,7 @@ class MeetingManagerApp:
 
             ctk.CTkLabel(frame, 
                          text=nome, 
-                         font=("Arial", 16), 
+                         font=("Montserrat", 16), 
                          text_color="#333333").pack(side="left", padx=5)
 
             botao_deletar = ctk.CTkButton(frame,  
@@ -574,7 +574,7 @@ class MeetingManagerApp:
                                           text="Deletar", 
                                           hover_color="#B7070F", 
                                           text_color="#FFFFFF",
-                                          font=("Arial", 16),
+                                          font=("Montserrat", 16),
                                           command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id)
             )
             botao_deletar.pack(side="right", padx=5)
@@ -585,7 +585,7 @@ class MeetingManagerApp:
                                          text="Editar", 
                                          hover_color="#009693", 
                                          text_color="#FFFFFF",
-                                         font=("Arial", 16),
+                                         font=("Montserrat", 16),
                                          command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id)
             )
             botao_editar.pack(side="right", padx=5)
@@ -629,7 +629,7 @@ class MeetingManagerApp:
         label_titulo = ctk.CTkLabel(
             frame_campos,
             text="Edite a Secretaria:",
-            font=("Arial", 22, "bold"),
+            font=("Montserrat", 22, "bold"),
             text_color="#007E37"
         )
         label_titulo.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="ew")
@@ -638,7 +638,7 @@ class MeetingManagerApp:
         label_nome = ctk.CTkLabel(
             frame_campos,
             text="Nome da Secretaria:",
-            font=("Arial", 14, "bold"),
+            font=("Montserrat", 14, "bold"),
             text_color="#007E37"
         )
         label_nome.grid(row=1, column=0, sticky="e", padx=10, pady=(5, 5))
@@ -648,7 +648,7 @@ class MeetingManagerApp:
                 width=410,
                 height=48,
                 corner_radius=10,
-                font=("Arial", 14),
+                font=("Montserrat", 14),
                 border_width=1,
                 border_color="#CCCCCC",
                 fg_color="white",
@@ -682,7 +682,7 @@ class MeetingManagerApp:
             compound="left",
             width=155,
             height=48,
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=salvar_edicao
         ).pack(pady=15, side="right", expand=True, padx=25)
 
@@ -730,10 +730,10 @@ class MeetingManagerApp:
             status = "Ativo" if secretario[3] == 1 else "Inativo"
 
             ctk.CTkLabel(frame, text=nome,
-                         font=("Arial", 16), 
+                         font=("Montserrat", 16), 
                          text_color="#333333").pack(side="left", padx=5)
             ctk.CTkLabel(frame, text=status,
-                         font=("Arial", 14, "bold"), 
+                         font=("Montserrat", 14, "bold"), 
                          text_color="#333333").pack(side="left", padx=5)
 
             botao_editar = ctk.CTkButton(frame, 
@@ -742,7 +742,7 @@ class MeetingManagerApp:
                                         text="Editar", 
                                         hover_color="#009693", 
                                         text_color="#FFFFFF",
-                                        font=("Arial", 16),
+                                        font=("Montserrat", 16),
                                         command=lambda s_id=secretario[0]: self.editar_secretario(s_id))
             botao_editar.pack(side="right", padx=5)
 
@@ -752,7 +752,7 @@ class MeetingManagerApp:
                                       fg_color="#ffa500", 
                                       hover_color="#cc8400", 
                                       text_color="#FFFFFF",
-                                      font=("Arial", 16),
+                                      font=("Montserrat", 16),
                                       command=lambda s_id=secretario[0]: self.desativar_secretario(s_id)
                                       )
             else:
@@ -761,7 +761,7 @@ class MeetingManagerApp:
                                       image=self.icons["ativar"],
                                       fg_color="#999999", 
                                       hover_color="#999999", 
-                                      font=("Arial", 16),
+                                      font=("Montserrat", 16),
                                       text_color="#FFFFFF")
 
             botao.pack(side="right", padx=5)
@@ -837,7 +837,7 @@ class MeetingManagerApp:
         label_titulo = ctk.CTkLabel(
             frame_campos,
             text="Edite o Secretário:",
-            font=("Arial", 22, "bold"),
+            font=("Montserrat", 22, "bold"),
             text_color="#007E37"
         )
         label_titulo.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="ew")
@@ -846,7 +846,7 @@ class MeetingManagerApp:
         label_nome = ctk.CTkLabel(
             frame_campos,
             text="Nome do Secretário:",
-            font=("Arial", 14, "bold"),
+            font=("Montserrat", 14, "bold"),
             text_color="#007E37"
         )
         label_nome.grid(row=1, column=0, sticky="e", padx=10, pady=(5, 5))
@@ -856,7 +856,7 @@ class MeetingManagerApp:
             width=410,
             height=48,
             corner_radius=10,
-            font=("Arial", 14),
+            font=("Montserrat", 14),
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
@@ -870,7 +870,7 @@ class MeetingManagerApp:
         label_secretaria = ctk.CTkLabel(
             frame_campos,
             text="Secretaria:",
-            font=("Arial", 14, "bold"),
+            font=("Montserrat", 14, "bold"),
             text_color="#007E37"
         )
         label_secretaria.grid(row=2, column=0, sticky="e", padx=10, pady=(5, 5))
@@ -883,8 +883,8 @@ class MeetingManagerApp:
                                         border_width=1,
                                         border_color="#CCCCCC",
                                         fg_color="white",
-                                        font=("Arial", 14),
-                                        dropdown_font=("Arial", 14),
+                                        font=("Montserrat", 14),
+                                        dropdown_font=("Montserrat", 14),
                                         text_color_disabled="#333333",
                                         text_color="#333333",
                                         width=480,
@@ -916,7 +916,7 @@ class MeetingManagerApp:
                             compound="left",
                             width=155,
                             height=48,
-                            font=("Arial", 16),
+                            font=("Montserrat", 16),
                             command=salvar_edicao).pack(pady=20)
 
 
@@ -974,7 +974,7 @@ class MeetingManagerApp:
         popup = tk.Toplevel()
         popup.title("Texto Completo da Fala")
         popup.geometry("400x300")
-        text_widget = tk.Text(popup, wrap="word", font=("Arial", 12))
+        text_widget = tk.Text(popup, wrap="word", font=("Montserrat", 12))
         text_widget.insert("1.0", fala)
         text_widget.config(state="disabled")
         text_widget.pack(fill="both", expand=True)
@@ -1003,7 +1003,7 @@ class MeetingManagerApp:
         label_secretario = ctk.CTkLabel(
             section_secretario,
             text="Adicionar Secretário",
-            font=("Arial", 22, "bold"),
+            font=("Montserrat", 22, "bold"),
             text_color="#007E37"
         )
         label_secretario.pack(anchor="w", pady=(0, 5), padx=10)
@@ -1023,7 +1023,7 @@ class MeetingManagerApp:
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
-            font=("Arial", 16)
+            font=("Montserrat", 16)
         )
         self.entrada_secretario.pack(side="left", padx=15, pady=5)
     
@@ -1037,8 +1037,8 @@ class MeetingManagerApp:
                                                 border_width=1,
                                                 border_color="#CCCCCC",
                                                 fg_color="white",
-                                                font=("Arial", 14),
-                                                dropdown_font=("Arial", 14),
+                                                font=("Montserrat", 14),
+                                                dropdown_font=("Montserrat", 14),
                                                 text_color_disabled="#333333",
                                                 text_color="#333333",
                                                 width=480,
@@ -1055,7 +1055,7 @@ class MeetingManagerApp:
             compound="left",
             width=155,
             height=48,
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.adicionar_secretario
         )
         botao_adicionar_secretario.pack(side="right", padx=10, pady=5)
@@ -1077,7 +1077,7 @@ class MeetingManagerApp:
 
         label_lista_secretarios = ctk.CTkLabel(label_frame_secretarios, 
                                         text="Secretários",
-                                        font=("Arial", 22, "bold"),
+                                        font=("Montserrat", 22, "bold"),
                                         text_color="#007E37"  
                                         )
         label_lista_secretarios.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
@@ -1107,7 +1107,7 @@ class MeetingManagerApp:
                                     bg_color="white",
                                     label_fg_color="white",
                                     label_text_color="#007E37",
-                                    label_font=("Arial", 16, "bold"),
+                                    label_font=("Montserrat", 16, "bold"),
                                     
                                     )
         self.lista_secretarios.pack(fill="both", expand=True)
@@ -1146,7 +1146,7 @@ class MeetingManagerApp:
 
             label_lista_atas = ctk.CTkLabel(label_frame_atas, 
                                             text="Atas",
-                                            font=("Arial", 22, "bold"),
+                                            font=("Montserrat", 22, "bold"),
                                             text_color="#007E37"  
                                             )
             label_lista_atas.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
@@ -1175,7 +1175,7 @@ class MeetingManagerApp:
                                     bg_color="white",
                                     label_fg_color="white",
                                     label_text_color="#007E37",
-                                    label_font=("Arial", 20, "bold"),
+                                    label_font=("Montserrat", 20, "bold"),
                                     
                                     )
         
@@ -1200,7 +1200,7 @@ class MeetingManagerApp:
 
             descricao = f"{ata[1]} ({ata[2]})"
             ctk.CTkLabel(frame, text=descricao, 
-                         font=("Arial", 16), 
+                         font=("Montserrat", 16), 
                          text_color="#333333").pack(side="left", padx=5)
 
 
@@ -1210,7 +1210,7 @@ class MeetingManagerApp:
                                           text="Deletar", 
                                           hover_color="#B7070F", 
                                           text_color="#FFFFFF",
-                                          font=("Arial", 16),
+                                          font=("Montserrat", 16),
                                           command=lambda a_id=ata[0]: self.deletar_ata(a_id), 
                                           )
             botao_deletar.pack(side="right", padx=5)
@@ -1221,7 +1221,7 @@ class MeetingManagerApp:
                                          text="Editar", 
                                          hover_color="#009693", 
                                          text_color="#FFFFFF",
-                                         font=("Arial", 16),
+                                         font=("Montserrat", 16),
                                          command=lambda a_id=ata[0]: self.editar_ata(a_id), 
                                          )
             botao_editar.pack(side="right", padx=5)
@@ -1232,7 +1232,7 @@ class MeetingManagerApp:
                                          image=self.icons["exportar"], 
                                          hover_color="#E49400", 
                                          text_color="#FFFFFF",
-                                         font=("Arial", 16),
+                                         font=("Montserrat", 16),
                                          command=lambda a_id=ata[0]: self.exportar_ata_ui(a_id), 
                                          )
             botao_editar.pack(side="right", padx=5)
@@ -1378,21 +1378,21 @@ class MeetingManagerApp:
 
         # Label alinhado à esquerda
         label = ctk.CTkLabel(frame_campos, text="Edite a ata:", 
-                            font=("Arial", 22, "bold"), 
+                            font=("Montserrat", 22, "bold"), 
                             text_color="#007E37")
         label.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky="ew")
 
 
 
         # --- Descrição da Ata ---
-        label_descricao = ctk.CTkLabel(frame_campos, text="Nome da Ata:",font=("Arial", 14, "bold"), text_color="#007E37")
+        label_descricao = ctk.CTkLabel(frame_campos, text="Nome da Ata:",font=("Montserrat", 14, "bold"), text_color="#007E37")
         label_descricao.grid(row=1, column=0, sticky="e", padx=10, pady=(5, 5)) 
 
         entrada_descricao = ctk.CTkEntry(frame_campos,      
                                             width=410,
                                             height=48,
                                             corner_radius=10,
-                                            font=("Arial", 14),
+                                            font=("Montserrat", 14),
                                             border_width=1,
                                             border_color="#CCCCCC",
                                             fg_color="white",
@@ -1401,7 +1401,7 @@ class MeetingManagerApp:
         entrada_descricao.grid(row=1, column=1, columnspan=3, sticky="ew", padx=10, pady=5)
 
         # --- Data da Ata ---
-        label_data = ctk.CTkLabel(frame_campos, text="Data da Ata:", font=("Arial", 14, "bold"), text_color="#007E37")
+        label_data = ctk.CTkLabel(frame_campos, text="Data da Ata:", font=("Montserrat", 14, "bold"), text_color="#007E37")
         label_data.grid(row=2, column=0, sticky="e", padx=5, pady=5)
 
         entrada_data = CustomDatePicker(
@@ -1419,7 +1419,7 @@ class MeetingManagerApp:
 
         # --- Horário de Início e Horário de Término na mesma linha ---
         label_horario_inicio = ctk.CTkLabel(frame_campos, text="Horário de Início:"          
-                                           ,font=("Arial", 14, "bold"), text_color="#007E37")
+                                           ,font=("Montserrat", 14, "bold"), text_color="#007E37")
         label_horario_inicio.grid(row=3, column=0, sticky="e", padx=10, pady=5)
 
         entrada_horario_inicio = ctk.CTkEntry(frame_campos,
@@ -1427,7 +1427,7 @@ class MeetingManagerApp:
                                             width=70,
                                             height=48,
                                             corner_radius=10,
-                                            font=("Arial", 14),
+                                            font=("Montserrat", 14),
                                             border_width=1,
                                             border_color="#CCCCCC",
                                             fg_color="white",
@@ -1436,7 +1436,7 @@ class MeetingManagerApp:
         entrada_horario_inicio.grid(row=3, column=1, sticky="w", padx=10, pady=5)
 
         label_horario_termino = ctk.CTkLabel(frame_campos, 
-                                                        text="Horário de Término:",font=("Arial", 14, "bold"), text_color="#007E37")
+                                                        text="Horário de Término:",font=("Montserrat", 14, "bold"), text_color="#007E37")
         label_horario_termino.grid(row=3, column=2, sticky="e", padx=10, pady=5)
 
         entrada_horario_termino = ctk.CTkEntry(frame_campos,                                       
@@ -1444,7 +1444,7 @@ class MeetingManagerApp:
                                             width=70,
                                             height=48,
                                             corner_radius=10,
-                                            font=("Arial", 14),
+                                            font=("Montserrat", 14),
                                             border_width=1,
                                             border_color="#CCCCCC",
                                             fg_color="white",
@@ -1477,7 +1477,7 @@ class MeetingManagerApp:
                                 compound="left",
                                 width=155,
                                 height=48,
-                                font=("Arial", 16),
+                                font=("Montserrat", 16),
                                 command=salvar_edicao).pack(pady=15, side="right", expand=True, padx=25)
 
     def deletar_ata(self, ata_id):
@@ -1514,7 +1514,7 @@ class MeetingManagerApp:
         
         label_busca = ctk.CTkLabel(frame_busca, 
                         text="Buscar fala",
-                        font=("Arial", 22, "bold"),
+                        font=("Montserrat", 22, "bold"),
                         text_color="#007E37"                               ,
         )
         label_busca.pack(fill="none", anchor="w", padx=5, pady=(5, 10))
@@ -1531,7 +1531,7 @@ class MeetingManagerApp:
                             border_width=1,
                             border_color="#CCCCCC",
                             fg_color="white",
-                            font=("Arial", 16)
+                            font=("Montserrat", 16)
         )
         campo_busca.pack(side="left", fill="x", expand=True, padx=15, pady=10)
 
@@ -1544,7 +1544,7 @@ class MeetingManagerApp:
                         compound="left",
                         width=155,
                         height=48,
-                        font=("Arial", 16),
+                        font=("Montserrat", 16),
                         command=lambda: atualizar_lista(campo_busca.get()))
         botao_busca.pack(side="left", padx=5, pady=5)
 
@@ -1561,7 +1561,7 @@ class MeetingManagerApp:
 
         label_lista_atas = ctk.CTkLabel(label_frame, 
                                         text="Lista de Atas",
-                                        font=("Arial", 22, "bold"),
+                                        font=("Montserrat", 22, "bold"),
                                         text_color="#007E37"  
                                         )
         label_lista_atas.pack(fill="none", anchor="w", padx=10, pady=(5, 10))
@@ -1582,8 +1582,8 @@ class MeetingManagerApp:
 
         # Configurar o tamanho da fonte
         style = ttk.Style()
-        style.configure("Treeview", font=("Arial", 14), borderwidth=0, relief="flat")  # Remover qualquer contorno
-        style.configure("Treeview.Heading", font=("Arial", 14), borderwidth=0, relief="flat")  # Remover borda dos cabeçalhos
+        style.configure("Treeview", font=("Montserrat", 14), borderwidth=0, relief="flat")  # Remover qualquer contorno
+        style.configure("Treeview.Heading", font=("Montserrat", 14), borderwidth=0, relief="flat")  # Remover borda dos cabeçalhos
         style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])  # Remover padding interno que cria borda visual
 
         # Definir o cabeçalho
@@ -1711,11 +1711,11 @@ class MeetingManagerApp:
         container.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Título do pop-up
-        label = ctk.CTkLabel(container, text="Edite a fala:", text_color="#019000",  font=("Arial", 22, "bold"))
+        label = ctk.CTkLabel(container, text="Edite a fala:", text_color="#019000",  font=("Montserrat", 22, "bold"))
         label.pack(pady=10)
 
         # Campo de texto
-        texto_fala = ctk.CTkTextbox(container, wrap="word",  font=("Arial", 14), height=6, corner_radius=5)
+        texto_fala = ctk.CTkTextbox(container, wrap="word",  font=("Montserrat", 14), height=6, corner_radius=5)
         texto_fala.insert("1.0", texto_atual)
         texto_fala.pack(fill="both", expand=True, padx=10, pady=10)
 
@@ -1769,7 +1769,7 @@ class MeetingManagerApp:
                                     compound="left",
                                     width=155,
                                     height=48,
-                                    font=("Arial", 16),
+                                    font=("Montserrat", 16),
                                     command=salvar_fala)
         botao_salvar.pack(side="right", expand=True, padx=5)
 
@@ -1782,7 +1782,7 @@ class MeetingManagerApp:
                                         text_color="#FFFFFF",
                                         width=155,
                                         height=48,
-                                        font=("Arial", 16),
+                                        font=("Montserrat", 16),
                                         command=deletar_fala_popup
         )
         botao_deletar.pack(side="left", expand=True, padx=5)

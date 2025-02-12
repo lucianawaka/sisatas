@@ -16,7 +16,7 @@ class CriarAta():
         label_ata = ctk.CTkLabel(
             section_ata,
             text="Criação de Ata",
-            font=("Arial", 22, "bold"),
+            font=("Montserrat", 22, "bold"),
             text_color="#007E37"
         )
         label_ata.pack(anchor="w", pady=(0, 5), padx=10)
@@ -35,7 +35,7 @@ class CriarAta():
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
-            font=("Arial", 16)
+            font=("Montserrat", 16)
         )
         self.descricao_ata.pack(side="left", padx=15, pady=5)
 
@@ -56,7 +56,7 @@ class CriarAta():
         label_inicio = ctk.CTkLabel(
             row_ata, 
             text="Horário de Início:", 
-            font=("Arial", 12, "bold"),
+            font=("Montserrat", 12, "bold"),
             text_color="#007E37"
         )
         label_inicio.pack(side="left", padx=(20,5), pady=5)
@@ -68,7 +68,7 @@ class CriarAta():
             width=70,
             height=48,
             corner_radius=10,
-            font=("Arial", 14),
+            font=("Montserrat", 14),
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
@@ -80,7 +80,7 @@ class CriarAta():
         label_termino = ctk.CTkLabel(
             row_ata, 
             text="Horário de Término:",
-            font=("Arial", 12, "bold"),
+            font=("Montserrat", 12, "bold"),
             text_color="#007E37"
         )
         label_termino.pack(side="left", padx=(20,5), pady=5)
@@ -92,7 +92,7 @@ class CriarAta():
             width=70,
             height=48,
             corner_radius=10,
-            font=("Arial", 14),
+            font=("Montserrat", 14),
             border_width=1,
             border_color="#CCCCCC",
             fg_color="white",
@@ -111,7 +111,7 @@ class CriarAta():
             compound="left",
             width=155,
             height=48,
-            font=("Arial", 16),
+            font=("Montserrat", 16),
             command=self.adicionar_ata_principal
         )
         botao_nova_ata.pack(side="right", padx=10, pady=5)
