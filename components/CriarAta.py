@@ -109,9 +109,9 @@ class CriarAta():
             text_color="#FFFFFF",
             hover_color="#007E37",
             compound="left",
-            width=155,
+            width=156,
             height=48,
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.adicionar_ata_principal
         )
         botao_nova_ata.pack(side="right", padx=10, pady=5)

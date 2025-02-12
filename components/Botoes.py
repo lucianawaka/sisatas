@@ -15,6 +15,6 @@ class Botoes:
             hover_color="#005C29",
             text_color="#FFFFFF",
             corner_radius=8,
-            font=("Arial", 16),
+            font=("Montserrat", 16, "bold"),
             command=lambda: self.return_to_main_menu())
         botao_voltar.pack(anchor="nw", padx=10, pady=10)

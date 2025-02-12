@@ -92,12 +92,12 @@ class MeetingManagerApp:
             text="Buscar fala",
             image=self.icons["buscar"],  # pega o ícone do dicionário
             compound="left",
-            width=156,
+            width=158,
             height=48,
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.listar_atas
         )
         botao_buscar.grid(row=0, column=1, padx=5, pady=10)  # sem sticky="ew" para manter a largura fixa
@@ -108,12 +108,12 @@ class MeetingManagerApp:
             text="Lista de atas",
             image=self.icons["atas"],
             compound="left",
-            width=156,
+            width=158,
             height=48,
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.menu_atas  # callback
         )
         botao_listar_atas.grid(row=0, column=2, padx=5, pady=10)
@@ -124,12 +124,12 @@ class MeetingManagerApp:
             text="Secretarias",
             image=self.icons["secretarias"],
             compound="left",
-            width=156,
+            width=158,
             height=48,
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.menu_secretaria  # callback
         )
         botao_secretarias.grid(row=0, column=3, padx=5, pady=10)
@@ -140,12 +140,12 @@ class MeetingManagerApp:
             text="Secretários",
             image=self.icons["secretarios"],
             compound="left",
-            width=156,
+            width=158,
             height=48,
             fg_color="#007E37",
             hover_color="#005C29",
             text_color="#FFFFFF",
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.menu_secretario  # callback
         )
         botao_secretarios.grid(row=0, column=4, padx=5, pady=10)
@@ -163,7 +163,7 @@ class MeetingManagerApp:
             border_color="#33A532",     # Cor da borda
             text_color="#33A532",       # Texto verde
             hover_color="#E8F6EE",      # Exemplo de cor de hover
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.carregar_backup  # callback
         )
         botao_importar.grid(row=0, column=5, padx=5, pady=10)
@@ -180,7 +180,7 @@ class MeetingManagerApp:
             border_color="#33A532",
             text_color="#33A532",
             hover_color="#E8F6EE",
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.realizar_backup  # callback
         )
         botao_exportar.grid(row=0, column=6, padx=5, pady=10)
@@ -279,7 +279,7 @@ class MeetingManagerApp:
             width=500,
             height=48,
             corner_radius=8,
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.adicionar_fala
         )
         botao_adicionar_fala.pack(side="right", pady=(10, 5), padx=10)
@@ -477,7 +477,7 @@ class MeetingManagerApp:
             compound="left",
             width=155,
             height=48,
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.adicionar_secretaria
         )
         botao_adicionar_secretaria.pack(side="right", padx=10, pady=5)
@@ -574,7 +574,7 @@ class MeetingManagerApp:
                                           text="Deletar", 
                                           hover_color="#B7070F", 
                                           text_color="#FFFFFF",
-                                          font=("Montserrat", 16),
+                                          font=("Montserrat", 16, "bold"),
                                           command=lambda s_id=secretaria[0]: self.deletar_secretaria(s_id)
             )
             botao_deletar.pack(side="right", padx=5)
@@ -585,7 +585,7 @@ class MeetingManagerApp:
                                          text="Editar", 
                                          hover_color="#009693", 
                                          text_color="#FFFFFF",
-                                         font=("Montserrat", 16),
+                                         font=("Montserrat", 16, "bold"),
                                          command=lambda s_id=secretaria[0]: self.editar_secretaria(s_id)
             )
             botao_editar.pack(side="right", padx=5)
@@ -682,7 +682,7 @@ class MeetingManagerApp:
             compound="left",
             width=155,
             height=48,
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=salvar_edicao
         ).pack(pady=15, side="right", expand=True, padx=25)
 
@@ -742,7 +742,7 @@ class MeetingManagerApp:
                                         text="Editar", 
                                         hover_color="#009693", 
                                         text_color="#FFFFFF",
-                                        font=("Montserrat", 16),
+                                        font=("Montserrat", 16, "bold"),
                                         command=lambda s_id=secretario[0]: self.editar_secretario(s_id))
             botao_editar.pack(side="right", padx=5)
 
@@ -752,7 +752,7 @@ class MeetingManagerApp:
                                       fg_color="#ffa500", 
                                       hover_color="#cc8400", 
                                       text_color="#FFFFFF",
-                                      font=("Montserrat", 16),
+                                      font=("Montserrat", 16, "bold"),
                                       command=lambda s_id=secretario[0]: self.desativar_secretario(s_id)
                                       )
             else:
@@ -761,7 +761,7 @@ class MeetingManagerApp:
                                       image=self.icons["ativar"],
                                       fg_color="#999999", 
                                       hover_color="#999999", 
-                                      font=("Montserrat", 16),
+                                      font=("Montserrat", 16, "bold"),
                                       text_color="#FFFFFF")
 
             botao.pack(side="right", padx=5)
@@ -916,7 +916,7 @@ class MeetingManagerApp:
                             compound="left",
                             width=155,
                             height=48,
-                            font=("Montserrat", 16),
+                            font=("Montserrat", 16, "bold"),
                             command=salvar_edicao).pack(pady=20)
 
 
@@ -1055,7 +1055,7 @@ class MeetingManagerApp:
             compound="left",
             width=155,
             height=48,
-            font=("Montserrat", 16),
+            font=("Montserrat", 16, "bold"),
             command=self.adicionar_secretario
         )
         botao_adicionar_secretario.pack(side="right", padx=10, pady=5)
@@ -1210,7 +1210,7 @@ class MeetingManagerApp:
                                           text="Deletar", 
                                           hover_color="#B7070F", 
                                           text_color="#FFFFFF",
-                                          font=("Montserrat", 16),
+                                          font=("Montserrat", 16, "bold"),
                                           command=lambda a_id=ata[0]: self.deletar_ata(a_id), 
                                           )
             botao_deletar.pack(side="right", padx=5)
@@ -1221,7 +1221,7 @@ class MeetingManagerApp:
                                          text="Editar", 
                                          hover_color="#009693", 
                                          text_color="#FFFFFF",
-                                         font=("Montserrat", 16),
+                                         font=("Montserrat", 16, "bold"),
                                          command=lambda a_id=ata[0]: self.editar_ata(a_id), 
                                          )
             botao_editar.pack(side="right", padx=5)
@@ -1232,7 +1232,7 @@ class MeetingManagerApp:
                                          image=self.icons["exportar"], 
                                          hover_color="#E49400", 
                                          text_color="#FFFFFF",
-                                         font=("Montserrat", 16),
+                                         font=("Montserrat", 16, "bold"),
                                          command=lambda a_id=ata[0]: self.exportar_ata_ui(a_id), 
                                          )
             botao_exportar.pack(side="right", padx=5)
@@ -1477,7 +1477,7 @@ class MeetingManagerApp:
                                 compound="left",
                                 width=155,
                                 height=48,
-                                font=("Montserrat", 16),
+                                font=("Montserrat", 16, "bold"),
                                 command=salvar_edicao).pack(pady=15, side="right", expand=True, padx=25)
 
     def deletar_ata(self, ata_id):
@@ -1544,7 +1544,7 @@ class MeetingManagerApp:
                         compound="left",
                         width=155,
                         height=48,
-                        font=("Montserrat", 16),
+                        font=("Montserrat", 16, "bold"),
                         command=lambda: atualizar_lista(campo_busca.get()))
         botao_busca.pack(side="left", padx=5, pady=5)
 
@@ -1769,7 +1769,7 @@ class MeetingManagerApp:
                                     compound="left",
                                     width=155,
                                     height=48,
-                                    font=("Montserrat", 16),
+                                    font=("Montserrat", 16, "bold"),
                                     command=salvar_fala)
         botao_salvar.pack(side="right", expand=True, padx=5)
 
@@ -1782,7 +1782,7 @@ class MeetingManagerApp:
                                         text_color="#FFFFFF",
                                         width=155,
                                         height=48,
-                                        font=("Montserrat", 16),
+                                        font=("Montserrat", 16, "bold"),
                                         command=deletar_fala_popup
         )
         botao_deletar.pack(side="left", expand=True, padx=5)
